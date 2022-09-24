@@ -112,7 +112,7 @@ describe('carga productos', () => {
 
     expect(productos.length).toBe(1);
   });
-  it.s('carga los 136 productos', async () => {
+  it.skip('carga los 136 productos', async () => {
     await new ProductoService().cargarPlanilla(
       'libs/worker/src/test/fixtures/productos.xlsx'
     );

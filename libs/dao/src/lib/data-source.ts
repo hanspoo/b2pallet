@@ -10,8 +10,6 @@ import { Producto } from './entity/producto.entity';
 import { Pedido } from './entity/pedido.entity';
 import { Box } from './entity/box.entity';
 
-console.trace('Here I am!');
-
 const dataSource = new DataSource({
   type: process.env['NODE_ENV'] === 'test' ? 'sqlite' : 'postgres',
   host: 'localhost',
