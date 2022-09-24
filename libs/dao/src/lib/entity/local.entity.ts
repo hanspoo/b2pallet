@@ -13,7 +13,10 @@ export class Local {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
+  codigo: string;
+
+  @Column({ unique: true })
   nombre: string;
 
   @ManyToOne(() => UnidadNegocio, (unidad) => unidad.locales)

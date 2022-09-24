@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "test": "nx test"
+    "test": "nx run-many --target=test --all"
   },
   "private": true,
   "dependencies": {
@@ -19,8 +19,10 @@
     "react-dom": "18.2.0",
     "reflect-metadata": "^0.1.13",
     "regenerator-runtime": "0.13.7",
+    "sqlite3": "^5.1.1",
     "tslib": "^2.3.0",
-    "typeorm": "^0.3.10"
+    "typeorm": "^0.3.10",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "7.12.13",

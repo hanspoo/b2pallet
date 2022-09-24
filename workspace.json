@@ -8,6 +8,7 @@
     "components-e2e": "apps/components-e2e",
     "dao": "libs/dao",
     "flash": "apps/flash",
-    "flash-e2e": "apps/flash-e2e"
+    "flash-e2e": "apps/flash-e2e",
+    "worker": "libs/worker"
   }
 }

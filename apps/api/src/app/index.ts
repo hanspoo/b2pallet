@@ -1,11 +1,11 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { dataSource as myDataSource, User } from '@flash-ws/dao';
+import { dataSource } from '@flash-ws/dao';
 import { Message } from '@flash-ws/api-interfaces';
 import { users } from './routers/users';
+import { productos } from './routers/productos';
 
-// establish database connection
-myDataSource
+dataSource
   .initialize()
   .then(() => {
     console.log('Data Source has been initialized!');
@@ -30,4 +30,5 @@ app.get('/', async function (req: Request, res: Response) {
 });
 
 app.use('/api/users', users);
+app.use('/api/productos', productos);
 export { app };

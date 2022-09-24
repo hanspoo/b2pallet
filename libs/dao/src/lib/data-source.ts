@@ -1,3 +1,4 @@
+import * as crypto from 'node:crypto';
 import { DataSource } from 'typeorm';
 import { User } from './entity/user.entity';
 import { Local } from './entity/local.entity';
@@ -7,14 +8,20 @@ import { OrdenCompra } from './entity/orden-compra.entity';
 import { LineaDetalle } from './entity/linea-detalle.entity';
 import { Producto } from './entity/producto.entity';
 import { Pedido } from './entity/pedido.entity';
+import { Box } from './entity/box.entity';
+
+console.trace('Here I am!');
 
 const dataSource = new DataSource({
-  type: 'postgres',
+  type: process.env['NODE_ENV'] === 'test' ? 'sqlite' : 'postgres',
   host: 'localhost',
-  username: 'test',
-  password: 'test',
+  username: 'flash',
+  password: 'flash',
 
-  database: 'test',
+  database:
+    process.env['NODE_ENV'] === 'test'
+      ? crypto.randomBytes(12).toString('hex')
+      : 'flash',
   entities: [
     User,
     Local,
@@ -24,8 +31,9 @@ const dataSource = new DataSource({
     LineaDetalle,
     Producto,
     Pedido,
+    Box,
   ],
-  logging: true,
+  logging: false,
   synchronize: true,
 });
 
