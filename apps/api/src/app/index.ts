@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as cors from 'cors';
 import { Request, Response } from 'express';
 import { dataSource } from '@flash-ws/dao';
 import { Message } from '@flash-ws/api-interfaces';
@@ -16,6 +17,7 @@ dataSource
 
 // create and setup express app
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const greeting: Message = { message: 'Welcome to the api!' };

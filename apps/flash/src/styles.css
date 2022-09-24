@@ -71,3 +71,9 @@ dd {
   background-color: orange;
   border: solid 1px #666;
 }
+
+
+tr.disabled-row td {
+  color: #ccc;
+
+}

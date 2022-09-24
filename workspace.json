@@ -9,6 +9,7 @@
     "dao": "libs/dao",
     "flash": "apps/flash",
     "flash-e2e": "apps/flash-e2e",
+    "generador": "apps/generador",
     "worker": "libs/worker"
   }
 }

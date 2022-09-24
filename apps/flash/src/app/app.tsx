@@ -8,34 +8,54 @@ import {
 import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-import { Usuarios } from '@flash-ws/components';
+import { Productos } from '@flash-ws/components';
+
 const { Header, Sider, Content } = Layout;
 
+enum Modo {
+  PEDIDOS = 'PEDIDOS',
+  LOCALES = 'LOCALES',
+  PRODUCTOS = 'PRODUCTOS',
+  PREFS = 'PREFS',
+}
+
 const App = () => {
+  const [modo, setModo] = useState(Modo.PRODUCTOS);
   const [collapsed, setCollapsed] = useState(false);
+
+  function onChangeMenu(args: any) {
+    setModo(args.key);
+  }
+
   return (
     <Layout id="container" role="container">
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
         <Menu
+          onClick={onChangeMenu}
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={[Modo.PRODUCTOS + '']}
           items={[
             {
-              key: '1',
-              icon: <UserOutlined />,
-              label: 'nav 1',
-            },
-            {
-              key: '2',
-              icon: <VideoCameraOutlined />,
-              label: 'nav 2',
-            },
-            {
-              key: '3',
+              key: Modo.PRODUCTOS,
               icon: <UploadOutlined />,
-              label: 'nav 3',
+              label: 'Productos',
+            },
+            {
+              key: Modo.PEDIDOS,
+              icon: <UserOutlined />,
+              label: 'Pedidos',
+            },
+            {
+              key: Modo.LOCALES,
+              icon: <VideoCameraOutlined />,
+              label: 'Locales',
+            },
+            {
+              key: Modo.PREFS,
+              icon: <VideoCameraOutlined />,
+              label: 'Preferencias',
             },
           ]}
         />
@@ -63,7 +83,8 @@ const App = () => {
             minHeight: 280,
           }}
         >
-          <Usuarios />
+          {modo === Modo.PRODUCTOS && <Productos />}
+          {modo === Modo.PREFS && <p>Preferencias</p>}
         </Content>
       </Layout>
     </Layout>

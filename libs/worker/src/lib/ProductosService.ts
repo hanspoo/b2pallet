@@ -69,11 +69,14 @@ export class ProductoService {
 
     const cod = esValido ? StatusCode.OK : StatusCode.ERROR;
 
-    if (!esValido) console.log(`producto ${codigo} ${nombre} inválido`);
+    if (!esValido) console.log('inválido ' + JSON.stringify(linea));
 
     if (esValido) {
       let p = await this.findByCodigo(codigo);
-      if (!p) p = new Producto();
+      if (!p) {
+        p = new Producto();
+        p.vigente = true;
+      }
 
       p.nombre = nombre;
       p.codCenco = codCenco;
@@ -82,9 +85,9 @@ export class ProductoService {
 
       const box = new Box();
 
-      box.largo = largo;
-      box.ancho = ancho;
-      box.alto = alto;
+      box.largo = largo * 10;
+      box.ancho = ancho * 10;
+      box.alto = alto * 10;
 
       p.box = box;
 
