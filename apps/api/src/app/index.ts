@@ -5,6 +5,7 @@ import { dataSource } from '@flash-ws/dao';
 import { Message } from '@flash-ws/api-interfaces';
 import { users } from './routers/users';
 import { productos } from './routers/productos';
+import { ordenes } from './routers/ordenes';
 
 dataSource
   .initialize()
@@ -33,4 +34,6 @@ app.get('/', async function (req: Request, res: Response) {
 
 app.use('/api/users', users);
 app.use('/api/productos', productos);
+app.use('/api/ordenes', ordenes);
+
 export { app };

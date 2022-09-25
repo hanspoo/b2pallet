@@ -18,7 +18,7 @@ const dataSource = new DataSource({
 
   database:
     process.env['NODE_ENV'] === 'test'
-      ? crypto.randomBytes(12).toString('hex')
+      ? '/tmp/db/' + crypto.randomBytes(12).toString('hex')
       : 'flash',
   entities: [
     User,

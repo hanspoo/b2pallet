@@ -10,13 +10,14 @@ import axios from 'axios';
 import { SubirProductos } from './SubirProductos';
 import { Producto3d } from './Producto3d';
 import Search from 'antd/lib/input/Search';
+import {
+  comparaVigencia,
+  fmtMedida,
+  numberWithCommas,
+  volumen,
+} from '../front-utils';
 
 const { Title } = Typography;
-
-function volumen(p: Producto) {
-  const { largo, ancho, alto } = p.box;
-  return largo * ancho * alto;
-}
 
 const columns = [
   {
@@ -91,7 +92,7 @@ const columns = [
     title: 'Volumen',
     dataIndex: 'codigo',
     sorter: (a: Producto, b: Producto) => {
-      return volumen(a) - volumen(b);
+      return volumen(a.box) - volumen(b.box);
     },
     render: (codigo: any, producto: Producto) => <Producto3d p={producto} />,
   },
@@ -149,7 +150,7 @@ export function Productos(props: ProductosProps) {
 
   return (
     <div className={styles['container']}>
-      <div style={{ float: 'right' }}>
+      <div style={{ float: 'right', position: 'relative', top: '+48px' }}>
         <SubirProductos />
       </div>
       <Title level={2}>Productos</Title>
@@ -172,18 +173,3 @@ export function Productos(props: ProductosProps) {
 }
 
 export default Productos;
-
-function numberWithCommas(x: any) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}
-
-function comparaVigencia(a: Producto, b: Producto) {
-  const x = a.vigente ? 1 : 0;
-  const y = b.vigente ? 1 : 0;
-
-  return x - y;
-}
-
-function fmtMedida(n: number) {
-  return n / 10;
-}

@@ -10,7 +10,9 @@ export class Cliente {
   @Column()
   nombre: string;
 
-  @OneToMany(() => UnidadNegocio, (unidad) => unidad.cliente)
+  // @OneToOne(() => Box, { cascade: ['insert'], onDelete: 'CASCADE' })
+
+  @OneToMany(() => UnidadNegocio, (unidad) => unidad.cliente, { cascade: true })
   unidades: UnidadNegocio[];
 
   @OneToMany(() => Pedido, (pedido) => pedido.cliente)

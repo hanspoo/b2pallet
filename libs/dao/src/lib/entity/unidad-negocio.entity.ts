@@ -19,6 +19,9 @@ export class UnidadNegocio {
   @ManyToOne(() => Cliente, (cli) => cli.unidades)
   cliente: Cliente;
 
-  @OneToMany(() => Local, (local) => local.unidad)
+  @OneToMany(() => Local, (local) => local.unidad, {
+    eager: true,
+    cascade: true,
+  })
   locales: Local[];
 }

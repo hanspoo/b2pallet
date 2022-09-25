@@ -1,52 +1,30 @@
+import { Cliente, inicializarCencosud, UnidadNegocio } from '@flash-ws/dao';
 import { LocalesService } from '../lib/LocalesService';
-import { Cliente, dataSource, UnidadNegocio } from '@flash-ws/dao';
-import { OrdenService } from '../lib/OrdenService';
-import { ProductoService } from '../lib/ProductosService';
 
 let cliente: Cliente;
 let sisa: UnidadNegocio;
 
 beforeAll(async () => {
-  await dataSource.initialize();
-
-  cliente = new Cliente();
-  sisa = new UnidadNegocio();
-  sisa.nombre = 'Sisa';
-  sisa.locales = [];
-  sisa.cliente = cliente;
-
-  cliente.unidades = [sisa];
+  cliente = await inicializarCencosud();
+  sisa = cliente.unidades.find((u) => (u.nombre = 'Sisa'));
+  // });
+  // describe('Prueba fixture local', () => {
+  //   it('Crea cliente', () => {
+  //     expect(cliente).toBeTruthy();
+  //   });
 });
 
-afterEach(async () => {
-  // Fetch all the entities
-  const entities = dataSource.entityMetadatas;
-
-  for (const entity of entities) {
-    const repository = dataSource.getRepository(entity.name); // Get repository
-    await repository.clear(); // Clear each entity table's content
-  }
-  sisa.locales = [];
-});
-
-describe('crear ordenes', () => {
-  it('archivo de una orden la crea correctamente', async () => {
-    const result = await new OrdenService(sisa).crearOrden(
+describe('LocalesService', () => {
+  it('debe haber creado el local', async () => {
+    await new LocalesService(sisa).crearLocalesNuevos(
       'libs/worker/src/test/fixtures/orden-una-linea.xls'
     );
-
-    expect(result.orden.lineas.length).toBe(1);
+    expect(sisa.locales.length).toBe(1);
   });
-  it('carga código producto', async () => {
-    await new ProductoService().cargarPlanilla(
-      'libs/worker/src/test/fixtures/producto-1647753.xlsx'
+  it('debe haber creado los 190', async () => {
+    await new LocalesService(sisa).crearLocalesNuevos(
+      'libs/worker/src/test/fixtures/b2b.xls'
     );
-
-    const result = await new OrdenService(sisa).crearOrden(
-      'libs/worker/src/test/fixtures/orden-una-linea.xls'
-    );
-
-    const linea = result.orden.lineas[0];
-    expect(linea.producto.codCenco).toBe('1647753');
+    expect(sisa.locales.length).toBe(190);
   });
 });

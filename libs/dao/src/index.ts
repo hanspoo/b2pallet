@@ -10,6 +10,7 @@ export * from './lib/entity/orden-compra.entity';
 export * from './lib/entity/pedido.entity';
 export * from './lib/entity/producto.entity';
 export * from './lib/entity/box.entity';
+export * from './lib/inicializarCencosud';
 
 // Genera imports
 // find ./lib/entity/ -type f |perl -ane 'print qq#export * from "$F[0]"\n#' |sed s/\.ts//

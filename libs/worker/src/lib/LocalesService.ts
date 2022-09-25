@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Local, UnidadNegocio } from '@flash-ws/dao';
+import { Local, UnidadNegocio, dataSource } from '@flash-ws/dao';
 import { ClienteService } from './ClienteService';
 import { firstSheetAsJSON } from './b2butils';
 import { LockNotSupportedOnGivenDriverError } from 'typeorm';
@@ -16,8 +16,14 @@ const fieldMap = {
  * a pesar de estar creados en una unidad de negocio en particular.
  */
 
+const repo = dataSource.getRepository(Local);
+
 export class LocalesService {
   constructor(public unidadNegocio: UnidadNegocio) {}
+
+  static async save(local: Local) {
+    repo.save(local);
+  }
 
   async crearLocalesNuevos(path: string): Promise<void> {
     if (!fs.existsSync(path)) {
@@ -73,6 +79,7 @@ export class LocalesService {
       // console.log(`Creando local ${nuevo.codigo}`);
 
       nuevo.unidad = this.unidadNegocio;
+      LocalesService.save(nuevo);
       this.unidadNegocio.locales.push(nuevo);
     });
   }

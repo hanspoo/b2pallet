@@ -16,7 +16,14 @@ type RespuestaCrear = {
   orden: OrdenCompra;
   status: Array<string>;
 };
+
+const repo = dataSource.getRepository(OrdenCompra);
+
 export class OrdenService {
+  static findAll(): Promise<Array<OrdenCompra>> {
+    return repo.find({ relations: { unidad: true } });
+  }
+
   statusLineas: Array<string> = [];
   locales: Array<Local>;
 
@@ -36,25 +43,40 @@ export class OrdenService {
 
     const json = firstSheetAsJSON(path);
 
-    new LocalesService(this.unidadNegocio).crearLocalesNuevosFromJson(json);
+    await new LocalesService(this.unidadNegocio).crearLocalesNuevosFromJson(
+      json
+    );
     this.locales = new ClienteService(this.unidadNegocio.cliente).findLocales();
 
     const orden = await this.ordenFromJSON(json);
     orden.unidad = this.unidadNegocio;
+
+    repo.save(orden);
 
     return { orden, status: this.statusLineas };
   }
 
   async ordenFromJSON(json: any[]): Promise<OrdenCompra> {
     const oc = new OrdenCompra();
-    oc.lineas = await Promise.all(json.map((row) => this.rowToLinea(row)));
+
+    oc.numero = json[0][fieldMap['numOrden']];
+    oc.emision = json[0][fieldMap['emision']];
+    oc.entrega = json[0][fieldMap['entrega']];
+
+    oc.lineas = await Promise.all(
+      json.map((row, i) => {
+        console.log(i);
+        return this.rowToLinea(oc, row);
+      })
+    );
 
     return oc;
   }
-  async rowToLinea(row: any): Promise<LineaDetalle> {
+  async rowToLinea(oc: OrdenCompra, row: any): Promise<LineaDetalle> {
     // console.log(row);
 
     const l = new LineaDetalle();
+    l.ordenCompra = oc;
 
     const codCenco = row[fieldMap['codCenco']];
     const codLocal = row[fieldMap['codLocal']] as string;
@@ -71,6 +93,7 @@ export class OrdenService {
     }
 
     l.producto = await this.findProducto(codCenco);
+    l.local = localFromDB;
 
     return l;
   }

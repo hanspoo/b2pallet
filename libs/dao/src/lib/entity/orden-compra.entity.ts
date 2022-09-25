@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  CreateDateColumn,
 } from 'typeorm';
 import { LineaDetalle } from './linea-detalle.entity';
 import { UnidadNegocio } from './unidad-negocio.entity';
@@ -18,9 +19,6 @@ export class OrdenCompra {
   numero: string;
 
   @Column()
-  creacion: string;
-
-  @Column()
   emision: string;
 
   @Column()
@@ -29,9 +27,11 @@ export class OrdenCompra {
   @ManyToOne(() => UnidadNegocio, (unidad) => unidad.locales)
   unidad: UnidadNegocio;
 
-  @OneToMany(() => LineaDetalle, (linea) => linea.ordenCompra)
+  @OneToMany(() => LineaDetalle, (linea) => linea.ordenCompra, {
+    cascade: true,
+  })
   lineas: LineaDetalle[];
 
-  @ManyToOne(() => Pedido, (pedido) => pedido.ordenes)
+  @ManyToOne(() => Pedido, (pedido) => pedido.ordenes, { nullable: true })
   pedido: Pedido;
 }

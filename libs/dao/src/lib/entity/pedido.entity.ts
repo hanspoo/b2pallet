@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
+  ManyToMany,
 } from 'typeorm';
 import { Cliente } from './cliente.entity';
 import { OrdenCompra } from './orden-compra.entity';
@@ -19,7 +20,7 @@ export class Pedido {
   @Column()
   lastName: string;
 
-  @OneToMany(() => OrdenCompra, (orden) => orden.pedido)
+  @ManyToMany(() => OrdenCompra, (orden) => orden.pedido)
   ordenes: OrdenCompra[];
 
   @ManyToOne(() => Cliente, (cliente) => cliente.pedidos)

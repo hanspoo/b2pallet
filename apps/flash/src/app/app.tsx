@@ -9,11 +9,13 @@ import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 import { Productos } from '@flash-ws/components';
+import Ordenes from '../../../../libs/components/src/lib/ordenes/ordenes';
 
 const { Header, Sider, Content } = Layout;
 
 enum Modo {
   PEDIDOS = 'PEDIDOS',
+  ORDENES = 'ORDENES',
   LOCALES = 'LOCALES',
   PRODUCTOS = 'PRODUCTOS',
   PREFS = 'PREFS',
@@ -41,6 +43,11 @@ const App = () => {
               key: Modo.PRODUCTOS,
               icon: <UploadOutlined />,
               label: 'Productos',
+            },
+            {
+              key: Modo.ORDENES,
+              icon: <UserOutlined />,
+              label: 'Órdenes',
             },
             {
               key: Modo.PEDIDOS,
@@ -84,6 +91,7 @@ const App = () => {
           }}
         >
           {modo === Modo.PRODUCTOS && <Productos />}
+          {modo === Modo.ORDENES && <Ordenes />}
           {modo === Modo.PREFS && <p>Preferencias</p>}
         </Content>
       </Layout>

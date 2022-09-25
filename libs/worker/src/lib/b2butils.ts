@@ -5,6 +5,9 @@ export const fieldMap = {
   nombreLocal: 'Local Destino',
   codCenco: 'Cód. Cencosud',
   cantidad: 'Empaques Pedidos',
+  numOrden: 'Número de Orden',
+  emision: 'Fecha Emisión',
+  entrega: 'Fecha Entrega',
 };
 
 export function firstSheetAsJSON(path: string): Array<any> {
@@ -25,6 +28,7 @@ export function firstSheetAsJSON(path: string): Array<any> {
   if (!row[fieldMap['codCenco']]) throw Error('Planilla faltan datos críticos');
   if (!row[fieldMap['codLocal']]) throw Error('Planilla faltan datos críticos');
   if (!row[fieldMap['cantidad']]) throw Error('Planilla faltan datos críticos');
+  if (!row[fieldMap['numOrden']]) throw Error('Planilla faltan datos críticos');
 
   return json;
 }

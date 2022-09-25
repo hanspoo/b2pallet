@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 
-import Productos from './productos';
+import Ordenes from './ordenes';
 
-describe('Productos', () => {
+describe('Ordenes', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<Productos />);
+    const { baseElement } = render(<Ordenes />);
     expect(baseElement).toBeTruthy();
   });
 });

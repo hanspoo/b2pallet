@@ -23,7 +23,7 @@
       "executor": "@nrwl/storybook:storybook",
       "options": {
         "uiFramework": "@storybook/react",
-        "proxyConfig": "apps/todos/proxy.conf.json",
+        "proxyConfig": "libs/components/proxy.conf.json",
         "port": 4400,
         "config": {
           "configFolder": "libs/components/.storybook"

@@ -1,4 +1,4 @@
-import { dataSource, Producto } from '@flash-ws/dao';
+import { Cliente, dataSource, Producto, UnidadNegocio } from '@flash-ws/dao';
 
 async function f() {
   await dataSource
@@ -18,6 +18,26 @@ async function f() {
   }));
 
   console.log('[' + all.map((obj) => JSON.stringify(obj)).join(',') + ']');
+
+  const repo = await dataSource.getRepository(Cliente);
+
+  const cencosud = new Cliente();
+
+  cencosud.nombre = 'Cencosud';
+
+  const jumbo = new UnidadNegocio();
+  jumbo.cliente = cencosud;
+  jumbo.nombre = 'jumbo';
+
+  const sisa = new UnidadNegocio();
+  sisa.cliente = cencosud;
+  sisa.nombre = 'Sisa';
+
+  cencosud.unidades = [jumbo, sisa];
+
+  repo.save(cencosud);
+  repo.save(sisa);
+  repo.save(jumbo);
 }
 
 f();

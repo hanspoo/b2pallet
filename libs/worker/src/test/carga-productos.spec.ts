@@ -97,9 +97,9 @@ describe('carga productos', () => {
     expect(p.codCenco).toBe('1647753');
     expect(p.nombre).toBe('MONDADIENTES');
     expect(p.peso).toBe(900);
-    expect(p.box.largo).toBe(20);
-    expect(p.box.ancho).toBe(20);
-    expect(p.box.alto).toBe(9);
+    expect(p.box.largo).toBe(200);
+    expect(p.box.ancho).toBe(200);
+    expect(p.box.alto).toBe(90);
   });
   it('si se procesa de nuevo, se actualiza no crea dos', async () => {
     await new ProductoService().cargarPlanilla(
@@ -112,7 +112,7 @@ describe('carga productos', () => {
 
     expect(productos.length).toBe(1);
   });
-  it.skip('carga los 136 productos', async () => {
+  it('carga los 136 productos', async () => {
     await new ProductoService().cargarPlanilla(
       'libs/worker/src/test/fixtures/productos.xlsx'
     );
