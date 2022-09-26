@@ -1,7 +1,21 @@
+import { dataSource } from '@flash-ws/dao';
 import { app } from './app';
 
-const port = process.env.port || 3333;
-const server = app.listen(port, () => {
-  console.log('Listening at http://localhost:' + port + '/api');
-});
-server.on('error', console.error);
+async function f() {
+  await dataSource
+    .initialize()
+    .then(() => {
+      console.log('Data Source has been initialized!');
+    })
+    .catch((err) => {
+      console.error('Error during Data Source initialization:', err);
+    });
+
+  const port = process.env.port || 3333;
+  const server = app.listen(port, () => {
+    console.log('Listening at http://localhost:' + port + '/api');
+  });
+  server.on('error', console.error);
+}
+
+f();

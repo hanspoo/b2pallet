@@ -1,12 +1,19 @@
-import { Cliente, inicializarCencosud, UnidadNegocio } from '@flash-ws/dao';
+import {
+  Cliente,
+  inicializarCencosud,
+  UnidadNegocio,
+  dataSource,
+  Local,
+} from '@flash-ws/dao';
 import { LocalesService } from '../lib/LocalesService';
+import { ClienteService } from '../lib/ClienteService';
 
 let cliente: Cliente;
 let sisa: UnidadNegocio;
 
 beforeAll(async () => {
-  cliente = await inicializarCencosud();
-  sisa = cliente.unidades.find((u) => (u.nombre = 'Sisa'));
+  await inicializarCencosud();
+
   // });
   // describe('Prueba fixture local', () => {
   //   it('Crea cliente', () => {
@@ -16,15 +23,25 @@ beforeAll(async () => {
 
 describe('LocalesService', () => {
   it('debe haber creado el local', async () => {
+    const sisa = await dameSisa();
+    expect(sisa.locales.length).toBe(0);
+
     await new LocalesService(sisa).crearLocalesNuevos(
       'libs/worker/src/test/fixtures/orden-una-linea.xls'
     );
-    expect(sisa.locales.length).toBe(1);
+    const service = new ClienteService(cliente);
+    expect((await service.findLocales()).length).toBe(1);
   });
   it('debe haber creado los 190', async () => {
+    const sisa = await dameSisa();
     await new LocalesService(sisa).crearLocalesNuevos(
       'libs/worker/src/test/fixtures/b2b.xls'
     );
-    expect(sisa.locales.length).toBe(190);
+    expect((await dameSisa()).locales.length).toBe(190);
   });
 });
+function dameSisa() {
+  return dataSource
+    .getRepository(UnidadNegocio)
+    .findOne({ where: { nombre: 'Sisa' } });
+}

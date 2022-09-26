@@ -31,13 +31,11 @@ export class OrdenService {
 
   async crearOrden(path: string): Promise<RespuestaCrear> {
     if (!fs.existsSync(path)) {
-      console.log(`Archivo no existe ${path}`);
       throw Error('Archivo no existe');
     }
     const stat = fs.statSync(path);
 
     if (stat.size === 0) {
-      console.log(`Archivo vacio ${path}`);
       throw Error('Archivo vacio');
     }
 
@@ -46,7 +44,9 @@ export class OrdenService {
     await new LocalesService(this.unidadNegocio).crearLocalesNuevosFromJson(
       json
     );
-    this.locales = new ClienteService(this.unidadNegocio.cliente).findLocales();
+    this.locales = await new ClienteService(
+      this.unidadNegocio.cliente
+    ).findLocales();
 
     const orden = await this.ordenFromJSON(json);
     orden.unidad = this.unidadNegocio;
@@ -65,7 +65,6 @@ export class OrdenService {
 
     oc.lineas = await Promise.all(
       json.map((row, i) => {
-        console.log(i);
         return this.rowToLinea(oc, row);
       })
     );
@@ -73,7 +72,6 @@ export class OrdenService {
     return oc;
   }
   async rowToLinea(oc: OrdenCompra, row: any): Promise<LineaDetalle> {
-    // console.log(row);
 
     const l = new LineaDetalle();
     l.ordenCompra = oc;

@@ -1,20 +1,11 @@
 import * as express from 'express';
 import * as cors from 'cors';
 import { Request, Response } from 'express';
-import { dataSource } from '@flash-ws/dao';
 import { Message } from '@flash-ws/api-interfaces';
 import { users } from './routers/users';
 import { productos } from './routers/productos';
 import { ordenes } from './routers/ordenes';
-
-dataSource
-  .initialize()
-  .then(() => {
-    console.log('Data Source has been initialized!');
-  })
-  .catch((err) => {
-    console.error('Error during Data Source initialization:', err);
-  });
+import { files } from './routers/files';
 
 // create and setup express app
 const app = express();
@@ -32,6 +23,7 @@ app.get('/', async function (req: Request, res: Response) {
   res.json({ name: 'Hello' });
 });
 
+app.use('/api/files', files);
 app.use('/api/users', users);
 app.use('/api/productos', productos);
 app.use('/api/ordenes', ordenes);

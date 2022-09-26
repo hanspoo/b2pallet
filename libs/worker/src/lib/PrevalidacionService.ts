@@ -10,13 +10,11 @@ export class PrevalidacionService {
 
   async validarExcel(path: string): Promise<string[]> {
     if (!fs.existsSync(path)) {
-      console.log(`Archivo no existe ${path}`);
       throw Error('Archivo no existe');
     }
     const stat = fs.statSync(path);
 
     if (stat.size === 0) {
-      console.log(`Archivo vacio ${path}`);
       throw Error('Archivo vacio');
     }
 

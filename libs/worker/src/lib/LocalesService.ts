@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import { Local, UnidadNegocio, dataSource } from '@flash-ws/dao';
 import { ClienteService } from './ClienteService';
 import { firstSheetAsJSON } from './b2butils';
-import { LockNotSupportedOnGivenDriverError } from 'typeorm';
 
 const fieldMap = {
   codLocal: 'Cód. Local Destino',
@@ -27,24 +26,24 @@ export class LocalesService {
 
   async crearLocalesNuevos(path: string): Promise<void> {
     if (!fs.existsSync(path)) {
-      console.log(`Archivo no existe ${path}`);
       throw Error('Archivo no existe');
     }
     const stat = fs.statSync(path);
 
     if (stat.size === 0) {
-      console.log(`Archivo vacio ${path}`);
       throw Error('Archivo vacio');
     }
 
     const json = firstSheetAsJSON(path);
 
-    this.crearLocalesNuevosFromJson(json);
+    await this.crearLocalesNuevosFromJson(json);
   }
 
   async crearLocalesNuevosFromJson(json: Array<any>): Promise<void> {
-    const cliente = this.unidadNegocio.cliente;
-    const locales = new ClienteService(cliente).findLocales();
+    const cliente = await ClienteService.findById(
+      this.unidadNegocio.cliente.id
+    );
+    const locales = await new ClienteService(cliente).findLocales();
     const localesExistentesDelCliente = locales.map((local) => local.codigo);
 
     const tuplas: Array<[string, string]> = json.map((row) => {
@@ -61,13 +60,13 @@ export class LocalesService {
 
     const nuevos = tuplas
       .filter((tupla) => !existeLocalEnCliente(tupla[0]))
-
       .map((tupla) => {
         if (nuevosIds.has(tupla[0])) return undefined;
         const local = new Local();
 
         local.codigo = tupla[0];
         local.nombre = tupla[1];
+        // local.unidad = this.unidadNegocio;
 
         nuevosIds.add(local.codigo);
 
@@ -75,12 +74,24 @@ export class LocalesService {
       })
       .filter((r) => !!r);
 
-    nuevos.forEach((nuevo) => {
-      // console.log(`Creando local ${nuevo.codigo}`);
+    console.log('nuevos', nuevos);
 
-      nuevo.unidad = this.unidadNegocio;
-      LocalesService.save(nuevo);
+    this.unidadNegocio = await dataSource
+      .getRepository(UnidadNegocio)
+      .findOne({ where: { id: this.unidadNegocio.id } });
+
+    nuevos.map((nuevo) => {
+      // return repoLocal.save(nuevo);
       this.unidadNegocio.locales.push(nuevo);
     });
+
+    // await Promise.all(promesas);
+
+    const repoUnidad = dataSource.getRepository(UnidadNegocio);
+    try {
+      await repoUnidad.save(this.unidadNegocio);
+    } catch (error) {
+      console.log('error al salvar unidad', error);
+    }
   }
 }

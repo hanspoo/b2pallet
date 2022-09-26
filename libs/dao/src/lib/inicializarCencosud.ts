@@ -8,10 +8,10 @@ export async function inicializarCencosud(): Promise<Cliente> {
   await dataSource.initialize();
   const entities = dataSource.entityMetadatas;
 
-  for (const entity of entities) {
-    const repository = dataSource.getRepository(entity.name); // Get repository
-    await repository.clear(); // Clear each entity table's content
-  }
+  // for (const entity of entities) {
+  //   const repository = dataSource.getRepository(entity.name); // Get repository
+  //   await repository.clear(); // Clear each entity table's content
+  // }
 
   const repoProducto = dataSource.getRepository(Producto);
   const repoCliente = dataSource.getRepository(Cliente);

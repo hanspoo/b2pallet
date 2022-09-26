@@ -10,14 +10,16 @@ import { Producto } from './entity/producto.entity';
 import { Pedido } from './entity/pedido.entity';
 import { Box } from './entity/box.entity';
 
+const testEnv = 'test';
+
 const dataSource = new DataSource({
-  type: process.env['NODE_ENV'] === 'test' ? 'sqlite' : 'postgres',
+  type: process.env['NODE_ENV'] === testEnv ? 'sqlite' : 'postgres',
   host: 'localhost',
   username: 'flash',
   password: 'flash',
 
   database:
-    process.env['NODE_ENV'] === 'test'
+    process.env['NODE_ENV'] === testEnv
       ? '/tmp/db/' + crypto.randomBytes(12).toString('hex')
       : 'flash',
   entities: [
@@ -31,7 +33,7 @@ const dataSource = new DataSource({
     Pedido,
     Box,
   ],
-  logging: false,
+  logging: true,
   synchronize: true,
 });
 

@@ -3,7 +3,8 @@ import { Cliente, Local, Pedido, dataSource } from '@flash-ws/dao';
 const repo = dataSource.getRepository(Cliente);
 
 export class ClienteService {
-  static async findByUnidades(id: number): Promise<Cliente> {
+  static async findById(id: number): Promise<Cliente> {
+    if (!id) throw Error('No viene el id del cliente');
     const clientes = await repo.find({
       where: { id },
       relations: { unidades: true },
@@ -13,25 +14,20 @@ export class ClienteService {
 
     const cliente = clientes[0];
 
-    console.log(`Cliente ${id}`, JSON.stringify(cliente));
 
     return cliente;
   }
-  findLocal(codLocal: any): Local {
-    const locales: Array<Local> = this.cliente.unidades.reduce((acc, iter) => {
-      acc = [...acc, ...iter.locales];
-      return acc;
-    }, []);
-
-    return locales.find((local) => local.id === codLocal);
+  async findLocal(id: any): Promise<Local> {
+    const locales = await this.findLocales();
+    return locales.find((local) => local.id === id);
   }
-  findLocales(): Array<Local> {
-    const locales: Array<Local> = this.cliente.unidades.reduce((acc, iter) => {
-      acc = [...acc, ...iter.locales];
-      return acc;
-    }, []);
-
-    return locales;
+  async findLocales(): Promise<Array<Local>> {
+    return await dataSource
+      .getRepository(Local)
+      .createQueryBuilder('local')
+      .leftJoinAndSelect('local.unidad', 'unidad')
+      .leftJoinAndSelect('unidad.cliente', 'cliente')
+      .getMany();
   }
   crearPedido() {
     const pedido = new Pedido();

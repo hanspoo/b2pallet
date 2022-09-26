@@ -1,20 +1,16 @@
-import { Cliente, UnidadNegocio } from '@flash-ws/dao';
+import { Cliente, UnidadNegocio, inicializarCencosud } from '@flash-ws/dao';
 import { OrdenService } from '../lib/OrdenService';
+import { ClienteService } from '../lib/ClienteService';
 
 // cada cliente tiene una columna de productos para hacer el match
 // en el caso de Cencosud es codCenco de entidad productos.
 
-let cliente: Cliente;
 let sisa: UnidadNegocio;
 
-beforeAll(() => {
-  cliente = new Cliente();
-  sisa = new UnidadNegocio();
-  sisa.nombre = 'Sisa';
-  sisa.locales = [];
-  sisa.cliente = cliente;
-
-  cliente.unidades = [sisa];
+beforeAll(async () => {
+  await inicializarCencosud();
+  const cliente = await ClienteService.findById(1);
+  sisa = cliente.unidades.find((u) => u.nombre === 'Sisa');
 });
 describe('worker', () => {
   describe('cargador de ordenes ', () => {
@@ -70,9 +66,7 @@ describe('worker', () => {
           await new OrdenService(sisa).crearOrden(
             'libs/worker/src/test/fixtures/sin-cantidad.xls'
           );
-        await expect(f()).rejects.toThrow(
-          'No metadata for "Producto" was found.'
-        );
+        await expect(f()).rejects.toThrow('Planilla faltan datos críticos');
       });
     });
   });

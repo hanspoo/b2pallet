@@ -1,3 +1,4 @@
+export * from './lib/file-upload/file-upload';
 export * from './lib/productos/productos';
 export * from './lib/usuarios/usuarios';
 export * from './lib/react-comps';

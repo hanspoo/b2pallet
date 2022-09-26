@@ -28,13 +28,11 @@ export class ProductoService {
 
   async cargarPlanilla(path: string): Promise<Array<EntityStatus>> {
     if (!fs.existsSync(path)) {
-      console.log(`Archivo no existe ${path}`);
       throw Error('Archivo no existe');
     }
     const stat = fs.statSync(path);
 
     if (stat.size === 0) {
-      console.log(`Archivo vacio ${path}`);
       throw Error('Archivo vacio');
     }
 
@@ -69,7 +67,6 @@ export class ProductoService {
 
     const cod = esValido ? StatusCode.OK : StatusCode.ERROR;
 
-    if (!esValido) console.log('inválido ' + JSON.stringify(linea));
 
     if (esValido) {
       let p = await this.findByCodigo(codigo);
@@ -109,7 +106,6 @@ export class ProductoService {
     return oc;
   }
   async rowToLinea(row: any): Promise<LineaDetalle> {
-    // console.log(row);
 
     const l = new LineaDetalle();
 
