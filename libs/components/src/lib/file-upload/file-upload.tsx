@@ -5,6 +5,7 @@ import { Spin } from 'antd';
 type UploadResponse = {
   msg: string;
 };
+
 const FileUpload = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

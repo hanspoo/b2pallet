@@ -13,6 +13,10 @@ import { app } from '../app/index';
 const path = 'libs/worker/src/test/fixtures/orden-una-linea.xls';
 const file = fs.readFileSync(path);
 
+const unaLineaSinProducto = fs.readFileSync(
+  'libs/worker/src/test/fixtures/prod-sin-codigo.xlsx'
+);
+
 beforeAll(async () => {
   await inicializarCencosud();
 });
@@ -63,4 +67,22 @@ it('Sube archivo con una orden sin errores', (done) => {
     .attach('file', path) // Change to write handly picture path
     .set('Content-Type', 'multipart/form-data')
     .expect(200, done);
+});
+it('Sube orden una linea prod invalido', (done) => {
+  request(app)
+    .post('/api/ordenes/masivo')
+    // .field('data', JSON.stringify({ name: 'coucou multipart' }))
+    .set('x-unidad', 'Sisa')
+    .field('unidad', 'Sisa')
+    .attach(
+      'file',
+      'libs/worker/src/test/fixtures/orden-una-linea-prod-invalido.xls'
+    ) // Change to write handly picture path
+    .set('Content-Type', 'multipart/form-data')
+    // .expect(400, done)
+    .then((response) => {
+      expect(response.body.msg).toBe('Hay 1 producto inválido');
+      expect(response.body.invalidos.length).toBe(1);
+      done();
+    });
 });

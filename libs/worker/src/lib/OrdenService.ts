@@ -51,7 +51,7 @@ export class OrdenService {
     const orden = await this.ordenFromJSON(json);
     orden.unidad = this.unidadNegocio;
 
-    repo.save(orden);
+    await repo.save(orden);
 
     return { orden, status: this.statusLineas };
   }
@@ -72,7 +72,6 @@ export class OrdenService {
     return oc;
   }
   async rowToLinea(oc: OrdenCompra, row: any): Promise<LineaDetalle> {
-
     const l = new LineaDetalle();
     l.ordenCompra = oc;
 

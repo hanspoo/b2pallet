@@ -7,6 +7,7 @@ import {
   OrdenService,
   PrevalidacionService,
 } from '@flash-ws/worker';
+import { OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
 
 const ordenes = express.Router();
 ordenes.get('/', async function (req: Request, res: Response) {
@@ -32,16 +33,14 @@ const upload = multer({ dest: 'uploads/' });
 ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
   // console.log(JSON.stringify(req.body));
 
-  const nombre = req.headers['x-unidad'];
-  console.log(`unidad es ${nombre}`);
+  const idUnidad = req.body['unidad'];
+  if (!idUnidad) throw Error('Unidad no encontrada');
 
-  if (!nombre) throw Error('Unidad no encontrada');
   const unidades = await dataSource
     .getRepository(UnidadNegocio)
-    .find({ where: { nombre }, relations: { cliente: true } });
+    .find({ where: { id: idUnidad }, relations: { cliente: true } });
 
-  if (unidades.length === 0)
-    throw Error(`No existe la unidad con nombre ${nombre}`);
+  if (unidades.length === 0) throw Error(`No existe la unidad id ${idUnidad}`);
 
   const unidad = unidades[0];
   unidad.cliente = await ClienteService.findById(unidad.cliente.id);
@@ -52,23 +51,30 @@ ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
     ).validarExcel(req.file.path);
 
     if (invalidos.length > 0) {
-      console.log('Hay productos inválidos');
-      res.status(400).send(invalidos);
+      console.log('Hay productos inválidos (2)');
+      const err: OrdenesResponseInvalid = {
+        msg: `Hay ${invalidos.length} ${
+          invalidos.length === 1 ? 'producto inválido' : 'productos inválidos'
+        }`,
+        invalidos,
+      };
+      res.status(400).send(err);
+      return;
     }
   } catch (error) {
-    console.log('atrapando error ', JSON.stringify(error));
+    console.log('atrapando error 1', JSON.stringify(error));
     res.status(400).send(error);
+    return;
   }
 
   try {
     const service = new OrdenService(unidad);
-    const status = await service.crearOrden(req.file.path);
+    const { orden } = await service.crearOrden(req.file.path);
+    res.send({ msg: `Orden ${orden.id} creada` });
   } catch (error) {
-    console.log('atrapando error al ', JSON.stringify(error));
+    // console.log('atrapando error al 2 ', JSON.stringify(error));
     res.status(400).send(error);
   }
-
-  res.send({ status: 'Bingo' });
 });
 
 ordenes.put('/:id', async function (req: Request, res: Response) {

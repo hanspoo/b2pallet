@@ -74,7 +74,7 @@ export class LocalesService {
       })
       .filter((r) => !!r);
 
-    console.log('nuevos', nuevos);
+    if (nuevos.length > 0) console.log(`Hay ${nuevos.length} locales nuevos`);
 
     this.unidadNegocio = await dataSource
       .getRepository(UnidadNegocio)

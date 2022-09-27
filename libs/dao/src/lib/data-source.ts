@@ -33,7 +33,7 @@ const dataSource = new DataSource({
     Pedido,
     Box,
   ],
-  logging: true,
+  logging: false,
   synchronize: true,
 });
 

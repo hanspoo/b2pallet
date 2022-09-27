@@ -124,7 +124,9 @@ function ListadoOrdenes(props: OrdenesProps) {
 
   return (
     <div className={styles['container']}>
-      <p>Hay {ordenes.length} órdenes</p>
+      <p>
+        {ordenes.length === 1 ? 'hay 1 orden' : `hay ${ordenes.length} ordenes`}
+      </p>
       <Search
         style={{ marginBottom: '0.5em' }}
         placeholder="buscar..."
@@ -136,7 +138,6 @@ function ListadoOrdenes(props: OrdenesProps) {
         columns={columns}
         pagination={{ defaultPageSize: 1000 }}
       />
-      ;
     </div>
   );
 }
