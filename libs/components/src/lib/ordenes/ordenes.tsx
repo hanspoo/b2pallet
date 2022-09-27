@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Search from 'antd/lib/input/Search';
 import { SubirOrdenes } from './SubirOrdenes';
+import { UploadOrden } from '../upload-orden/upload-orden';
 
 const { Title } = Typography;
 
@@ -84,7 +85,7 @@ export function Ordenes(props: OrdenesProps) {
         <Button onClick={() => setVista(Vista.Listado)}>Listado</Button>
       </div>
       {vista === Vista.Listado && <ListadoOrdenes />}
-      {vista === Vista.Subir && <SubirOrdenes />}
+      {vista === Vista.Subir && <UploadOrden />}
     </div>
   );
 }

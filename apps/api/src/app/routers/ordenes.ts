@@ -31,8 +31,7 @@ ordenes.post('/', async function (req: Request, res: Response) {
 const upload = multer({ dest: 'uploads/' });
 
 ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
-  // console.log(JSON.stringify(req.body));
-
+  console.log(1);
   const idUnidad = req.body['unidad'];
   if (!idUnidad) throw Error('Unidad no encontrada');
 
@@ -41,6 +40,8 @@ ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
     .find({ where: { id: idUnidad }, relations: { cliente: true } });
 
   if (unidades.length === 0) throw Error(`No existe la unidad id ${idUnidad}`);
+
+  console.log(2);
 
   const unidad = unidades[0];
   unidad.cliente = await ClienteService.findById(unidad.cliente.id);
@@ -66,6 +67,8 @@ ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
     res.status(400).send(error);
     return;
   }
+
+  console.log(3);
 
   try {
     const service = new OrdenService(unidad);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, Divider, Select, Spin } from 'antd';
+import { Button, Select, Spin } from 'antd';
 import { UnidadNegocio } from '@flash-ws/dao';
 import { OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
 
@@ -16,7 +16,7 @@ const UploadOrden = () => {
 
   React.useEffect(() => {
     axios
-      .get<UnidadNegocio[]>(`${process.env.NX_SERVER_URL}/api/unidades`)
+      .get<UnidadNegocio[]>(`${process.env['NX_SERVER_URL']}/api/unidades`)
       .then((response) => {
         setunidades(response.data);
         setLoading(false);
@@ -51,7 +51,6 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
   const [data, setData] = useState<UploadResponse>();
   const [unidad, setUnidad] = useState<UnidadNegocio>();
   const [file, setFile] = React.useState('');
-  const [invalidos, setInvalidos] = React.useState<Array<string>>();
 
   const handleSubmit = async (event: any) => {
     if (!unidad) throw Error('No está definida la orden');
@@ -63,7 +62,7 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
     formData.append('unidad', unidad + '');
     axios({
       method: 'post',
-      url: '/api/ordenes/masivo',
+      url: `${process.env['NX_SERVER_URL']}/api/ordenes/masivo`,
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' },
     })
@@ -84,6 +83,8 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
 
   if (loading) return <Spin />;
   if (error) {
+    console.log('hay errores', error);
+
     return (
       <>
         <p>{error.msg}</p>
