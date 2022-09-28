@@ -4,7 +4,6 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
-  CreateDateColumn,
 } from 'typeorm';
 import { LineaDetalle } from './linea-detalle.entity';
 import { UnidadNegocio } from './unidad-negocio.entity';

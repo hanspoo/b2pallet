@@ -19,6 +19,7 @@ enum Modo {
   LOCALES = 'LOCALES',
   PRODUCTOS = 'PRODUCTOS',
   PREFS = 'PREFS',
+  CLIENTES = 'CLIENTES',
 }
 
 const App = () => {
@@ -53,6 +54,11 @@ const App = () => {
               key: Modo.PEDIDOS,
               icon: <UserOutlined />,
               label: 'Pedidos',
+            },
+            {
+              key: Modo.CLIENTES,
+              icon: <VideoCameraOutlined />,
+              label: 'Clientes',
             },
             {
               key: Modo.LOCALES,
