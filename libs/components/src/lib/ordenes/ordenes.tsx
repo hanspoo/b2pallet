@@ -1,6 +1,6 @@
 import { Button, Typography } from 'antd';
 
-import { OrdenCompra } from '@flash-ws/dao';
+import { OrdenCompra, Pedido, UnidadNegocio } from '@flash-ws/dao';
 
 import { Spin, Table } from 'antd';
 
@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Search from 'antd/lib/input/Search';
 import { UploadOrden } from '../upload-orden/upload-orden';
+import { DetalleOrden } from './DetalleOrden';
 
 const { Title } = Typography;
 
@@ -50,13 +51,9 @@ export function Ordenes(props: OrdenesProps) {
         <ListadoOrdenes vistaDetalle={vistaDetalle} />
       )}
       {vista === Vista.Subir && <UploadOrden />}
-      {vista === Vista.Detalle && <DetalleOrden orden={orden} />}
+      {vista === Vista.Detalle && <DetalleOrden id={orden} />}
     </div>
   );
-}
-
-function DetalleOrden(props: { orden: number }) {
-  return <p>Detalle de orden {props.orden}</p>;
 }
 
 type ListadoProps = {
@@ -94,6 +91,13 @@ function ListadoOrdenes(props: ListadoProps) {
       sorter: (a: OrdenCompra, b: OrdenCompra) => {
         return a.id - b.id;
       },
+      render: (id: number) => {
+        return (
+          <Button onClick={() => props.vistaDetalle(id)} type="link">
+            {id}
+          </Button>
+        );
+      },
     },
     {
       title: 'Numero',
@@ -101,9 +105,9 @@ function ListadoOrdenes(props: ListadoProps) {
       sorter: (a: OrdenCompra, b: OrdenCompra) => {
         return a.numero.localeCompare(b.numero);
       },
-      render: (numero: number) => {
+      render: (numero: number, orden:OrdenCompra) => {
         return (
-          <Button onClick={() => props.vistaDetalle(numero)} type="link">
+          <Button onClick={() => props.vistaDetalle(orden.id)} type="link">
             {numero}
           </Button>
         );
@@ -123,20 +127,17 @@ function ListadoOrdenes(props: ListadoProps) {
         return a.entrega.localeCompare(b.entrega);
       },
     },
-    // {
-    //   title: 'Unidad',
-    //   dataIndex: 'unidad',
-    //   sorter: (a: OrdenCompra, b: OrdenCompra) => {
-    //     return a.unidad - b.unidad;
-    //   },
-    // },
-    // {
-    //   title: 'Pedido',
-    //   dataIndex: 'pedido',
-    //   sorter: (a: OrdenCompra, b: OrdenCompra) => {
-    //     return a.pedido - b.pedido;
-    //   },
-    // },
+    {
+      title: 'Unidad',
+      dataIndex: 'unidad',
+      render: (unidad:UnidadNegocio) => unidad.nombre
+    },
+
+    {
+      title: 'Pedido',
+      dataIndex: 'pedido',
+      render: (pedido:Pedido) => pedido ? pedido.id : "--"
+    },
   ];
   function onSearch(e: any) {
     const regex = new RegExp(e.target.value, 'i');
