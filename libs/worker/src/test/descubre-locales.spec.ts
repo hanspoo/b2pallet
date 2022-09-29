@@ -23,6 +23,7 @@ beforeAll(async () => {
 
 describe('LocalesService', () => {
   it('debe haber creado el local', async () => {
+    
     const sisa = await dameSisa();
     expect(sisa.locales.length).toBe(0);
 
@@ -43,5 +44,7 @@ describe('LocalesService', () => {
 function dameSisa() {
   return dataSource
     .getRepository(UnidadNegocio)
-    .findOne({ where: { nombre: 'Sisa' } });
+    .findOne({ where: { nombre: 'Sisa' }, relations: {
+      cliente:true
+    } });
 }

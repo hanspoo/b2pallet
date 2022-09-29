@@ -62,8 +62,7 @@ it('Sube archivo con una orden sin errores', (done) => {
   request(app)
     .post('/api/ordenes/masivo')
     // .field('data', JSON.stringify({ name: 'coucou multipart' }))
-    .set('x-unidad', 'Sisa')
-    .field('unidad', 'Sisa')
+    .field('unidad', '1')
     .attach('file', path) // Change to write handly picture path
     .set('Content-Type', 'multipart/form-data')
     .expect(200, done);
@@ -72,8 +71,7 @@ it('Sube orden una linea prod invalido', (done) => {
   request(app)
     .post('/api/ordenes/masivo')
     // .field('data', JSON.stringify({ name: 'coucou multipart' }))
-    .set('x-unidad', 'Sisa')
-    .field('unidad', 'Sisa')
+    .field('unidad', '1')
     .attach(
       'file',
       'libs/worker/src/test/fixtures/orden-una-linea-prod-invalido.xls'
