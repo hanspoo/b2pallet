@@ -34,7 +34,9 @@ export class PrevalidacionService {
 
     const promesas = ids.map((codCenco) => existeCodCenco(codCenco));
 
-    const invalidos = await Promise.all(promesas);
-    return invalidos.filter((cod) => cod !== null);
+    const resultadoPromesas = await Promise.all(promesas);
+    const codigosProductoInvalidos = resultadoPromesas.filter((cod) => cod !== null);
+    
+    return codigosProductoInvalidos;
   }
 }

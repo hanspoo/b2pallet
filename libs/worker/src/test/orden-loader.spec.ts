@@ -1,6 +1,7 @@
 import { Cliente, inicializarCencosud, UnidadNegocio } from '@flash-ws/dao';
 import { LocalesService } from '../lib/LocalesService';
 import { OrdenService } from '../lib/OrdenService';
+import { PrevalidacionService } from '../lib/PrevalidacionService';
 
 let cliente: Cliente;
 let sisa: UnidadNegocio;
