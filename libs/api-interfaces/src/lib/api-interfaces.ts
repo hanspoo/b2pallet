@@ -4,5 +4,6 @@ export interface Message {
 
 export type OrdenesResponseInvalid = {
   msg: string;
-  invalidos: string[];
+  ordenesDuplicadas: string[];
+  productosNoEncontrados: string[];
 };

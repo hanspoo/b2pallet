@@ -4,12 +4,14 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  Unique,
 } from 'typeorm';
 import { LineaDetalle } from './linea-detalle.entity';
 import { UnidadNegocio } from './unidad-negocio.entity';
 import { Pedido } from './pedido.entity';
 
 @Entity()
+@Unique(['numero', 'unidad'])
 export class OrdenCompra {
   @PrimaryGeneratedColumn()
   id: number;
@@ -23,7 +25,7 @@ export class OrdenCompra {
   @Column()
   entrega: string;
 
-  @ManyToOne(() => UnidadNegocio, (unidad) => unidad.locales)
+  @ManyToOne(() => UnidadNegocio, (unidad) => unidad.ordenes)
   unidad: UnidadNegocio;
 
   @OneToMany(() => LineaDetalle, (linea) => linea.ordenCompra, {

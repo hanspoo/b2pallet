@@ -40,5 +40,6 @@ function crearUnidad(c: Cliente, nombre: string) {
   u.nombre = nombre;
   u.cliente = c;
   u.locales = [];
+  u.ordenes = [];
   return u;
 }

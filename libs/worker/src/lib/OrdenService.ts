@@ -11,9 +11,11 @@ import {
 import { ClienteService } from './ClienteService';
 import { fieldMap, firstSheetAsJSON } from './b2butils';
 import { LocalesService } from './LocalesService';
+import { COL_NUM_ORDEN, Linea } from './types';
+import { In } from 'typeorm';
 
 type RespuestaCrear = {
-  orden: OrdenCompra;
+  ordenes: Array<OrdenCompra>;
   status: Array<string>;
 };
 
@@ -48,12 +50,59 @@ export class OrdenService {
       this.unidadNegocio.cliente
     ).findLocales();
 
-    const orden = await this.ordenFromJSON(json);
-    orden.unidad = this.unidadNegocio;
+    // Agrupamos las líneas por orden de compra
 
-    await repo.save(orden);
+    const INITIAL: Record<string, Array<Linea>> = {};
 
-    return { orden, status: this.statusLineas };
+    const ordenGroup = json.reduce((acc, iter) => {
+      const numOrden = iter[COL_NUM_ORDEN];
+      let lote = acc[numOrden];
+      if (!lote) {
+        lote = [];
+      }
+
+      lote = lote.concat(iter);
+      acc[numOrden] = lote;
+
+      return acc;
+    }, INITIAL);
+
+    // Validamos que ninguna de las ordenes no existan previamente
+    // en la unidad de negocio
+    const numerosOrden = Object.keys(ordenGroup);
+
+    const existentes = this.unidadNegocio.ordenes.filter(
+      (orden) => numerosOrden.indexOf(orden.numero) !== -1
+    );
+
+    // const deLaUnidad = await dataSource.getRepository(OrdenCompra).find({
+    //   where: { unidad: this.unidadNegocio },
+    // });
+    // const existentes = deLaUnidad.filter(
+    //   (orden) => numerosOrden.indexOf(orden.numero) !== -1
+    // );
+
+    // const existentes = await dataSource
+    //   .getRepository(OrdenCompra)
+    //   .manager.createQueryBuilder(OrdenCompra, 'orden')
+    //   .where('orden.numero IN (:...numeros)', { numeros: numerosOrden })
+    //   .andWhere('orden.unidad = :unidad', this.unidadNegocio)
+    //   .getMany();
+
+    if (existentes.length > 0) {
+      throw Error('Hay ordenes duplicadas');
+    }
+
+    const promesas = Object.values(ordenGroup).map(async (loteLineas) => {
+      const orden = await this.ordenFromJSON(loteLineas);
+      orden.unidad = this.unidadNegocio;
+
+      return repo.save(orden);
+    });
+
+    const ordenes = await Promise.all(promesas);
+
+    return { ordenes, status: this.statusLineas };
   }
 
   async ordenFromJSON(json: any[]): Promise<OrdenCompra> {

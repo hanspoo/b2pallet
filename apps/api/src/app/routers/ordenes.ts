@@ -35,9 +35,10 @@ ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
   const idUnidad = req.body['unidad'];
   if (!idUnidad) throw Error('Unidad no encontrada');
 
-  const unidades = await dataSource
-    .getRepository(UnidadNegocio)
-    .find({ where: { id: idUnidad }, relations: { cliente: true } });
+  const unidades = await dataSource.getRepository(UnidadNegocio).find({
+    where: { id: idUnidad },
+    relations: { cliente: true, ordenes: true },
+  });
 
   if (unidades.length === 0) throw Error(`No existe la unidad id ${idUnidad}`);
 
@@ -47,17 +48,14 @@ ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
   unidad.cliente = await ClienteService.findById(unidad.cliente.id);
 
   try {
-    const invalidos: Array<string> = await new PrevalidacionService(
-      unidad
-    ).validarExcel(req.file.path);
+    const { error, ordenesDuplicadas, productosNoEncontrados } =
+      await new PrevalidacionService(unidad).validarExcel(req.file.path);
 
-    if (invalidos.length > 0) {
-      console.log('Hay productos inválidos (2)');
+    if (error) {
       const err: OrdenesResponseInvalid = {
-        msg: `Hay ${invalidos.length} ${
-          invalidos.length === 1 ? 'producto inválido' : 'productos inválidos'
-        }`,
-        invalidos,
+        msg: `Hay información inválida`,
+        ordenesDuplicadas,
+        productosNoEncontrados,
       };
       res.status(400).send(err);
       return;
@@ -72,8 +70,8 @@ ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
 
   try {
     const service = new OrdenService(unidad);
-    const { orden } = await service.crearOrden(req.file.path);
-    res.send({ msg: `Orden ${orden.id} creada` });
+    const { ordenes } = await service.crearOrden(req.file.path);
+    res.send({ msg: `Se crearon/actualizaron ${ordenes.length} orden(es)` });
   } catch (error) {
     // console.log('atrapando error al 2 ', JSON.stringify(error));
     res.status(400).send(error);

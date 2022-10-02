@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Cliente } from './cliente.entity';
 import { Local } from './local.entity';
+import { OrdenCompra } from './orden-compra.entity';
 
 @Entity()
 export class UnidadNegocio {
@@ -24,4 +25,7 @@ export class UnidadNegocio {
     cascade: true,
   })
   locales: Local[];
+
+  @OneToMany(() => OrdenCompra, (orden) => orden.unidad)
+  ordenes: OrdenCompra[];
 }

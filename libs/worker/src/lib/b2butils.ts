@@ -1,4 +1,5 @@
 import * as xlsx from 'xlsx';
+import { Linea } from './types';
 
 export const fieldMap = {
   codLocal: 'Cód. Local Destino',
@@ -10,7 +11,7 @@ export const fieldMap = {
   entrega: 'Fecha Entrega',
 };
 
-export function firstSheetAsJSON(path: string): Array<any> {
+export function firstSheetAsJSON(path: string): Array<Linea> {
   let workbook;
   try {
     workbook = xlsx.readFile(path);

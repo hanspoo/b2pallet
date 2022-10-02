@@ -74,7 +74,7 @@ export class LocalesService {
       })
       .filter((r) => !!r);
 
-    if (nuevos.length > 0) console.log(`Hay ${nuevos.length} locales nuevos`);
+    // if (nuevos.length > 0) console.log(`Hay ${nuevos.length} locales nuevos`);
 
     this.unidadNegocio = await dataSource
       .getRepository(UnidadNegocio)
@@ -83,6 +83,7 @@ export class LocalesService {
     nuevos.map((nuevo) => {
       // return repoLocal.save(nuevo);
       this.unidadNegocio.locales.push(nuevo);
+      // console.log(`creando local ${nuevo.nombre}`);
     });
 
     // await Promise.all(promesas);
