@@ -7,7 +7,8 @@
   "files": [
     "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",
     "../../node_modules/@nrwl/react/typings/image.d.ts",
-    "./src/lib/ordenes/DetalleOrden.tsx"
+    "./src/lib/ordenes/DetalleOrden.tsx",
+    "./src/lib/upload-orden/MostrarErrores.tsx"
   ],
   "exclude": [
     "jest.config.ts",

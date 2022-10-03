@@ -3,6 +3,7 @@ import { Cliente } from './entity/cliente.entity';
 import { UnidadNegocio } from './entity/unidad-negocio.entity';
 import { Producto } from './entity/producto.entity';
 import { Box } from './entity/box.entity';
+import { OrdenCompra } from './entity/orden-compra.entity';
 
 export async function inicializarCencosud(): Promise<Cliente> {
   await dataSource.initialize();

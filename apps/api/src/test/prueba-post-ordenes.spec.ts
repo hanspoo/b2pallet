@@ -1,3 +1,4 @@
+import { OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
 import {
   Cliente,
   dataSource,
@@ -79,8 +80,10 @@ it('Sube orden una linea prod invalido', (done) => {
     .set('Content-Type', 'multipart/form-data')
     // .expect(400, done)
     .then((response) => {
-      expect(response.body.msg).toBe('Hay 1 producto inválido');
-      expect(response.body.invalidos.length).toBe(1);
+      const { msg, productosNoEncontrados } =
+        response.body as unknown as OrdenesResponseInvalid;
+      expect(msg).toBe('Hay información inválida');
+      expect(productosNoEncontrados.length).toBe(1);
       done();
     });
 });

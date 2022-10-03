@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Button, Select, Spin } from 'antd';
 import { UnidadNegocio } from '@flash-ws/dao';
 import { OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
+import { MostrarErrores } from './MostrarErrores';
 
 const { Option } = Select;
 type UploadResponse = {
@@ -84,13 +85,19 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
   if (loading) return <Spin />;
   if (error) {
     console.log('hay errores', error);
+    const { msg, ordenesDuplicadas, productosNoEncontrados } = error;
 
     return (
       <>
-        <p>{error.msg}</p>
-        {error.invalidos.map((s) => (
-          <p>{s}</p>
-        ))}
+        <p>{msg}</p>
+        <MostrarErrores
+          title="Productos no encontrados"
+          list={productosNoEncontrados}
+        />
+        <MostrarErrores
+          title="Ordenes de compra duplicadas"
+          list={ordenesDuplicadas}
+        />
       </>
     );
   }

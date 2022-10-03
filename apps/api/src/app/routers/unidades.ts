@@ -48,13 +48,13 @@ unidades.post('/masivo', upload.single('file'), async function (req: any, res) {
   unidad.cliente = await ClienteService.findById(unidad.cliente.id);
 
   try {
-    const invalidos: Array<string> = await new PrevalidacionService(
-      unidad
-    ).validarExcel(req.file.path);
+    const resultado = await new PrevalidacionService(unidad).validarExcel(
+      req.file.path
+    );
 
-    if (invalidos.length > 0) {
+    if (resultado.error) {
       console.log('Hay productos inválidos (3');
-      res.status(400).send(invalidos);
+      res.status(400).send(resultado);
     }
   } catch (error) {
     console.log('atrapando error ', JSON.stringify(error));

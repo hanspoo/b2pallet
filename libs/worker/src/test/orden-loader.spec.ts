@@ -1,4 +1,10 @@
-import { Cliente, inicializarCencosud, UnidadNegocio } from '@flash-ws/dao';
+import {
+  Cliente,
+  dataSource,
+  inicializarCencosud,
+  OrdenCompra,
+  UnidadNegocio,
+} from '@flash-ws/dao';
 import { LocalesService } from '../lib/LocalesService';
 import { OrdenService } from '../lib/OrdenService';
 import { FixtureBuilder } from '../lib/xls-utils/FixtureBuilder';
@@ -9,6 +15,7 @@ let sisa: UnidadNegocio;
 beforeAll(async () => {
   cliente = await inicializarCencosud();
   sisa = cliente.unidades.find((u) => (u.nombre = 'Sisa'));
+  await dataSource.getRepository(OrdenCompra).clear();
 });
 
 describe('crear ordenes', () => {
@@ -17,6 +24,7 @@ describe('crear ordenes', () => {
       'libs/worker/src/test/fixtures/orden-una-linea.xls'
     );
 
+    sisa = await findById(sisa.id);
     const result = await new OrdenService(sisa).crearOrden(
       'libs/worker/src/test/fixtures/orden-una-linea.xls'
     );
@@ -47,3 +55,11 @@ describe('crear ordenes', () => {
     expect(f()).rejects.toThrow();
   });
 });
+
+function findById(id: number): Promise<UnidadNegocio> {
+  console.trace();
+
+  return dataSource
+    .getRepository(UnidadNegocio)
+    .findOne({ where: { id }, relations: { ordenes: true, cliente: true } });
+}

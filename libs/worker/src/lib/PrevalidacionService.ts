@@ -12,28 +12,36 @@ export type ResultadoPrevalidacion = {
   ordenesDuplicadas: Array<string>;
 };
 
+let i = 0;
+
 export class PrevalidacionService {
   constructor(public unidadNegocio: UnidadNegocio) {}
 
   async validarExcel(path: string): Promise<ResultadoPrevalidacion> {
+    i = 0;
+    console.log(i++);
+
     if (!fs.existsSync(path)) {
       throw Error('Archivo no existe');
     }
+    console.log(i++);
     const stat = fs.statSync(path);
 
     if (stat.size === 0) {
       throw Error('Archivo vacio');
     }
 
+    console.log(i++);
     const lineas = firstSheetAsJSON(path);
     const idsCodigosCenco = lineas.reduce((acc, iter) => {
       const codCenco = iter[fieldMap['codCenco']];
       acc[codCenco] = 1;
       return acc;
     }, {});
-
+    console.log(i++);
     const ids = Object.keys(idsCodigosCenco);
 
+    console.log(i++);
     async function existeCodCenco(codCenco: string) {
       const prod = await repoProd.findOne({ where: { codCenco } });
       return prod === null ? codCenco : null;
@@ -46,10 +54,12 @@ export class PrevalidacionService {
       (cod) => cod !== null
     );
 
+    console.log(i++);
     const ordenesDuplicadas = this.ordenesDuplicadas(lineas);
 
+    console.log(i++);
     const res: ResultadoPrevalidacion = {
-      error: productosNoEncontrados.length > 0,
+      error: ordenesDuplicadas.length > 0 || productosNoEncontrados.length > 0,
       ordenesDuplicadas,
       productosNoEncontrados,
     };
