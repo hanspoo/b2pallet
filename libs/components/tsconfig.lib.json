@@ -8,7 +8,8 @@
     "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",
     "../../node_modules/@nrwl/react/typings/image.d.ts",
     "./src/lib/ordenes/DetalleOrden.tsx",
-    "./src/lib/upload-orden/MostrarErrores.tsx"
+    "./src/lib/upload-orden/MostrarErrores.tsx",
+    "./src/lib/lineas-detalle/LineaParaReact.ts"
   ],
   "exclude": [
     "jest.config.ts",

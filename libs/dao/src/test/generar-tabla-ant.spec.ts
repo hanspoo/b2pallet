@@ -2,7 +2,6 @@ import { capitalize } from 'lodash';
 import { dataSource } from '../lib/data-source';
 import { OrdenCompra } from '../lib/entity/orden-compra.entity';
 
-
 beforeAll(async () => {
   await dataSource.initialize();
 });

@@ -34,5 +34,5 @@ export class OrdenCompra {
   lineas: LineaDetalle[];
 
   @ManyToOne(() => Pedido, (pedido) => pedido.ordenes, { nullable: true })
-  pedido: Pedido;
+  pedido?: Pedido;
 }

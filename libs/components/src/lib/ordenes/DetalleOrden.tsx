@@ -2,6 +2,7 @@ import { OrdenCompra } from '@flash-ws/dao';
 import { Descriptions, Spin } from 'antd';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import TablaLineas from './TablaLineas';
 
 type PropsDetalleOrden = {
   id: number;
@@ -31,13 +32,25 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
   if (!o) return <p>Internal error</p>;
 
   return (
-    <Descriptions title="OrdenCompra" bordered column={1} labelStyle={{width: '1em'}}>
-      <Descriptions.Item label="Id">{o.id}</Descriptions.Item>
-      <Descriptions.Item label="Número">{o.numero}</Descriptions.Item>
-      <Descriptions.Item label="Emision">{o.emision}</Descriptions.Item>
-      <Descriptions.Item label="Entrega">{o.entrega}</Descriptions.Item>
-      <Descriptions.Item label="Unidad">{o.unidad?.nombre}</Descriptions.Item>
-      <Descriptions.Item label="Pedido">{o.pedido?.id}</Descriptions.Item>
-    </Descriptions>
+    <>
+      <Descriptions
+        title="OrdenCompra"
+        bordered
+        column={1}
+        labelStyle={{ width: '1em' }}
+      >
+        <Descriptions.Item label="Id">{o.id}</Descriptions.Item>
+        <Descriptions.Item label="Número">{o.numero}</Descriptions.Item>
+        <Descriptions.Item label="Emision">{o.emision}</Descriptions.Item>
+        <Descriptions.Item label="Entrega">{o.entrega}</Descriptions.Item>
+        <Descriptions.Item label="Unidad">{o.unidad?.nombre}</Descriptions.Item>
+        <Descriptions.Item label="Pedido">{o.pedido?.id}</Descriptions.Item>
+      </Descriptions>
+
+      <div>
+        Hay {o.lineas.length} item{o.lineas.length === 1 ? '' : 's'}
+      </div>
+      <TablaLineas lineas={o.lineas} />
+    </>
   );
 }

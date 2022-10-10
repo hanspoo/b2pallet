@@ -16,10 +16,12 @@ ordenes.get('/', async function (req: Request, res: Response) {
 });
 
 ordenes.get('/:id', async function (req: Request, res: Response) {
-  const results = await dataSource.getRepository(OrdenCompra).findOneBy({
-    id: req.params.id as unknown as number,
+  const id = req.params.id as unknown as number;
+  const results = await dataSource.getRepository(OrdenCompra).find({
+    where: { id },
+    relations: { lineas: true },
   });
-  return res.send(results);
+  return res.send(results[0]);
 });
 
 ordenes.post('/', async function (req: Request, res: Response) {
@@ -29,6 +31,10 @@ ordenes.post('/', async function (req: Request, res: Response) {
 });
 
 const upload = multer({ dest: 'uploads/' });
+ordenes.post('/borrar', async function (req: Request, res: Response) {
+  await OrdenService.borrarIds(req.body);
+  return res.send({ msg: 'Bingo' });
+});
 
 ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
   // console.log(1);

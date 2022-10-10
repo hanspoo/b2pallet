@@ -22,6 +22,9 @@ type RespuestaCrear = {
 const repo = dataSource.getRepository(OrdenCompra);
 
 export class OrdenService {
+  static borrarIds(body: any) {
+    throw new Error('Method not implemented.');
+  }
   static findAll(): Promise<Array<OrdenCompra>> {
     return repo.find({ relations: { unidad: true } });
   }

@@ -14,9 +14,17 @@ export class LineaDetalle {
   @ManyToOne(() => OrdenCompra, (orden) => orden.lineas, { nullable: false })
   ordenCompra: OrdenCompra;
 
-  @ManyToOne(() => Producto, (prod) => prod.lineas, { nullable: false })
+  @ManyToOne(() => Producto, (prod) => prod.lineas, {
+    nullable: false,
+  })
   producto: Producto;
+
+  @Column()
+  productoId?: number;
 
   @ManyToOne(() => Local, (local) => local.lineas, { nullable: false })
   local: Local;
+
+  @Column()
+  localId?: number;
 }

@@ -62,13 +62,14 @@ type ListadoProps = {
 
 function ListadoOrdenes(props: ListadoProps) {
   const [search, setSearch] = useState<RegExp>();
+  const [selected, setSelected] = useState<Array<number>>();
   const [data, setData] = useState<Array<OrdenCompra>>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     axios
-      .get(`${process.env['NX_SERVER_URL']}/api/ordenes`)
+      .get<Array<OrdenCompra>>(`${process.env['NX_SERVER_URL']}/api/ordenes`)
       .then((response) => {
         setData(response.data);
         setLoading(false);
@@ -88,6 +89,7 @@ function ListadoOrdenes(props: ListadoProps) {
     {
       title: 'Id',
       dataIndex: 'id',
+      key: 'id',
       sorter: (a: OrdenCompra, b: OrdenCompra) => {
         return a.id - b.id;
       },
@@ -105,7 +107,7 @@ function ListadoOrdenes(props: ListadoProps) {
       sorter: (a: OrdenCompra, b: OrdenCompra) => {
         return a.numero.localeCompare(b.numero);
       },
-      render: (numero: number, orden:OrdenCompra) => {
+      render: (numero: number, orden: OrdenCompra) => {
         return (
           <Button onClick={() => props.vistaDetalle(orden.id)} type="link">
             {numero}
@@ -130,13 +132,13 @@ function ListadoOrdenes(props: ListadoProps) {
     {
       title: 'Unidad',
       dataIndex: 'unidad',
-      render: (unidad:UnidadNegocio) => unidad.nombre
+      render: (unidad: UnidadNegocio) => unidad.nombre,
     },
 
     {
       title: 'Pedido',
       dataIndex: 'pedido',
-      render: (pedido:Pedido) => pedido ? pedido.id : "--"
+      render: (pedido: Pedido) => (pedido ? pedido.id : '--'),
     },
   ];
   function onSearch(e: any) {
@@ -147,6 +149,18 @@ function ListadoOrdenes(props: ListadoProps) {
   const ordenes = search
     ? data.filter((prod) => search.test(prod.unidad.nombre))
     : data;
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: OrdenCompra[]) => {
+      setSelected(selectedRowKeys);
+    },
+  };
+
+  function borrarSeleccionadas() {
+    axios
+      .post('/api/ordenes/borrar', selected)
+      .then((response) => console.log(response.data))
+      .catch((error) => console.log(error));
+  }
 
   return (
     <div className={styles['container']}>
@@ -160,10 +174,18 @@ function ListadoOrdenes(props: ListadoProps) {
         enterButton
       />
       <Table
+        rowSelection={{
+          type: 'checkbox',
+          ...rowSelection,
+        }}
+        rowKey={(record: OrdenCompra) => record.id}
         dataSource={ordenes}
         columns={columns}
         pagination={{ defaultPageSize: 1000 }}
       />
+      <Button onClick={borrarSeleccionadas} disabled={selected?.length === 0}>
+        Borrar Seleccionadas
+      </Button>
     </div>
   );
 }

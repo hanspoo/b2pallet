@@ -30,7 +30,7 @@ export class Producto {
   vigente: boolean;
 
   @OneToMany(() => LineaDetalle, (linea) => linea.producto)
-  lineas: LineaDetalle[];
+  lineas?: LineaDetalle[];
 
   @OneToOne(() => Box, { cascade: ['insert'], onDelete: 'CASCADE' })
   @JoinColumn()
