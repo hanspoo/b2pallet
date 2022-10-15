@@ -1,16 +1,21 @@
+import {
+  OrdenCompra,
+  dataSource,
+  UnidadNegocio,
+  Box,
+  Producto,
+  Local,
+  LineaDetalle,
+} from '@flash-ws/dao';
 import * as crypto from 'node:crypto';
-import { dataSource } from './data-source';
-import { Box } from './entity/box.entity';
-import { LineaDetalle } from './entity/linea-detalle.entity';
-import { Local } from './entity/local.entity';
-import { OrdenCompra } from './entity/orden-compra.entity';
-import { Producto } from './entity/producto.entity';
-import { UnidadNegocio } from './entity/unidad-negocio.entity';
 
 export async function crearOrdenHelper(): Promise<OrdenCompra> {
   const sisa = await dataSource
     .getRepository(UnidadNegocio)
     .findOne({ where: { id: 1 } });
+
+  if (!sisa) throw Error('Debe estar creada unidad de negocio para usar esto');
+
   const box = new Box();
 
   box.largo = 490;
@@ -27,8 +32,6 @@ export async function crearOrdenHelper(): Promise<OrdenCompra> {
   p.box = box;
 
   const producto = await dataSource.getRepository(Producto).save(p);
-
-  console.trace('esto ne debería estar pasando');
 
   const orden = new OrdenCompra();
   orden.unidad = sisa;

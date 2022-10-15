@@ -1,4 +1,6 @@
-import { crearOrdenHelper, inicializarCencosud } from '@flash-ws/dao';
+import { inicializarCencosud } from '@flash-ws/dao';
+import { crearOrdenHelper } from '@flash-ws/test-utils';
+
 // import { crearProducto, crerOrdenLocal } from '@flash-ws/worker';
 import request = require('supertest');
 import { app } from '../app';

@@ -9,6 +9,8 @@ export class ServicioCambioEstado {
     if (!this.orden) throw Error(`Orden ${id} no encontrada`);
   }
   async cambiar(ids: number[], estado: EstadoLinea) {
+    if (!ids) throw Error('No vienen los ids');
+    if (!estado) throw Error('No viene el estado');
     const repo = dataSource.getRepository(LineaDetalle);
 
     // const lineas = this.orden.lineas.filter((linea) => ids.includes(linea.id));

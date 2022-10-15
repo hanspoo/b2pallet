@@ -1,7 +1,7 @@
-import { Button, Select, Space, Spin, Table } from 'antd';
+import { Button, Col, Input, Row, Select, Spin, Table } from 'antd';
 
 import { useEffect, useState } from 'react';
-import Search from 'antd/lib/input/Search';
+
 import { LineaDetalle, Local, OrdenCompra, Producto } from '@flash-ws/dao';
 import { formatNumber } from '../front-utils';
 import { useQueryClient } from '@tanstack/react-query';
@@ -11,17 +11,18 @@ import {
   QuestionOutlined,
   StopOutlined,
 } from '@ant-design/icons';
-import { EstadoLinea } from '@flash-ws/api-interfaces';
+import { CambiarEstadoBody, EstadoLinea } from '@flash-ws/api-interfaces';
 import axios from 'axios';
 
 export interface TablaLineasProps {
   lineas: LineaDetalle[];
   orden: OrdenCompra;
+  recargar(orden: OrdenCompra): void;
 }
 
 const { Option } = Select;
-export function TablaLineas({ lineas, orden }: TablaLineasProps) {
-  const [search, setSearch] = useState<RegExp>();
+export function TablaLineas({ lineas, orden, recargar }: TablaLineasProps) {
+  const [search, setSearch] = useState<string>('');
   const [data, setData] = useState<Array<LineaDetalle>>();
   const [loading, setLoading] = useState(true);
   const [estado, setEstado] = useState<EstadoLinea>();
@@ -33,7 +34,7 @@ export function TablaLineas({ lineas, orden }: TablaLineasProps) {
   useEffect(() => {
     const productos = queryClient.getQueryData<Array<Producto>>([
       'productos',
-    ]) as any;
+    ]) as Array<Producto>;
     const locales = queryClient.getQueryData<Array<Local>>(['locales']) as any;
 
     function findProd(id: number): Producto | undefined {
@@ -44,11 +45,18 @@ export function TablaLineas({ lineas, orden }: TablaLineasProps) {
       return locales.find((p: Local) => p.id === id);
     }
 
-    const hidratadas = lineas.map((linea) => ({
-      ...linea,
-      producto: findProd(linea.productoId || -1)!,
-      local: findLocal(linea.localId || -1)!,
-    }));
+    const hidratadas = lineas.map((linea) => {
+      const producto = linea.productoId
+        ? findProd(linea.productoId)
+        : undefined;
+      const local = linea.localId ? findLocal(linea.localId) : undefined;
+      if (!(producto && local)) throw Error(`producto o local no encontrado`);
+      return {
+        ...linea,
+        producto,
+        local,
+      };
+    });
 
     setData(hidratadas);
     setLoading(false);
@@ -80,8 +88,35 @@ export function TablaLineas({ lineas, orden }: TablaLineasProps) {
       },
     },
     {
+      title: 'Código',
+      dataIndex: 'producto',
+      width: '10em',
+      render: (p: Producto) => {
+        return p ? p.codigo : 'N/A';
+      },
+    },
+    {
+      title: 'CodCenco',
+      dataIndex: 'producto',
+      width: '10em',
+      render: (p: Producto) => {
+        return p ? p.codCenco : 'N/A';
+      },
+    },
+    {
       title: 'Producto',
       dataIndex: 'producto',
+      filteredValue: [search],
+      onFilter: (value: string, record: LineaDetalle) => {
+        if (!value) return true;
+
+        const regex = new RegExp(value, 'i');
+        return (
+          regex.test(record.producto?.nombre) ||
+          regex.test(record.local?.nombre)
+        );
+      },
+
       render: (p: Producto) => {
         return p ? p.nombre : 'No encontrado';
       },
@@ -96,18 +131,15 @@ export function TablaLineas({ lineas, orden }: TablaLineasProps) {
     {
       title: 'Cantidad',
       dataIndex: 'cantidad',
+      width: '10em',
       sorter: (a: LineaDetalle, b: LineaDetalle) => {
         return a.cantidad - b.cantidad;
       },
     },
   ];
 
-  function onSearch(e: any) {
-    const regex = new RegExp(e.target.value, 'i');
-    setSearch(regex);
-  }
   const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: LineaDetalle[]) => {
+    onChange: (selectedRowKeys: Array<any>, selectedRows: LineaDetalle[]) => {
       setSelected(selectedRowKeys);
     },
     getCheckboxProps: (record: LineaDetalle) => ({
@@ -117,15 +149,24 @@ export function TablaLineas({ lineas, orden }: TablaLineasProps) {
 
   const handleChange = (e: EstadoLinea) => setEstado(e);
   const onCambiarEstado = () => {
+    if (!estado)
+      throw Error(
+        'debe estar definido el estado a cambiar para llamar este método'
+      );
     setActualizando(true);
+    const postBody: CambiarEstadoBody = {
+      ids: selected,
+      estado: estado,
+    };
     axios
       .post<OrdenCompra>(
         `${process.env['NX_SERVER_URL']}/api/ordenes/cambiar-estado/${orden.id}`,
-        selected
+        postBody
       )
       .then((response) => {
         console.log(response.data);
         setActualizando(false);
+        recargar(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -135,26 +176,41 @@ export function TablaLineas({ lineas, orden }: TablaLineasProps) {
 
   return (
     <div>
-      <p>Hay {formatNumber(lineas.length)} items</p>
-      <div style={{ marginBottom: '0.5em' }}>
-        <Select style={{ width: 120 }} onChange={handleChange} allowClear>
-          {Object.keys(EstadoLinea).map((o) => (
-            <Option value={o}>{o}</Option>
-          ))}
-        </Select>
-        <Button
-          disabled={!(estado && selected.length > 0)}
-          onClick={onCambiarEstado}
+      <Row style={{ marginBottom: '0.5em' }}>
+        <Col
+          span={8}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
         >
-          {actualizando ? <Spin size="small" /> : 'Cambiar estado'}
-        </Button>
-      </div>
-      <Search
-        style={{ marginBottom: '0.5em' }}
+          Hay {formatNumber(lineas.length)} items
+        </Col>
+        <Col span={16} style={{ textAlign: 'right' }}>
+          <Select style={{ width: 120 }} onChange={handleChange} allowClear>
+            {Object.keys(EstadoLinea).map((o) => (
+              <Option value={o}>{o}</Option>
+            ))}
+          </Select>
+          <Button
+            disabled={!(estado && selected.length > 0)}
+            onClick={onCambiarEstado}
+          >
+            {actualizando ? <Spin size="small" /> : 'Cambiar estado'}
+          </Button>
+        </Col>
+      </Row>
+      <Input
+        style={{ width: '100%', marginBottom: '1.25em' }}
         placeholder="buscar..."
-        onKeyUp={onSearch}
-        enterButton
+        allowClear
+        onChange={(e: any) => {
+          console.log(typeof e.target.value, e.target.value);
+
+          setSearch(e.target.value);
+        }}
       />
+
       <Table
         rowSelection={{
           type: 'checkbox',
@@ -164,7 +220,7 @@ export function TablaLineas({ lineas, orden }: TablaLineasProps) {
         rowKey={(linea: LineaDetalle) => linea.id}
         className="lineas"
         dataSource={data}
-        columns={columns}
+        columns={columns as any}
         pagination={{ defaultPageSize: 100 }}
       />
     </div>

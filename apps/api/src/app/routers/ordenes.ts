@@ -8,7 +8,11 @@ import {
   PrevalidacionService,
   ServicioCambioEstado,
 } from '@flash-ws/worker';
-import { EstadoLinea, OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
+import {
+  CambiarEstadoBody,
+  EstadoLinea,
+  OrdenesResponseInvalid,
+} from '@flash-ws/api-interfaces';
 
 const ordenes = express.Router();
 ordenes.get('/', async function (req: Request, res: Response) {
@@ -37,10 +41,6 @@ ordenes.post('/borrar', async function (req: Request, res: Response) {
   return res.send({ msg: 'Bingo' });
 });
 
-interface CambiarEstadoBody {
-  ids: number[];
-  estado: EstadoLinea;
-}
 ordenes.post(
   '/cambiar-estado/:id',
   async function (

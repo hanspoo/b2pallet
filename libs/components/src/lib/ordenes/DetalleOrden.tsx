@@ -11,6 +11,7 @@ type PropsDetalleOrden = {
 export function DetalleOrden({ id }: PropsDetalleOrden) {
   const [o, setOrden] = useState<OrdenCompra>();
   const [loading, setLoading] = useState(true);
+  const [recargar, setRecargar] = useState<boolean>();
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -48,7 +49,19 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         <Descriptions.Item label="Pedido">{o.pedido?.id}</Descriptions.Item>
       </Descriptions>
 
-      <TablaLineas lineas={o.lineas} orden={o} />
+      {recargar ? (
+        <p>Espere...</p>
+      ) : (
+        <TablaLineas
+          lineas={o.lineas}
+          orden={o}
+          recargar={(orden: OrdenCompra) => {
+            setOrden(orden);
+            // setRecargar(true);
+            // setTimeout(() => setRecargar(false), 2000);
+          }}
+        />
+      )}
     </>
   );
 }
