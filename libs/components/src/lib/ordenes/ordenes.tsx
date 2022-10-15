@@ -10,6 +10,7 @@ import axios from 'axios';
 import Search from 'antd/lib/input/Search';
 import { UploadOrden } from '../upload-orden/upload-orden';
 import { DetalleOrden } from './DetalleOrden';
+import { formatNumber } from '../front-utils';
 
 const { Title } = Typography;
 
@@ -134,6 +135,15 @@ function ListadoOrdenes(props: ListadoProps) {
       dataIndex: 'unidad',
       render: (unidad: UnidadNegocio) => unidad.nombre,
     },
+    {
+      title: '#Productos',
+      dataIndex: 'unidad',
+      align: 'right' as const,
+      render: (unidad: UnidadNegocio, orden: OrdenCompra) => {
+
+        return formatNumber(orden.lineas.length);
+      },
+    },
 
     {
       title: 'Pedido',
@@ -156,10 +166,12 @@ function ListadoOrdenes(props: ListadoProps) {
   };
 
   function borrarSeleccionadas() {
-    axios
-      .post('/api/ordenes/borrar', selected)
-      .then((response) => console.log(response.data))
-      .catch((error) => console.log(error));
+    selected?.forEach((id) => {
+      axios
+        .delete(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
+        .then((response) => console.log(`Orden ${id} eliminada`))
+        .catch((error) => console.log(error));
+    });
   }
 
   return (

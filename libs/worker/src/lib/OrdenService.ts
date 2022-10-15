@@ -22,11 +22,17 @@ type RespuestaCrear = {
 const repo = dataSource.getRepository(OrdenCompra);
 
 export class OrdenService {
+  static loadConLineas(id: number): Promise<OrdenCompra> {
+    return dataSource
+      .getRepository(OrdenCompra)
+      .findOne({ where: { id }, relations: { lineas: true } });
+  }
+
   static borrarIds(body: any) {
     throw new Error('Method not implemented.');
   }
   static findAll(): Promise<Array<OrdenCompra>> {
-    return repo.find({ relations: { unidad: true } });
+    return repo.find({ relations: { lineas: true, unidad: true } });
   }
 
   statusLineas: Array<string> = [];
@@ -129,7 +135,7 @@ export class OrdenService {
 
     const codCenco = row[fieldMap['codCenco']];
     const codLocal = row[fieldMap['codLocal']] as string;
-    const cantidad = row[fieldMap['codCenco']];
+    const cantidad = row[fieldMap['cantidad']];
 
     l.cantidad = cantidad;
     /**

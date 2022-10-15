@@ -21,13 +21,13 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         setLoading(false);
       })
       .catch((error) => {
-        setError(JSON.stringify(error));
+        setError(`Error: ${JSON.stringify(error)}`);
         setLoading(false);
       });
   }, [id]);
 
   if (loading) return <Spin />;
-  if (error) return <p>{error}</p>;
+  if (error) return <p>Error: {error}</p>;
 
   if (!o) return <p>Internal error</p>;
 
@@ -37,6 +37,7 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         title="OrdenCompra"
         bordered
         column={1}
+        style={{ marginBottom: '1em' }}
         labelStyle={{ width: '1em' }}
       >
         <Descriptions.Item label="Id">{o.id}</Descriptions.Item>
@@ -47,10 +48,7 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         <Descriptions.Item label="Pedido">{o.pedido?.id}</Descriptions.Item>
       </Descriptions>
 
-      <div>
-        Hay {o.lineas.length} item{o.lineas.length === 1 ? '' : 's'}
-      </div>
-      <TablaLineas lineas={o.lineas} />
+      <TablaLineas lineas={o.lineas} orden={o} />
     </>
   );
 }

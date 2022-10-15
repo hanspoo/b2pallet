@@ -1,4 +1,5 @@
 import { Typography } from 'antd';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { Producto } from '@flash-ws/dao';
 
@@ -13,7 +14,7 @@ import Search from 'antd/lib/input/Search';
 import {
   comparaVigencia,
   fmtMedida,
-  numberWithCommas,
+  formatNumber,
   volumen,
 } from '../front-utils';
 
@@ -42,7 +43,7 @@ const columns = [
       return a.peso - b.peso;
     },
 
-    render: (p: number) => numberWithCommas(p),
+    render: (p: number) => formatNumber(p),
   },
   {
     title: 'Cencosud',
@@ -116,18 +117,15 @@ export function Productos(props: ProductosProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const queryClient = useQueryClient();
+
   useEffect(() => {
-    axios
-      .get(`${process.env['NX_SERVER_URL']}/api/productos`)
-      .then((response) => {
-        setData(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(JSON.stringify(error));
-        setLoading(false);
-      });
-  }, []);
+    const productos = queryClient.getQueryData<Array<Producto>>([
+      'productos',
+    ]) as any;
+    setData(productos);
+    setLoading(false);
+  }, [queryClient]);
 
   if (loading) return <Spin />;
   if (error) return <p>{error}</p>;

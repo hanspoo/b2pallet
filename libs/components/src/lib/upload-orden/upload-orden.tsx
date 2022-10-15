@@ -84,7 +84,6 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
 
   if (loading) return <Spin />;
   if (error) {
-    console.log('hay errores', error);
     const { msg, ordenesDuplicadas, productosNoEncontrados } = error;
 
     return (

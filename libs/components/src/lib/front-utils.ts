@@ -1,6 +1,6 @@
 import { Box, Producto } from '@flash-ws/dao';
 
-export function numberWithCommas(x: any) {
+export function formatNumber(x: any) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 

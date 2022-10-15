@@ -77,3 +77,15 @@ tr.disabled-row td {
   color: #ccc;
 
 }
+
+
+/* table tbody tr > td:nth-child(2) {
+  width: 1em !important
+}
+table tbody tr > td:nth-child(3) {
+  width: 1em !important
+} */
+
+/* table.lineas tbody tr > td:nth-child(1) {
+  width: 14px
+} */

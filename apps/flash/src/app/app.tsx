@@ -34,6 +34,7 @@ const App = () => {
     <Layout id="container" role="container">
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
+
         <Menu
           onClick={onChangeMenu}
           theme="dark"
@@ -106,3 +107,16 @@ const App = () => {
 };
 
 export default App;
+
+function Home() {
+  return <div>Home</div>;
+}
+function About() {
+  return <div>About</div>;
+}
+function Dashboard() {
+  return <div>Dashboard</div>;
+}
+function NoMatch() {
+  return <div>NoMatch</div>;
+}

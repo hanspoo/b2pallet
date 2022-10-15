@@ -3,11 +3,10 @@ import { Cliente } from './entity/cliente.entity';
 import { UnidadNegocio } from './entity/unidad-negocio.entity';
 import { Producto } from './entity/producto.entity';
 import { Box } from './entity/box.entity';
-import { OrdenCompra } from './entity/orden-compra.entity';
 
 export async function inicializarCencosud(): Promise<Cliente> {
-  await dataSource.initialize();
-  const entities = dataSource.entityMetadatas;
+  if (!dataSource.isInitialized) await dataSource.initialize();
+  // const entities = dataSource.entityMetadatas;
 
   // for (const entity of entities) {
   //   const repository = dataSource.getRepository(entity.name); // Get repository

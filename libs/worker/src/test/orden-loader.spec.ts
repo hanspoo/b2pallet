@@ -15,6 +15,8 @@ let sisa: UnidadNegocio;
 beforeAll(async () => {
   cliente = await inicializarCencosud();
   sisa = cliente.unidades.find((u) => (u.nombre = 'Sisa'));
+});
+beforeEach(async () => {
   await dataSource.getRepository(OrdenCompra).clear();
 });
 
@@ -54,11 +56,19 @@ describe('crear ordenes', () => {
     };
     expect(f()).rejects.toThrow();
   });
+  it('carga correctamente la cantidad', async () => {
+    const service = new FixtureBuilder();
+    service.addLine(service.getTemplate({ 'Empaques Pedidos': 7 }));
+
+    const path = service.save();
+
+    const res = await new OrdenService(sisa).crearOrden(path);
+
+    expect(res.ordenes[0].lineas[0].cantidad).toBe(7);
+  });
 });
 
 function findById(id: number): Promise<UnidadNegocio> {
-  console.trace();
-
   return dataSource
     .getRepository(UnidadNegocio)
     .findOne({ where: { id }, relations: { ordenes: true, cliente: true } });

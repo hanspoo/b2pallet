@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { OrdenCompra } from './orden-compra.entity';
 import { Local } from './local.entity';
 import { Producto } from './producto.entity';
+import { EstadoLinea } from '@flash-ws/api-interfaces';
 
 @Entity()
 export class LineaDetalle {
@@ -11,7 +12,10 @@ export class LineaDetalle {
   @Column()
   cantidad: number;
 
-  @ManyToOne(() => OrdenCompra, (orden) => orden.lineas, { nullable: false })
+  @ManyToOne(() => OrdenCompra, (orden) => orden.lineas, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   ordenCompra: OrdenCompra;
 
   @ManyToOne(() => Producto, (prod) => prod.lineas, {
@@ -27,4 +31,7 @@ export class LineaDetalle {
 
   @Column()
   localId?: number;
+
+  @Column('varchar')
+  estado: EstadoLinea = EstadoLinea.Nada;
 }

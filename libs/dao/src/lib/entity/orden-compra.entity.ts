@@ -30,6 +30,7 @@ export class OrdenCompra {
 
   @OneToMany(() => LineaDetalle, (linea) => linea.ordenCompra, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   lineas: LineaDetalle[];
 

@@ -6,8 +6,9 @@ import {
   ClienteService,
   OrdenService,
   PrevalidacionService,
+  ServicioCambioEstado,
 } from '@flash-ws/worker';
-import { OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
+import { EstadoLinea, OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
 
 const ordenes = express.Router();
 ordenes.get('/', async function (req: Request, res: Response) {
@@ -35,6 +36,25 @@ ordenes.post('/borrar', async function (req: Request, res: Response) {
   await OrdenService.borrarIds(req.body);
   return res.send({ msg: 'Bingo' });
 });
+
+interface CambiarEstadoBody {
+  ids: number[];
+  estado: EstadoLinea;
+}
+ordenes.post(
+  '/cambiar-estado/:id',
+  async function (
+    req: Request<{ id: number }, null, CambiarEstadoBody>,
+    res: Response
+  ) {
+    const servicio = new ServicioCambioEstado();
+    await servicio.loadOrden(req.params.id);
+    const ids = req.body.ids;
+    const nueva = await servicio.cambiar(ids, req.body.estado);
+
+    return res.send(nueva);
+  }
+);
 
 ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
   // console.log(1);

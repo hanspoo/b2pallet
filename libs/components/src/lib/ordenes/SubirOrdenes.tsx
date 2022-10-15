@@ -11,10 +11,8 @@ const SubirOrdenes = () => {
     action: `${process.env['NX_SERVER_URL']}/api/ordenes/masivo`,
 
     onChange(info: any) {
-      console.log(`estado cambiando`, info);
 
       if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
       }
 
       if (info.file.status === 'done') {
