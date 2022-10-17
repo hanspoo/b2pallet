@@ -13,8 +13,4 @@
     "**/*.spec.ts",
     "**/*.test.ts"
   ],
-  "include": [
-    "**/*.ts",
-    "../dao/src/lib/crerOrdenLocal.ts"
-  ]
 }

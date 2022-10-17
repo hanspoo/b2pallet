@@ -9,13 +9,13 @@ import {
 } from '@flash-ws/dao';
 import {
   ClienteService,
+  Consolidado,
   OrdenService,
   PrevalidacionService,
   ServicioCambioEstado,
 } from '@flash-ws/worker';
 import {
   CambiarEstadoBody,
-  EstadoLinea,
   OrdenesResponseInvalid,
 } from '@flash-ws/api-interfaces';
 
@@ -25,22 +25,22 @@ ordenes.get('/', async function (req: Request, res: Response) {
   res.json(ordenes);
 });
 
-// ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
-//   const id = req.params.id as unknown as number;
-//   if (!id) throw Error('No viene el id, cancelando petición REST');
-//   const results = await dataSource.getRepository(OrdenCompra).find({
-//     where: { id },
-//     relations: { lineas: true },
-//   });
+ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
+  const id = req.params.id as unknown as number;
+  if (!id) throw Error('No viene el id, cancelando petición REST');
+  const results = await dataSource.getRepository(OrdenCompra).find({
+    where: { id },
+    relations: { lineas: true },
+  });
 
-//   const orden = results[0];
-//   if (!orden) throw Error(`orden id ${id} no encontrada`);
+  const orden = results[0];
+  if (!orden) throw Error(`orden id ${id} no encontrada`);
 
-//   console.log(orden.lineas);
+  console.log(orden.lineas);
 
-//   const c = new Consolidado(orden.lineas);
-//   return res.send(c.lineas);
-// });
+  const c = new Consolidado(orden.lineas);
+  return res.send(c.lineas);
+});
 
 ordenes.get('/:id', async function (req: Request, res: Response) {
   const id = req.params.id as unknown as number;

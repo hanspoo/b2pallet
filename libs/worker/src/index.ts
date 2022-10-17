@@ -6,3 +6,5 @@ export { PrevalidacionService } from './lib/PrevalidacionService';
 export * from './lib/ServicioCambioEstado';
 
 export * from './lib/worker';
+export { LineaConsolidada } from './lib/consolidado/LineaConsolidada';
+export { Consolidado } from './lib/consolidado/Consolidado';

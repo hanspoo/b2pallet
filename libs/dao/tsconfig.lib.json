@@ -13,8 +13,4 @@
     "**/*.spec.ts",
     "**/*.test.ts"
   ],
-  "include": [
-    "**/*.ts",
-    "../api-interfaces/src/lib/EstadoLinea.ts"
-  ]
 }
