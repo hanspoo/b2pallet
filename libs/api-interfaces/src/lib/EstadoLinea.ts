@@ -3,4 +3,5 @@ export enum EstadoLinea {
   Aprobada = 'Aprobada',
   Rechazada = 'Rechazada',
   Pendiente = 'Pendiente',
+  Multiple = 'Multiple',
 }

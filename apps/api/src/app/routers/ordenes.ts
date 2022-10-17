@@ -1,7 +1,12 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
-import { dataSource, OrdenCompra, UnidadNegocio } from '@flash-ws/dao';
+import {
+  // Consolidado,
+  dataSource,
+  OrdenCompra,
+  UnidadNegocio,
+} from '@flash-ws/dao';
 import {
   ClienteService,
   OrdenService,
@@ -20,6 +25,23 @@ ordenes.get('/', async function (req: Request, res: Response) {
   res.json(ordenes);
 });
 
+// ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
+//   const id = req.params.id as unknown as number;
+//   if (!id) throw Error('No viene el id, cancelando petición REST');
+//   const results = await dataSource.getRepository(OrdenCompra).find({
+//     where: { id },
+//     relations: { lineas: true },
+//   });
+
+//   const orden = results[0];
+//   if (!orden) throw Error(`orden id ${id} no encontrada`);
+
+//   console.log(orden.lineas);
+
+//   const c = new Consolidado(orden.lineas);
+//   return res.send(c.lineas);
+// });
+
 ordenes.get('/:id', async function (req: Request, res: Response) {
   const id = req.params.id as unknown as number;
   const results = await dataSource.getRepository(OrdenCompra).find({
@@ -28,7 +50,6 @@ ordenes.get('/:id', async function (req: Request, res: Response) {
   });
   return res.send(results[0]);
 });
-
 ordenes.post('/', async function (req: Request, res: Response) {
   const user = await dataSource.getRepository(OrdenCompra).create(req.body);
   const results = await dataSource.getRepository(OrdenCompra).save(user);
