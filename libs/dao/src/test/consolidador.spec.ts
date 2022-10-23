@@ -36,11 +36,13 @@ describe('consolidador de lineas', () => {
     const p1 = new Producto();
     p1.id = 1;
     l1.producto = p1;
+    l1.productoId = 1;
     l1.cantidad = 2;
     const l2 = new LineaDetalle();
     const p2 = new Producto();
     p2.id = 2;
     l2.producto = p2;
+    l2.productoId = 2;
     l2.cantidad = 3;
     const c = new Consolidado([l1, l2]);
     expect(c.lineas.length).toBe(2);

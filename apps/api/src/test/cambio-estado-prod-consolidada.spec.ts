@@ -1,0 +1,73 @@
+import { inicializarCencosud } from '@flash-ws/dao';
+import { crearOrdenHelper } from '@flash-ws/test-utils';
+
+// import { crearProducto, crerOrdenLocal } from '@flash-ws/worker';
+import request = require('supertest');
+import { app } from '../app';
+
+beforeAll(async () => {
+  await inicializarCencosud();
+  await crearOrdenHelper();
+});
+describe('cambia estado de producto en consolidada', () => {
+  it('debe dar 400 con orden inválida', async () => {
+    const res = await request(app)
+      .post('/api/ordenes/cambiar-estado-consolidada/0')
+      .send({
+        producto: 1,
+        mensaje: 'test is cool',
+      });
+    expect(res.statusCode).toEqual(400);
+    // expect(res.body).toHaveProperty('post');
+  });
+  it.skip('debe dar 200 con orden valida', async () => {
+    const res = await request(app)
+      .post('/api/ordenes/cambiar-estado-consolidada/1')
+      .send({
+        producto: 1,
+        mensaje: 'test is cool',
+      });
+    expect(res.statusCode).toEqual(200);
+    // expect(res.body).toHaveProperty('post');
+  });
+  it('debe dar 400 cuando no va producto', async () => {
+    const res = await request(app)
+      .post('/api/ordenes/cambiar-estado-consolidada/1')
+      .send({
+        producto: undefined,
+        mensaje: 'test is cool',
+      });
+    expect(res.statusCode).toEqual(400);
+    expect(res.text).toBe('Debe entregar el producto');
+  });
+  it('debe dar 400 con producto inválido', async () => {
+    const res = await request(app)
+      .post('/api/ordenes/cambiar-estado-consolidada/1')
+      .send({
+        productoID: -1,
+        mensaje: 'test is cool',
+      });
+    expect(res.statusCode).toEqual(400);
+    expect(res.text).toBe('Producto -1 no encontrado');
+  });
+  it('debe dar 400 sin estado', async () => {
+    const res = await request(app)
+      .post('/api/ordenes/cambiar-estado-consolidada/1')
+      .send({
+        productoID: 1,
+        estado: undefined,
+      });
+    expect(res.statusCode).toEqual(400);
+    expect(res.text).toBe('Debe entregar el estado');
+  });
+  it('debe dar 400 con estado inválido', async () => {
+    const res = await request(app)
+      .post('/api/ordenes/cambiar-estado-consolidada/1')
+      .send({
+        productoID: 1,
+        estado: 'abcde',
+      });
+    expect(res.statusCode).toEqual(400);
+    expect(res.text).toBe('Estado abcde inválido');
+  });
+});

@@ -1,4 +1,19 @@
-const lineas = [
+export interface ILineaConsolidada {
+  cantidad: number;
+  lineas: ILineaDetalle[];
+  productoId: number;
+  estado: string;
+}
+
+export interface ILineaDetalle {
+  estado: string;
+  id: number;
+  cantidad: number;
+  productoId: number;
+  localId: number;
+}
+
+const lineas: Array<ILineaConsolidada> = [
   {
     cantidad: 35,
     lineas: [

@@ -5,6 +5,7 @@ import {
   OneToMany,
   OneToOne,
   JoinColumn,
+  BeforeInsert,
 } from 'typeorm';
 import { LineaDetalle } from './linea-detalle.entity';
 import { Box } from './box.entity';
@@ -35,4 +36,9 @@ export class Producto {
   @OneToOne(() => Box, { cascade: ['insert'], onDelete: 'CASCADE' })
   @JoinColumn()
   box: Box;
+
+  @BeforeInsert()
+  updateDates() {
+    this.nombre = this.nombre.trim();
+  }
 }

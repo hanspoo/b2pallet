@@ -3,15 +3,10 @@
  */
 
 import { EstadoLinea } from '@flash-ws/api-interfaces';
-import {
-  crearOrdenHelper,
-  dataSource,
-  LineaDetalle,
-  OrdenCompra,
-  Producto,
-} from '@flash-ws/dao';
+import { dataSource, LineaDetalle, OrdenCompra, Producto } from '@flash-ws/dao';
 
 import { Cliente, inicializarCencosud, UnidadNegocio } from '@flash-ws/dao';
+import { crearOrdenHelper } from '@flash-ws/test-utils';
 
 import { ServicioCambioEstado } from '../lib/ServicioCambioEstado';
 

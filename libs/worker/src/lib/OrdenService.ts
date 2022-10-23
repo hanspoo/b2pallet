@@ -22,6 +22,9 @@ type RespuestaCrear = {
 const repo = dataSource.getRepository(OrdenCompra);
 
 export class OrdenService {
+  static save(orden: OrdenCompra) {
+    return dataSource.getRepository(OrdenCompra).save(orden);
+  }
   static loadConLineas(id: number): Promise<OrdenCompra> {
     return dataSource
       .getRepository(OrdenCompra)

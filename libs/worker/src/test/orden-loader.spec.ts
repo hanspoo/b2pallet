@@ -7,7 +7,7 @@ import {
 } from '@flash-ws/dao';
 import { LocalesService } from '../lib/LocalesService';
 import { OrdenService } from '../lib/OrdenService';
-import { FixtureBuilder } from '../lib/xls-utils/FixtureBuilder';
+import { FixtureBuilder } from './XLSFixtureBuilder';
 
 let cliente: Cliente;
 let sisa: UnidadNegocio;
@@ -23,12 +23,12 @@ beforeEach(async () => {
 describe('crear ordenes', () => {
   it('crea orden', async () => {
     await new LocalesService(sisa).crearLocalesNuevos(
-      'libs/worker/src/test/fixtures/orden-una-linea.xls'
+      'fixtures/orden-una-linea.xls'
     );
 
     sisa = await findById(sisa.id);
     const result = await new OrdenService(sisa).crearOrden(
-      'libs/worker/src/test/fixtures/orden-una-linea.xls'
+      'fixtures/orden-una-linea.xls'
     );
     expect(result.ordenes[0]).toBeTruthy();
     expect(result.ordenes[0].lineas).toBeTruthy();

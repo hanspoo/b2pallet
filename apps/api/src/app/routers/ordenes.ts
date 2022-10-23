@@ -1,21 +1,20 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
-import {
-  // Consolidado,
-  dataSource,
-  OrdenCompra,
-  UnidadNegocio,
-} from '@flash-ws/dao';
+import { dataSource, OrdenCompra, UnidadNegocio } from '@flash-ws/dao';
 import {
   ClienteService,
   Consolidado,
   OrdenService,
   PrevalidacionService,
+  ProductoService,
   ServicioCambioEstado,
+  ServicioCambioEstadoProdConsolidada,
 } from '@flash-ws/worker';
 import {
+  BodyCambioEstadoProdConsolidada,
   CambiarEstadoBody,
+  EstadoLinea,
   OrdenesResponseInvalid,
 } from '@flash-ws/api-interfaces';
 
@@ -35,8 +34,6 @@ ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
 
   const orden = results[0];
   if (!orden) throw Error(`orden id ${id} no encontrada`);
-
-  console.log(orden.lineas);
 
   const c = new Consolidado(orden.lineas);
   return res.send(c.lineas);
@@ -74,6 +71,39 @@ ordenes.post(
     const nueva = await servicio.cambiar(ids, req.body.estado);
 
     return res.send(nueva);
+  }
+);
+
+ordenes.post(
+  '/cambiar-estado-consolidada/:id',
+  async function (
+    req: Request<{ id: number }, null, BodyCambioEstadoProdConsolidada>,
+    res: Response
+  ) {
+    const orden = await OrdenService.loadConLineas(req.params.id);
+    if (!orden)
+      return res.status(400).send(`Orden ${req.params.id} no encontrada`);
+
+    const { estado, productoID } = req.body;
+    if (!productoID) return res.status(400).send(`Debe entregar el producto`);
+
+    const producto = await ProductoService.findById(productoID);
+    if (!producto)
+      return res.status(400).send(`Producto ${productoID} no encontrado`);
+
+    if (!estado) return res.status(400).send(`Debe entregar el estado`);
+
+    if (!EstadoLinea[estado])
+      return res.status(400).send(`Estado ${estado} inválido`);
+
+    const e = estado as EstadoLinea;
+    const servicio = new ServicioCambioEstadoProdConsolidada(
+      orden,
+      producto,
+      e
+    );
+    const consolidada: Consolidado = await servicio.ejecutar();
+    return res.send(consolidada.lineas);
   }
 );
 

@@ -44,7 +44,7 @@ describe('analisis multiple del b2b', () => {
   describe('dada una planilla con una orden y una unidad de negocio', () => {
     it('debe crear una unidad de negocio y una orden', () => {
       const res: Analisis = new ProcesadorB2b().analizarPlanilla(
-        'libs/worker/src/test/fixtures/orden-una-linea.xls'
+        'fixtures/orden-una-linea.xls'
       );
       expect(res.ordenes.length).toBe(1);
       expect(res.unidades.length).toBe(1);
@@ -52,7 +52,7 @@ describe('analisis multiple del b2b', () => {
     });
     it('debe crear la orden 5575426472', () => {
       const res: Analisis = new ProcesadorB2b().analizarPlanilla(
-        'libs/worker/src/test/fixtures/orden-una-linea.xls'
+        'fixtures/orden-una-linea.xls'
       );
       expect(res.ordenes[0]).toBe(5575426472);
     });

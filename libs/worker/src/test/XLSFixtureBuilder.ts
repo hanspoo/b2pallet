@@ -1,7 +1,7 @@
 import * as xlsx from 'xlsx';
 import * as crypto from 'crypto';
-import { templateLine } from '../../test/lineaJson';
-import { Linea } from '../types';
+import { templateLine } from './lineaJson';
+import { Linea } from '../lib/types';
 
 export class FixtureBuilder {
   data: Array<Linea> = [];

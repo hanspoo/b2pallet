@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 import { ExcelLoader } from '../lib/xls-utils/ExcelLoader';
-import { FixtureBuilder } from '../lib/xls-utils/FixtureBuilder';
+import { FixtureBuilder } from './XLSFixtureBuilder';
 
 describe('crear planilla', () => {
   it('crear planilla con una línea', () => {

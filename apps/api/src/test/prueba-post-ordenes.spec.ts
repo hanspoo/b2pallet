@@ -11,11 +11,11 @@ import * as fs from 'fs';
 import request = require('supertest');
 import { app } from '../app/index';
 
-const path = 'libs/worker/src/test/fixtures/orden-una-linea.xls';
+const path = 'fixtures/orden-una-linea.xls';
 const file = fs.readFileSync(path);
 
 const unaLineaSinProducto = fs.readFileSync(
-  'libs/worker/src/test/fixtures/prod-sin-codigo.xlsx'
+  'fixtures/prod-sin-codigo.xlsx'
 );
 
 beforeAll(async () => {
@@ -75,7 +75,7 @@ it('Sube orden una linea prod invalido', (done) => {
     .field('unidad', '1')
     .attach(
       'file',
-      'libs/worker/src/test/fixtures/orden-una-linea-prod-invalido.xls'
+      'fixtures/orden-una-linea-prod-invalido.xls'
     ) // Change to write handly picture path
     .set('Content-Type', 'multipart/form-data')
     // .expect(400, done)

@@ -50,7 +50,7 @@ export class ProductoService {
     const ancho = linea['ANCHO (CM)'];
     const largo = linea['LARGO (CM)'];
     const peso = linea['PESO (GR)'];
-    const nombre = linea['TIPO PRODUCTOS '];
+    const nombre = linea['TIPO PRODUCTOS '].trim();
     const codigo = linea['CODIGO SISTEMA '];
 
     let esValido = true;
@@ -66,7 +66,6 @@ export class ProductoService {
     if (!alto) esValido = false;
 
     const cod = esValido ? StatusCode.OK : StatusCode.ERROR;
-
 
     if (esValido) {
       let p = await this.findByCodigo(codigo);
@@ -106,7 +105,6 @@ export class ProductoService {
     return oc;
   }
   async rowToLinea(row: any): Promise<LineaDetalle> {
-
     const l = new LineaDetalle();
 
     return l;
@@ -115,6 +113,11 @@ export class ProductoService {
     return dataSource
       .getRepository(Producto)
       .findOne({ where: { codCenco }, relations: { box: true } });
+  }
+  static async findById(id: number): Promise<Producto> {
+    return dataSource
+      .getRepository(Producto)
+      .findOne({ where: { id }, relations: { box: true } });
   }
   async findByCodigo(codigo: string): Promise<Producto> {
     return dataSource

@@ -64,6 +64,7 @@ describe('el estado de la consolidada', () => {
 
     const c = new Consolidado([l1, l2, l3]);
 
+    expect(c.lineas.length).toBe(2);
     expect(c.lineas[0].estado).toBe(EstadoLinea.Multiple);
     expect(c.lineas[1].estado).toBe(EstadoLinea.Rechazada);
   });
@@ -74,6 +75,7 @@ class LineaBuilder {
     const p1 = new Producto();
     p1.id = idProd;
     this.linea.producto = p1;
+    this.linea.productoId = idProd;
     return this;
   }
   linea = new LineaDetalle();

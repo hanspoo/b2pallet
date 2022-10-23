@@ -12,7 +12,7 @@ import {
 } from '@flash-ws/dao';
 import { OrdenService } from '../lib/OrdenService';
 import { PrevalidacionService } from '../lib/PrevalidacionService';
-import { FixtureBuilder } from '../lib/xls-utils/FixtureBuilder';
+import { FixtureBuilder } from './XLSFixtureBuilder';
 
 let cliente: Cliente;
 let sisa: UnidadNegocio;
@@ -26,13 +26,13 @@ describe('Pre validar b2b', () => {
   describe('productos inválidos', () => {
     it('debe enviar error si producto no existe', async () => {
       const response = await new PrevalidacionService(sisa).validarExcel(
-        'libs/worker/src/test/fixtures/orden-una-linea-prod-invalido.xls'
+        'fixtures/orden-una-linea-prod-invalido.xls'
       );
       expect(response.error).toBe(true);
     });
     it('productos validos debe haber cero', async () => {
       const response = await new PrevalidacionService(sisa).validarExcel(
-        'libs/worker/src/test/fixtures/orden-una-linea.xls'
+        'fixtures/orden-una-linea.xls'
       );
       expect(response.error).toBe(false);
     });

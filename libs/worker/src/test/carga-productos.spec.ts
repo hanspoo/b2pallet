@@ -37,35 +37,35 @@ Hay que alim
 describe('carga productos', () => {
   it('hay un producto, retorna una línea de status', async () => {
     const result = await new ProductoService().cargarPlanilla(
-      'libs/worker/src/test/fixtures/producto-1647753.xlsx'
+      'fixtures/producto-1647753.xlsx'
     );
 
     expect(result.length).toBe(1);
   });
   it('hay un producto valido, retorna una línea de status valido', async () => {
     const result = await new ProductoService().cargarPlanilla(
-      'libs/worker/src/test/fixtures/producto-1647753.xlsx'
+      'fixtures/producto-1647753.xlsx'
     );
 
     expect(result[0].codigo).toBe(StatusCode.OK);
   });
   it('hay un producto línea inválida sin código cenco, error', async () => {
     const result = await new ProductoService().cargarPlanilla(
-      'libs/worker/src/test/fixtures/prod-sin-codigo.xlsx'
+      'fixtures/prod-sin-codigo.xlsx'
     );
 
     expect(result[0].codigo).toBe(StatusCode.ERROR);
   });
   it('producto sin alto en cm', async () => {
     const result = await new ProductoService().cargarPlanilla(
-      'libs/worker/src/test/fixtures/producto-1647753-malo-sin-alto.xlsx'
+      'fixtures/producto-1647753-malo-sin-alto.xlsx'
     );
 
     expect(result[0].codigo).toBe(StatusCode.ERROR);
   });
   it('hay dos productos, retorna dos línea de status', async () => {
     const result = await new ProductoService().cargarPlanilla(
-      'libs/worker/src/test/fixtures/dos-productos.xlsx'
+      'fixtures/dos-productos.xlsx'
     );
 
     expect(result.length).toBe(2);
@@ -75,7 +75,7 @@ describe('carga productos', () => {
     expect(productos.length).toBe(0);
 
     const result = await new ProductoService().cargarPlanilla(
-      'libs/worker/src/test/fixtures/producto-1647753.xlsx'
+      'fixtures/producto-1647753.xlsx'
     );
 
     expect(result[0].codigo).toBe(StatusCode.OK);
@@ -87,7 +87,7 @@ describe('carga productos', () => {
     expect(productos.length).toBe(0);
 
     const result = await new ProductoService().cargarPlanilla(
-      'libs/worker/src/test/fixtures/producto-1647753.xlsx'
+      'fixtures/producto-1647753.xlsx'
     );
 
     productos = await new ProductoService().findAll();
@@ -103,10 +103,10 @@ describe('carga productos', () => {
   });
   it('si se procesa de nuevo, se actualiza no crea dos', async () => {
     await new ProductoService().cargarPlanilla(
-      'libs/worker/src/test/fixtures/producto-1647753.xlsx'
+      'fixtures/producto-1647753.xlsx'
     );
     await new ProductoService().cargarPlanilla(
-      'libs/worker/src/test/fixtures/producto-1647753.xlsx'
+      'fixtures/producto-1647753.xlsx'
     );
     const productos = await new ProductoService().findAll();
 
@@ -114,7 +114,7 @@ describe('carga productos', () => {
   });
   it('carga los 136 productos', async () => {
     await new ProductoService().cargarPlanilla(
-      'libs/worker/src/test/fixtures/productos.xlsx'
+      'fixtures/productos.xlsx'
     );
     const productos = await new ProductoService().findAll();
 

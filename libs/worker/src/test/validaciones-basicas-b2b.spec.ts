@@ -22,49 +22,49 @@ describe('worker', () => {
     });
     it.skip('sin excepción con archivo valido ', () => {
       new OrdenService(sisa).crearOrden(
-        'libs/worker/src/test/fixtures/b2b.xls'
+        'fixtures/b2b.xls'
       );
     });
     describe('excepciones archivo inválido ', () => {
       it('archivo vacio', async () => {
         const f = async () =>
           await new OrdenService(sisa).crearOrden(
-            'libs/worker/src/test/fixtures/vacio.xls'
+            'fixtures/vacio.xls'
           );
         await expect(f()).rejects.toThrow('Archivo vacio');
       });
       it('archivo inválido', async () => {
         const f = async () =>
           await new OrdenService(sisa).crearOrden(
-            'libs/worker/src/test/fixtures/invalido.xls'
+            'fixtures/invalido.xls'
           );
         await expect(f()).rejects.toThrow('Archivo no es excel');
       });
       it('archivo faltan columnas', async () => {
         const f = () =>
           new OrdenService(sisa).crearOrden(
-            'libs/worker/src/test/fixtures/excel-vacio.xls'
+            'fixtures/excel-vacio.xls'
           );
         await expect(f()).rejects.toThrow('Planilla inválida');
       });
       it('archivo sin datos en columnas', async () => {
         const f = () =>
           new OrdenService(sisa).crearOrden(
-            'libs/worker/src/test/fixtures/sin-codigo-cenco.xls'
+            'fixtures/sin-codigo-cenco.xls'
           );
         await expect(f()).rejects.toThrow('Planilla faltan datos críticos');
       });
       it('archivo sin local', async () => {
         const f = () =>
           new OrdenService(sisa).crearOrden(
-            'libs/worker/src/test/fixtures/sin-local.xls'
+            'fixtures/sin-local.xls'
           );
         await expect(f()).rejects.toThrow('Planilla faltan datos críticos');
       });
       it('archivo sin cantidad', async () => {
         const f = async () =>
           await new OrdenService(sisa).crearOrden(
-            'libs/worker/src/test/fixtures/sin-cantidad.xls'
+            'fixtures/sin-cantidad.xls'
           );
         await expect(f()).rejects.toThrow('Planilla faltan datos críticos');
       });

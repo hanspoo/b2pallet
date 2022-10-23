@@ -1,14 +1,21 @@
 import { OrdenCompra } from '@flash-ws/dao';
-import { Descriptions, Spin } from 'antd';
+import { Button, Col, Descriptions, Row, Spin } from 'antd';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { ContainerTablaConsolidada } from '../tabla-consolidada/container-tabla-consolidada';
 import TablaLineas from './TablaLineas';
 
 type PropsDetalleOrden = {
   id: number;
 };
 
+enum Vista {
+  NORMAL,
+  CONSOLIDADA,
+}
+
 export function DetalleOrden({ id }: PropsDetalleOrden) {
+  const [vista, setVista] = useState<Vista>(Vista.NORMAL);
   const [o, setOrden] = useState<OrdenCompra>();
   const [loading, setLoading] = useState(true);
   const [recargar, setRecargar] = useState<boolean>();
@@ -49,9 +56,13 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         <Descriptions.Item label="Pedido">{o.pedido?.id}</Descriptions.Item>
       </Descriptions>
 
-      {recargar ? (
-        <p>Espere...</p>
-      ) : (
+      <div style={{ marginBottom: '1em' }}>
+        <Button onClick={() => setVista(Vista.NORMAL)}>Normal</Button>
+        <Button onClick={() => setVista(Vista.CONSOLIDADA)}>Consolidada</Button>
+      </div>
+      {recargar && <p>Espere...</p>}
+
+      {!recargar && vista === Vista.NORMAL && (
         <TablaLineas
           lineas={o.lineas}
           orden={o}
@@ -61,6 +72,9 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
             // setTimeout(() => setRecargar(false), 2000);
           }}
         />
+      )}
+      {!recargar && vista === Vista.CONSOLIDADA && (
+        <ContainerTablaConsolidada id={o.id} />
       )}
     </>
   );
