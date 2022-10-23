@@ -2,12 +2,13 @@ import { EstadoLinea } from '@flash-ws/api-interfaces';
 import { LineaDetalle, Producto } from '@flash-ws/dao';
 import { actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Col, Input, Row, Select, Spin, Table } from 'antd';
+import { Button, Col, Input, Modal, Row, Select, Spin, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { formatNumber } from '../front-utils';
 import { ILineaConsolidada } from './datos';
 import { EstadoProducto } from './EstadoProducto';
+import { ModalLineaConsolidada } from './ModalLineaConsolidada';
 
 const { Option } = Select;
 type TablaConsolidadaProps = {
@@ -24,6 +25,7 @@ export function TablaConsolidada({
   productos,
 }: TablaConsolidadaProps) {
   const dispatch = useDispatch();
+  const [productoID, setProductoID] = useState<number>();
   const [search, setSearch] = useState<string>('');
   const [selected, setSelected] = useState<Array<number>>([]);
   const [data, setData] = useState<Array<Hidratada>>();
@@ -104,7 +106,13 @@ export function TablaConsolidada({
       },
 
       render: (p: Producto) => {
-        return p ? p.nombre : 'No encontrado';
+        return p ? (
+          <Button type="link" onClick={() => setProductoID(p.id)}>
+            {p.nombre}
+          </Button>
+        ) : (
+          'No encontrado'
+        );
       },
     },
     {
@@ -206,6 +214,14 @@ export function TablaConsolidada({
           setSearch(e.target.value);
         }}
       />
+
+      {productoID && (
+        <ModalLineaConsolidada
+          cerrar={() => setProductoID(undefined)}
+          productoID={productoID}
+          ordenID={ordenID}
+        />
+      )}
 
       <Table
         rowSelection={{

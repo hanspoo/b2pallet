@@ -15,13 +15,12 @@ import { CambiarEstadoBody, EstadoLinea } from '@flash-ws/api-interfaces';
 import axios from 'axios';
 
 export interface TablaLineasProps {
-  lineas: LineaDetalle[];
   orden: OrdenCompra;
   recargar(orden: OrdenCompra): void;
 }
 
 const { Option } = Select;
-export function TablaLineas({ lineas, orden, recargar }: TablaLineasProps) {
+export function TablaLineas({ orden, recargar }: TablaLineasProps) {
   const [search, setSearch] = useState<string>('');
   const [data, setData] = useState<Array<LineaDetalle>>();
   const [loading, setLoading] = useState(true);
@@ -30,6 +29,8 @@ export function TablaLineas({ lineas, orden, recargar }: TablaLineasProps) {
   const [selected, setSelected] = useState<Array<number>>([]);
 
   const queryClient = useQueryClient();
+
+  const lineas = orden.lineas;
 
   useEffect(() => {
     const productos = queryClient.getQueryData<Array<Producto>>([

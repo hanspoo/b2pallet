@@ -89,7 +89,7 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
 
       {!recargar && vista === Vista.NORMAL && (
         <TablaLineas
-          lineas={orden.lineas}
+          // lineas={orden.lineas}
           orden={orden}
           recargar={(orden: OrdenCompra) => {
             dispatch(actualizarOrdenes());
