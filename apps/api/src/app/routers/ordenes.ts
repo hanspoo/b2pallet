@@ -103,6 +103,7 @@ ordenes.post(
       e
     );
     const consolidada: Consolidado = await servicio.ejecutar();
+
     return res.send(consolidada.lineas);
   }
 );

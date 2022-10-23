@@ -1,7 +1,9 @@
 import { OrdenCompra } from '@flash-ws/dao';
-import { Button, Col, Descriptions, Row, Spin } from 'antd';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { actualizarOrdenes } from '@flash-ws/reductor';
+import { useQueryClient } from '@tanstack/react-query';
+import { Button, Descriptions, Spin } from 'antd';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { ContainerTablaConsolidada } from '../tabla-consolidada/container-tabla-consolidada';
 import TablaLineas from './TablaLineas';
 
@@ -15,29 +17,50 @@ enum Vista {
 }
 
 export function DetalleOrden({ id }: PropsDetalleOrden) {
-  const [vista, setVista] = useState<Vista>(Vista.NORMAL);
-  const [o, setOrden] = useState<OrdenCompra>();
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const ordenes: Array<OrdenCompra> = useSelector(
+    (state: any) => state.counter.ordenes as Array<OrdenCompra>
+  );
+
+  const [vista, setVista] = useState<Vista>(Vista.CONSOLIDADA);
+  // const [orden, setOrden] = useState<OrdenCompra>();
+  const [loading, setLoading] = useState(false);
   const [recargar, setRecargar] = useState<boolean>();
   const [error, setError] = useState('');
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    axios
-      .get<OrdenCompra>(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
-      .then((response) => {
-        setOrden(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(`Error: ${JSON.stringify(error)}`);
-        setLoading(false);
-      });
-  }, [id]);
+  const orden = ordenes.find((orden) => orden.id === id);
+
+  // const [search, setSearch] = useState<RegExp>();
+  // const [selected, setSelected] = useState<Array<number>>();
+  // const [data, setData] = useState<Array<OrdenCompra>>();
+  // const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   const list = queryClient.getQueryData<Array<OrdenCompra>>([
+  //     'ordenes',
+  //   ]) as any;
+  //   setOrden(list.find((iter: OrdenCompra) => iter.id === id));
+  //   setLoading(false);
+  // }, [id, queryClient]);
+
+  // useEffect(() => {
+  //   axios
+  //     .get<OrdenCompra>(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
+  //     .then((response) => {
+  //       setOrden(response.data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       setError(`Error: ${JSON.stringify(error)}`);
+  //       setLoading(false);
+  //     });
+  // }, [id]);
 
   if (loading) return <Spin />;
-  if (error) return <p>Error: {error}</p>;
+  // if (error) return <p>Error: {error}</p>;
 
-  if (!o) return <p>Internal error</p>;
+  if (!orden) return <p>Internal error</p>;
 
   return (
     <>
@@ -48,33 +71,37 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         style={{ marginBottom: '1em' }}
         labelStyle={{ width: '1em' }}
       >
-        <Descriptions.Item label="Id">{o.id}</Descriptions.Item>
-        <Descriptions.Item label="Número">{o.numero}</Descriptions.Item>
-        <Descriptions.Item label="Emision">{o.emision}</Descriptions.Item>
-        <Descriptions.Item label="Entrega">{o.entrega}</Descriptions.Item>
-        <Descriptions.Item label="Unidad">{o.unidad?.nombre}</Descriptions.Item>
-        <Descriptions.Item label="Pedido">{o.pedido?.id}</Descriptions.Item>
+        <Descriptions.Item label="Id">{orden.id}</Descriptions.Item>
+        <Descriptions.Item label="Número">{orden.numero}</Descriptions.Item>
+        <Descriptions.Item label="Emision">{orden.emision}</Descriptions.Item>
+        <Descriptions.Item label="Entrega">{orden.entrega}</Descriptions.Item>
+        <Descriptions.Item label="Unidad">
+          {orden.unidad?.nombre}
+        </Descriptions.Item>
+        <Descriptions.Item label="Pedido">{orden.pedido?.id}</Descriptions.Item>
       </Descriptions>
 
       <div style={{ marginBottom: '1em' }}>
-        <Button onClick={() => setVista(Vista.NORMAL)}>Normal</Button>
         <Button onClick={() => setVista(Vista.CONSOLIDADA)}>Consolidada</Button>
+        <Button onClick={() => setVista(Vista.NORMAL)}>Detallada</Button>
       </div>
       {recargar && <p>Espere...</p>}
 
       {!recargar && vista === Vista.NORMAL && (
         <TablaLineas
-          lineas={o.lineas}
-          orden={o}
+          lineas={orden.lineas}
+          orden={orden}
           recargar={(orden: OrdenCompra) => {
-            setOrden(orden);
+            dispatch(actualizarOrdenes());
+
+            // setOrden(orden);
             // setRecargar(true);
             // setTimeout(() => setRecargar(false), 2000);
           }}
         />
       )}
       {!recargar && vista === Vista.CONSOLIDADA && (
-        <ContainerTablaConsolidada id={o.id} />
+        <ContainerTablaConsolidada id={orden.id} />
       )}
     </>
   );

@@ -7,10 +7,9 @@ import {
 } from '@ant-design/icons';
 import {
   BodyCambioEstadoProdConsolidada,
-  CambiarEstadoBody,
   EstadoLinea,
 } from '@flash-ws/api-interfaces';
-import { OrdenCompra, Producto } from '@flash-ws/dao';
+import { Producto } from '@flash-ws/dao';
 import { Button, Spin } from 'antd';
 import axios from 'axios';
 import React, { useState } from 'react';

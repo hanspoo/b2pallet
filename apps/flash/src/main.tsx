@@ -1,7 +1,9 @@
+import { store } from '@flash-ws/reductor';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode } from 'react';
 
 import * as ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
 
 import App from './app/app';
 import { GlobalLoader } from './app/GlobalLoader';
@@ -12,10 +14,12 @@ const root = ReactDOM.createRoot(
 const queryClient = new QueryClient();
 root.render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <GlobalLoader>
-        <App />
-      </GlobalLoader>
-    </QueryClientProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <GlobalLoader>
+          <App />
+        </GlobalLoader>
+      </QueryClientProvider>
+    </Provider>
   </StrictMode>
 );

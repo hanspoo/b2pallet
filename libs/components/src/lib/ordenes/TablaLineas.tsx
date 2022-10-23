@@ -78,7 +78,7 @@ export function TablaLineas({ lineas, orden, recargar }: TablaLineasProps) {
           case EstadoLinea.Pendiente:
             return <PauseOutlined style={{ color: 'orange' }} />;
           case EstadoLinea.Rechazada:
-            return <StopOutlined style={{ color: 'pink' }} />;
+            return <StopOutlined style={{ color: 'red' }} />;
           default:
             return <p>Error</p>;
         }

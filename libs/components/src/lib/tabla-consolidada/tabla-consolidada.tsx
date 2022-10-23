@@ -1,8 +1,10 @@
 import { EstadoLinea } from '@flash-ws/api-interfaces';
-import { LineaDetalle, OrdenCompra, Producto } from '@flash-ws/dao';
+import { LineaDetalle, Producto } from '@flash-ws/dao';
+import { actualizarOrdenes } from '@flash-ws/reductor';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Col, Input, Row, Select, Spin, Table } from 'antd';
-import React from 'react';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { formatNumber } from '../front-utils';
 import { ILineaConsolidada } from './datos';
 import { EstadoProducto } from './EstadoProducto';
@@ -21,11 +23,12 @@ export function TablaConsolidada({
   lineas,
   productos,
 }: TablaConsolidadaProps) {
+  const dispatch = useDispatch();
   const [search, setSearch] = useState<string>('');
   const [selected, setSelected] = useState<Array<number>>([]);
   const [data, setData] = useState<Array<Hidratada>>();
+  const queryClient = useQueryClient();
 
-  const [loading, setLoading] = useState(true);
   const [estado, setEstado] = useState<EstadoLinea>();
   const [actualizando, setActualizando] = useState(false);
 
@@ -42,7 +45,6 @@ export function TablaConsolidada({
       ...linea,
       producto: mapaProductos[linea.productoId],
     }));
-    console.log(hidratados);
 
     setData(
       hidratados.sort((a, b) =>
@@ -52,6 +54,15 @@ export function TablaConsolidada({
       )
     );
   }, [lineas, productos]);
+
+  function actualizarOrden(ordenID: number) {
+    dispatch(actualizarOrdenes());
+    // console.log('recargando queries');
+    // queryClient
+    //   .refetchQueries(['ordenes'])
+    //   .then((response) => console.log('se recargaron las queries'))
+    //   .catch((error) => console.log('error', error));
+  }
 
   function actualizarLineas(lineas: Array<ILineaConsolidada>) {
     const INICIAL: Record<number, Producto> = {};
@@ -66,7 +77,6 @@ export function TablaConsolidada({
       ...linea,
       producto: mapaProductos[linea.productoId],
     }));
-    console.log(hidratados);
 
     setData(
       hidratados.sort((a, b) =>
@@ -75,6 +85,7 @@ export function TablaConsolidada({
           .localeCompare(b.producto.nombre.toLowerCase())
       )
     );
+    actualizarOrden(ordenID);
   }
 
   const columns = [
@@ -171,7 +182,7 @@ export function TablaConsolidada({
         >
           Hay {formatNumber(lineas.length)} items
         </Col>
-        <Col span={16} style={{ textAlign: 'right' }}>
+        <Col span={16} style={{ textAlign: 'right', display: 'none' }}>
           <Select style={{ width: 120 }} onChange={handleChange} allowClear>
             {Object.keys(EstadoLinea).map((o) => (
               <Option value={o}>{o}</Option>

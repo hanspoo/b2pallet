@@ -1,7 +1,7 @@
 import { Button, Typography } from 'antd';
 
 import { OrdenCompra, Pedido, UnidadNegocio } from '@flash-ws/dao';
-
+import { useDispatch, useSelector } from 'react-redux';
 import { Spin, Table } from 'antd';
 
 import styles from './ordenes.module.css';
@@ -63,19 +63,23 @@ type ListadoProps = {
 };
 
 function ListadoOrdenes(props: ListadoProps) {
+  const ordenes: Array<OrdenCompra> = useSelector(
+    (state: any) => state.counter.ordenes as Array<OrdenCompra>
+  );
   const [search, setSearch] = useState<RegExp>();
   const [selected, setSelected] = useState<Array<number>>();
-  const [data, setData] = useState<Array<OrdenCompra>>();
-  const [loading, setLoading] = useState(true);
+  // const [data, setData] = useState<Array<OrdenCompra>>();
+  const [loading, setLoading] = useState(false);
+
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const list = queryClient.getQueryData<Array<OrdenCompra>>([
-      'ordenes',
-    ]) as any;
-    setData(list);
-    setLoading(false);
-  }, [queryClient]);
+  // useEffect(() => {
+  //   const list = queryClient.getQueryData<Array<OrdenCompra>>([
+  //     'ordenes',
+  //   ]) as any;
+  //   setData(list);
+  //   setLoading(false);
+  // }, [queryClient]);
 
   // const [error, setError] = useState('');
 
@@ -95,7 +99,7 @@ function ListadoOrdenes(props: ListadoProps) {
   if (loading) return <Spin />;
   // if (error) return <p>{error}</p>;
 
-  if (!data) return <p>Internal error</p>;
+  if (!ordenes) return <p>Error, no se han cargado las ordenes en el cache</p>;
 
   const columns = [
     {
@@ -166,9 +170,9 @@ function ListadoOrdenes(props: ListadoProps) {
     setSearch(regex);
   }
 
-  const ordenes = search
-    ? data.filter((prod) => search.test(prod.unidad.nombre))
-    : data;
+  const filtradas = search
+    ? ordenes.filter((prod) => search.test(prod.unidad.nombre))
+    : ordenes;
   const rowSelection = {
     onChange: (selectedRowKeys: any, selectedRows: OrdenCompra[]) => {
       setSelected(selectedRowKeys);
@@ -187,7 +191,9 @@ function ListadoOrdenes(props: ListadoProps) {
   return (
     <div className={styles['container']}>
       <p>
-        {ordenes.length === 1 ? 'hay 1 orden' : `hay ${ordenes.length} ordenes`}
+        {filtradas.length === 1
+          ? 'hay 1 orden'
+          : `hay ${filtradas.length} ordenes`}
       </p>
       <Search
         style={{ marginBottom: '0.5em' }}
@@ -201,7 +207,7 @@ function ListadoOrdenes(props: ListadoProps) {
           ...rowSelection,
         }}
         rowKey={(record: OrdenCompra) => record.id}
-        dataSource={ordenes}
+        dataSource={filtradas}
         columns={columns}
         pagination={{ defaultPageSize: 1000 }}
       />

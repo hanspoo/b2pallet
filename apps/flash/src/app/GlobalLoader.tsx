@@ -1,6 +1,9 @@
+import { setOrdenes } from '@flash-ws/reductor';
 import { useQuery } from '@tanstack/react-query';
 
 import axios from 'axios';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 function requestProductos() {
   return axios
@@ -8,11 +11,11 @@ function requestProductos() {
     .then((response) => response.data);
 }
 
-function requestOrdenes() {
-  return axios
-    .get(`${process.env['NX_SERVER_URL']}/api/ordenes`)
-    .then((response) => response.data);
-}
+// export function requestOrdenes() {
+//   return axios
+//     .get(`${process.env['NX_SERVER_URL']}/api/ordenes`)
+//     .then((response) => response.data);
+// }
 
 function requestLocales() {
   return axios
@@ -25,11 +28,19 @@ type GlobalLoaderProps = {
 };
 
 export function GlobalLoader({ children }: GlobalLoaderProps) {
+  const dispatch = useDispatch();
   const p = useQuery(['productos'], requestProductos);
   const l = useQuery(['locales'], requestLocales);
-  const q = useQuery(['ordenes'], requestOrdenes);
 
-  if (p.isLoading || l.isLoading || q.isLoading) {
+  useEffect(() => {
+    axios
+      .get(`${process.env['NX_SERVER_URL']}/api/ordenes`)
+      .then((response) => dispatch(setOrdenes(response.data)));
+  }, []);
+
+  // const q = useQuery(['ordenes'], requestOrdenes);
+
+  if (p.isLoading || l.isLoading) {
     return <span>Loading...</span>;
   }
 
