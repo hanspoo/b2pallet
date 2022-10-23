@@ -8,6 +8,12 @@ function requestProductos() {
     .then((response) => response.data);
 }
 
+function requestOrdenes() {
+  return axios
+    .get(`${process.env['NX_SERVER_URL']}/api/ordenes`)
+    .then((response) => response.data);
+}
+
 function requestLocales() {
   return axios
     .get(`${process.env['NX_SERVER_URL']}/api/locales`)
@@ -21,8 +27,9 @@ type GlobalLoaderProps = {
 export function GlobalLoader({ children }: GlobalLoaderProps) {
   const p = useQuery(['productos'], requestProductos);
   const l = useQuery(['locales'], requestLocales);
+  const q = useQuery(['ordenes'], requestOrdenes);
 
-  if (p.isLoading || l.isLoading) {
+  if (p.isLoading || l.isLoading || q.isLoading) {
     return <span>Loading...</span>;
   }
 

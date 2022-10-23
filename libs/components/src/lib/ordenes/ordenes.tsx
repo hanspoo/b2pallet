@@ -11,6 +11,7 @@ import Search from 'antd/lib/input/Search';
 import { UploadOrden } from '../upload-orden/upload-orden';
 import { DetalleOrden } from './DetalleOrden';
 import { formatNumber } from '../front-utils';
+import { useQueryClient } from '@tanstack/react-query';
 
 const { Title } = Typography;
 
@@ -66,23 +67,33 @@ function ListadoOrdenes(props: ListadoProps) {
   const [selected, setSelected] = useState<Array<number>>();
   const [data, setData] = useState<Array<OrdenCompra>>();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    axios
-      .get<Array<OrdenCompra>>(`${process.env['NX_SERVER_URL']}/api/ordenes`)
-      .then((response) => {
-        setData(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(JSON.stringify(error));
-        setLoading(false);
-      });
-  }, []);
+    const list = queryClient.getQueryData<Array<OrdenCompra>>([
+      'ordenes',
+    ]) as any;
+    setData(list);
+    setLoading(false);
+  }, [queryClient]);
+
+  // const [error, setError] = useState('');
+
+  // useEffect(() => {
+  //   axios
+  //     .get<Array<OrdenCompra>>(`${process.env['NX_SERVER_URL']}/api/ordenes`)
+  //     .then((response) => {
+  //       setData(response.data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       setError(JSON.stringify(error));
+  //       setLoading(false);
+  //     });
+  // }, []);
 
   if (loading) return <Spin />;
-  if (error) return <p>{error}</p>;
+  // if (error) return <p>{error}</p>;
 
   if (!data) return <p>Internal error</p>;
 
@@ -140,7 +151,6 @@ function ListadoOrdenes(props: ListadoProps) {
       dataIndex: 'unidad',
       align: 'right' as const,
       render: (unidad: UnidadNegocio, orden: OrdenCompra) => {
-
         return formatNumber(orden.lineas.length);
       },
     },
