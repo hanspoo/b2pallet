@@ -3,6 +3,7 @@ import { LineaDetalle, Producto } from '@flash-ws/dao';
 import { actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Col, Input, Modal, Row, Select, Spin, Table } from 'antd';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { formatNumber } from '../front-utils';
@@ -15,6 +16,7 @@ type TablaConsolidadaProps = {
   lineas: Array<ILineaConsolidada>;
   productos: Array<Producto>;
   ordenID: number;
+  actualizarConsolidada: () => void;
 };
 
 type Hidratada = ILineaConsolidada & { producto: Producto };
@@ -23,8 +25,10 @@ export function TablaConsolidada({
   ordenID,
   lineas,
   productos,
+  actualizarConsolidada,
 }: TablaConsolidadaProps) {
   const dispatch = useDispatch();
+  const [editar, setEditar] = useState(false);
   const [productoID, setProductoID] = useState<number>();
   const [search, setSearch] = useState<string>('');
   const [selected, setSelected] = useState<Array<number>>([]);
@@ -140,20 +144,34 @@ export function TablaConsolidada({
     {
       title: 'Estado',
       dataIndex: 'estado',
-      width: '18em',
-      render: (estado: string, a: Hidratada) => (
-        <>
-          {Object.keys(EstadoLinea).map((est) => (
+      width: `${editar ? 18 : 4}em`,
+      render: (estado: string, a: Hidratada) => {
+        if (!editar)
+          return (
             <EstadoProducto
+              editar={false}
               actual={estado as EstadoLinea}
               actualizar={actualizarLineas}
-              estado={est as EstadoLinea}
+              estado={estado as EstadoLinea}
               producto={a.producto}
               ordenID={ordenID}
             />
-          ))}
-        </>
-      ),
+          );
+        return (
+          <>
+            {Object.keys(EstadoLinea).map((est) => (
+              <EstadoProducto
+                editar={true}
+                actual={estado as EstadoLinea}
+                actualizar={actualizarLineas}
+                estado={est as EstadoLinea}
+                producto={a.producto}
+                ordenID={ordenID}
+              />
+            ))}
+          </>
+        );
+      },
       sorter: (a: Hidratada, b: Hidratada) => {
         return a.estado.localeCompare(b.estado);
       },
@@ -190,18 +208,21 @@ export function TablaConsolidada({
         >
           Hay {formatNumber(lineas.length)} items
         </Col>
-        <Col span={16} style={{ textAlign: 'right', display: 'none' }}>
-          <Select style={{ width: 120 }} onChange={handleChange} allowClear>
-            {Object.keys(EstadoLinea).map((o) => (
-              <Option value={o}>{o}</Option>
-            ))}
-          </Select>
-          <Button
-            disabled={!(estado && selected.length > 0)}
-            onClick={onCambiarEstado}
-          >
-            {actualizando ? <Spin size="small" /> : 'Cambiar estado'}
-          </Button>
+        <Col span={16} style={{ textAlign: 'right' }}>
+          <span style={{ display: 'none' }}>
+            <Select style={{ width: 120 }} onChange={handleChange} allowClear>
+              {Object.keys(EstadoLinea).map((o) => (
+                <Option value={o}>{o}</Option>
+              ))}
+            </Select>
+            <Button
+              disabled={!(estado && selected.length > 0)}
+              onClick={onCambiarEstado}
+            >
+              {actualizando ? <Spin size="small" /> : 'Cambiar estado'}
+            </Button>
+          </span>
+          <Checkbox onChange={() => setEditar(!editar)}>Editar</Checkbox>
         </Col>
       </Row>
       <Input
@@ -217,6 +238,8 @@ export function TablaConsolidada({
 
       {productoID && (
         <ModalLineaConsolidada
+          editar={editar}
+          actualizarConsolidada={actualizarConsolidada}
           cerrar={() => setProductoID(undefined)}
           productoID={productoID}
           ordenID={ordenID}

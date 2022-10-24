@@ -1,3 +1,10 @@
+import {
+  QuestionOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  PauseOutlined,
+  WarningOutlined,
+} from '@ant-design/icons';
 import { Box, Producto } from '@flash-ws/dao';
 
 export function formatNumber(x: any) {
@@ -19,3 +26,19 @@ export function volumen(box: Box) {
   const { largo, ancho, alto } = box;
   return largo * ancho * alto;
 }
+
+export const estados: Record<string, any> = {
+  Nada: QuestionOutlined,
+  Aprobada: CheckOutlined,
+  Rechazada: CloseOutlined,
+  Pendiente: PauseOutlined,
+  Multiple: WarningOutlined,
+};
+
+export const colores: Record<string, string> = {
+  Nada: 'yellow',
+  Aprobada: 'green',
+  Rechazada: 'red',
+  Pendiente: 'cyan',
+  Multiple: 'magenta',
+};

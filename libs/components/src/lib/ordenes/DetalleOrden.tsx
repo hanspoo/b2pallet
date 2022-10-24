@@ -82,8 +82,18 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
       </Descriptions>
 
       <div style={{ marginBottom: '1em' }}>
-        <Button onClick={() => setVista(Vista.CONSOLIDADA)}>Consolidada</Button>
-        <Button onClick={() => setVista(Vista.NORMAL)}>Detallada</Button>
+        <Button
+          type={vista === Vista.CONSOLIDADA ? 'primary' : 'default'}
+          onClick={() => setVista(Vista.CONSOLIDADA)}
+        >
+          Consolidada
+        </Button>
+        <Button
+          type={vista === Vista.NORMAL ? 'primary' : 'default'}
+          onClick={() => setVista(Vista.NORMAL)}
+        >
+          Detallada
+        </Button>
       </div>
       {recargar && <p>Espere...</p>}
 

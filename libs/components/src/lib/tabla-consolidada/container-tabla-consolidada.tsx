@@ -40,7 +40,25 @@ export function ContainerTablaConsolidada({ id }: PropsDetalleOrden) {
 
   if (!lineas) return <p>Internal error</p>;
 
+  const actualizarConsolidada = () => {
+    axios
+      .get<Array<ILineaConsolidada>>(
+        `${process.env['NX_SERVER_URL']}/api/ordenes/${id}/consolidada`
+      )
+      .then((response) => {
+        setLineas(response.data);
+      })
+      .catch((error) => {
+        setError(`Error: ${JSON.stringify(error)}`);
+      });
+  };
+
   return (
-    <TablaConsolidada productos={productos} lineas={lineas} ordenID={id} />
+    <TablaConsolidada
+      productos={productos}
+      lineas={lineas}
+      ordenID={id}
+      actualizarConsolidada={actualizarConsolidada}
+    />
   );
 }
