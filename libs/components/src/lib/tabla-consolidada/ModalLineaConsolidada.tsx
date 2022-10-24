@@ -2,9 +2,11 @@ import { EstadoLinea } from '@flash-ws/api-interfaces';
 import { LineaDetalle, Local, OrdenCompra, Producto } from '@flash-ws/dao';
 import { actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
-import { Modal, Table, Typography } from 'antd';
+import { Checkbox, Col, Input, Modal, Row, Table, Typography } from 'antd';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { formatNumber } from '../front-utils';
+import { lineas } from './datos';
 
 import { EstadoUnitario } from './EstadoUnitario';
 
@@ -12,15 +14,14 @@ const { Title } = Typography;
 
 export type ModalLineaConsolidadaProps = {
   productoID: number;
-  ordenID: number;
+  orden: OrdenCompra;
   cerrar: () => void;
   actualizarConsolidada: () => void;
   editar: boolean;
 };
 export function ModalLineaConsolidada({
-  editar,
   productoID,
-  ordenID,
+  orden,
   cerrar,
   actualizarConsolidada,
 }: ModalLineaConsolidadaProps) {
@@ -28,13 +29,12 @@ export function ModalLineaConsolidada({
   const [producto, setProducto] = useState<Producto>();
   const [data, setData] = useState<Array<LineaDetalle>>();
   const [loading, setLoading] = useState(true);
-  const ordenes: Array<OrdenCompra> = useSelector(
-    (state: any) => state.counter.ordenes as Array<OrdenCompra>
-  );
+  const [search, setSearch] = useState<string>('');
+  const [editar, setEditar] = useState(false);
+
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const orden = ordenes.find((orden) => orden.id === ordenID);
     const productos = queryClient.getQueryData<Array<Producto>>([
       'productos',
     ]) as Array<Producto>;
@@ -66,9 +66,10 @@ export function ModalLineaConsolidada({
     setData(hidratadas);
     setLoading(false);
     setProducto(findProd(productoID));
-  }, [productoID, ordenID, queryClient]);
+  }, [orden?.lineas, productoID, queryClient]);
 
   if (loading) return <p>Cargando...</p>;
+
   function actualizarLineas(estado: EstadoLinea) {
     dispatch(actualizarOrdenes());
     actualizarConsolidada();
@@ -78,10 +79,22 @@ export function ModalLineaConsolidada({
     {
       title: 'Local',
       dataIndex: 'local',
+      filteredValue: [search],
+      onFilter: (value: string, record: LineaDetalle) => {
+        if (!value) return true;
+
+        const regex = new RegExp(value, 'i');
+        return regex.test(record.local?.nombre);
+      },
+      sorter: (a: LineaDetalle, b: LineaDetalle) => {
+        return a.local.nombre.localeCompare(b.local.nombre);
+      },
+
       render: (p: Local) => {
         return p ? p.nombre : 'No encontrado';
       },
     },
+
     {
       title: 'Cantidad',
       dataIndex: 'cantidad',
@@ -103,7 +116,7 @@ export function ModalLineaConsolidada({
               actualizar={actualizarLineas}
               estado={estado as EstadoLinea}
               lineaID={linea.id}
-              ordenID={ordenID}
+              ordenID={orden.id}
             />
           );
         return (
@@ -115,7 +128,7 @@ export function ModalLineaConsolidada({
                 actualizar={actualizarLineas}
                 estado={est as EstadoLinea}
                 lineaID={linea.id}
-                ordenID={ordenID}
+                ordenID={orden.id}
               />
             ))}
           </>
@@ -135,14 +148,41 @@ export function ModalLineaConsolidada({
       onOk={cerrar}
       width="75%"
     >
-      <Table
-        id="lineas"
-        rowKey={(linea: LineaDetalle) => linea.id}
-        className="lineas"
-        dataSource={data}
-        columns={columns as any}
-        pagination={{ defaultPageSize: 100 }}
-      />
+      <>
+        <Row style={{ marginBottom: '0.5em' }}>
+          <Col
+            span={8}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            Hay {formatNumber(lineas?.length)} items
+          </Col>
+          <Col span={16} style={{ textAlign: 'right' }}>
+            <Checkbox onChange={() => setEditar(!editar)}>Editar</Checkbox>
+          </Col>
+        </Row>
+        <Input
+          style={{ width: '100%', marginBottom: '1.25em' }}
+          placeholder="buscar..."
+          allowClear
+          onChange={(e: any) => {
+            console.log(typeof e.target.value, e.target.value);
+
+            setSearch(e.target.value);
+          }}
+        />
+
+        <Table
+          id="lineas"
+          rowKey={(linea: LineaDetalle) => linea.id}
+          className="lineas"
+          dataSource={data}
+          columns={columns as any}
+          pagination={{ defaultPageSize: 100 }}
+        />
+      </>
     </Modal>
   );
 }

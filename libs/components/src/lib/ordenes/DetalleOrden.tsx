@@ -1,11 +1,11 @@
 import { OrdenCompra, SuperOrden } from '@flash-ws/dao';
 import { actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Col, Descriptions, Row, Spin } from 'antd';
+import { Button, Descriptions, Spin } from 'antd';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SuperConsolidada } from '../new-consolidada/SuperConsolidada';
-import { ContainerTablaConsolidada } from '../tabla-consolidada/container-tabla-consolidada';
+
 import TablaLineas from './TablaLineas';
 
 type PropsDetalleOrden = {
@@ -112,14 +112,7 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         />
       )}
       {!recargar && vista === Vista.CONSOLIDADA && (
-        <Row>
-          <Col>
-            <ContainerTablaConsolidada id={orden.id} />
-          </Col>
-          <Col>
-            <SuperConsolidada orden={orden as SuperOrden} />
-          </Col>
-        </Row>
+        <SuperConsolidada orden={orden as SuperOrden} />
       )}
     </>
   );

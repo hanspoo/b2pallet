@@ -60,8 +60,13 @@ export function EstadoProducto({
   return (
     <Button
       shape="default"
+      title={estado}
       type={estado === actual ? 'primary' : 'default'}
-      onClick={() => onCambiarEstado()}
+      onClick={() =>
+        estado === EstadoLinea.Multiple
+          ? console.log('no se puede clickear')
+          : onCambiarEstado()
+      }
       style={{ marginRight: '0.5em' }}
       icon={React.createElement(estados[estado])}
     />

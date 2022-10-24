@@ -11,6 +11,7 @@ import {
   ClienteService,
   Consolidado,
   LineaConsolidada,
+  ordenarPorNombreProducto,
   OrdenService,
   PrevalidacionService,
   ProductoService,
@@ -25,15 +26,18 @@ import {
 } from '@flash-ws/api-interfaces';
 
 const ordenes = express.Router();
+
 ordenes.get('/', async function (req: Request, res: Response) {
   const ordenes = await OrdenService.findAll();
-  const conConsolidada = ordenes.map((o) => {
+  const conConsolidada = ordenes.map(async (o) => {
     const orden = <SuperOrden>o;
     const c = new Consolidado(orden.lineas);
-    orden.lineasConsolidadas = c.lineas;
+    orden.lineasConsolidadas = (await ordenarPorNombreProducto(
+      c.lineas
+    )) as Array<LineaConsolidada>;
     return orden;
   });
-  res.json(conConsolidada);
+  res.json(await Promise.all(conConsolidada));
 });
 
 ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
@@ -59,7 +63,9 @@ ordenes.get('/:id', async function (req: Request, res: Response) {
   });
   const orden = results[0] as SuperOrden;
   const c = new Consolidado(orden.lineas);
-  orden.lineasConsolidadas = c.lineas;
+  orden.lineasConsolidadas = (await ordenarPorNombreProducto(
+    c.lineas
+  )) as Array<LineaConsolidada>;
   return res.send(orden);
 });
 ordenes.post('/', async function (req: Request, res: Response) {
