@@ -1,10 +1,16 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
-import { dataSource, OrdenCompra, UnidadNegocio } from '@flash-ws/dao';
+import {
+  dataSource,
+  OrdenCompra,
+  SuperOrden,
+  UnidadNegocio,
+} from '@flash-ws/dao';
 import {
   ClienteService,
   Consolidado,
+  LineaConsolidada,
   OrdenService,
   PrevalidacionService,
   ProductoService,
@@ -21,7 +27,13 @@ import {
 const ordenes = express.Router();
 ordenes.get('/', async function (req: Request, res: Response) {
   const ordenes = await OrdenService.findAll();
-  res.json(ordenes);
+  const conConsolidada = ordenes.map((o) => {
+    const orden = <SuperOrden>o;
+    const c = new Consolidado(orden.lineas);
+    orden.lineasConsolidadas = c.lineas;
+    return orden;
+  });
+  res.json(conConsolidada);
 });
 
 ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
@@ -45,7 +57,10 @@ ordenes.get('/:id', async function (req: Request, res: Response) {
     where: { id },
     relations: { lineas: true },
   });
-  return res.send(results[0]);
+  const orden = results[0] as SuperOrden;
+  const c = new Consolidado(orden.lineas);
+  orden.lineasConsolidadas = c.lineas;
+  return res.send(orden);
 });
 ordenes.post('/', async function (req: Request, res: Response) {
   const user = await dataSource.getRepository(OrdenCompra).create(req.body);
