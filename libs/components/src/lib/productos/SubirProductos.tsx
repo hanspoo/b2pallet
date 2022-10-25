@@ -6,12 +6,10 @@ const SubirProductos = () => {
   const props = {
     name: 'file',
     action: `${process.env['NX_SERVER_URL']}/api/productos/masivo`,
-    headers: {
-      authorization: 'authorization-text',
-    },
 
     onChange(info: any) {
       if (info.file.status !== 'uploading') {
+        console.log("info.file.status !== 'uploading'");
       }
 
       if (info.file.status === 'done') {
