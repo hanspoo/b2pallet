@@ -13,6 +13,7 @@ import { unidades } from './routers/unidades';
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static('../flash'));
 
 const greeting: Message = { message: 'Welcome to the api!' };
 
@@ -21,9 +22,9 @@ app.get('/api', (req, res) => {
 });
 
 // register routes
-app.get('/', async function (req: Request, res: Response) {
-  res.json({ name: 'Hello' });
-});
+// app.get('/', async function (req: Request, res: Response) {
+//   res.json({ name: 'Hello' });
+// });
 
 app.use('/api/files', files);
 app.use('/api/users', users);
