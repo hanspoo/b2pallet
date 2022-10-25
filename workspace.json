@@ -11,6 +11,7 @@
     "flash": "apps/flash",
     "flash-e2e": "apps/flash-e2e",
     "generador": "apps/generador",
+    "prueba1": "libs/prueba1",
     "reductor": "libs/reductor",
     "test-utils": "libs/test-utils",
     "worker": "libs/worker"
