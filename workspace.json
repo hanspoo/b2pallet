@@ -11,6 +11,8 @@
     "flash": "apps/flash",
     "flash-e2e": "apps/flash-e2e",
     "generador": "apps/generador",
+    "my-plugin": "libs/my-plugin",
+    "my-plugin-e2e": "apps/my-plugin-e2e",
     "prueba1": "libs/prueba1",
     "reductor": "libs/reductor",
     "test-utils": "libs/test-utils",
