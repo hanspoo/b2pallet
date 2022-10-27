@@ -1,64 +1,17 @@
-import {
-  addProjectConfiguration,
-  formatFiles,
-  generateFiles,
-  getWorkspaceLayout,
-  names,
-  offsetFromRoot,
-  Tree,
-} from '@nrwl/devkit';
-import * as path from 'path';
-import { MyGeneratorGeneratorSchema } from './schema';
+import { Tree, formatFiles, installPackagesTask } from '@nrwl/devkit';
+import { libraryGenerator } from '@nrwl/workspace/generators';
 
-interface NormalizedSchema extends MyGeneratorGeneratorSchema {
-  projectName: string;
-  projectRoot: string;
-  projectDirectory: string;
-  parsedTags: string[];
-}
-
-function normalizeOptions(
-  tree: Tree,
-  options: MyGeneratorGeneratorSchema
-): NormalizedSchema {
-  const name = names(options.name).fileName;
-  const projectDirectory = options.directory
-    ? `${names(options.directory).fileName}/${name}`
-    : name;
-  const projectName = projectDirectory.replace(new RegExp('/', 'g'), '-');
-  const projectRoot = `${getWorkspaceLayout(tree).libsDir}/${projectDirectory}`;
-  const parsedTags = options.tags
-    ? options.tags.split(',').map((s) => s.trim())
-    : [];
-
-  return {
-    ...options,
-    projectName,
-    projectRoot,
-    projectDirectory,
-    parsedTags,
-  };
-}
-
-function addFiles(tree: Tree, options: NormalizedSchema) {
-  const templateOptions = {
-    ...options,
-    ...names(options.name),
-    offsetFromRoot: offsetFromRoot(options.projectRoot),
-    template: '',
-  };
-  generateFiles(
-    tree,
-    path.join(__dirname, 'files'),
-    options.projectRoot,
-    templateOptions
-  );
+interface MyGeneratorGeneratorSchema {
+  name: string;
 }
 
 export default async function (
   tree: Tree,
   options: MyGeneratorGeneratorSchema
 ) {
+  await libraryGenerator(tree, { name: 'interfaces' });
+  await formatFiles(tree);
+
   const path = options.name;
   console.log(path);
   tree.children(path).forEach((fileName) => {
@@ -67,13 +20,22 @@ export default async function (
     const match = /class (\w+)/.exec(s);
     if (!match) return;
     const className = match[1];
+    // Juntamos todos los nombres de clases en los fields y les anteponemos I
     const fields = s.split('\n').filter((line) => /\w+: \w+;/.test(line));
+    const conTipos = fields.map((line) => {
+      const [name, type] = line.split(': ');
+      const typeFinal = /number|string|boolean/.test(type) ? type : `I${type}`;
+      return `${name}: ${typeFinal}`;
+    });
     const content = `
-export interface ${className} {
-  ${fields.join('\n')}
+export interface I${className} {
+  ${conTipos.join('\n')}
 }    
     `;
-    tree.write(`${path}/i${fileName}`, content);
+    tree.write(`libs/interfaces/src/lib/i${fileName}`, content);
+    return () => {
+      installPackagesTask(tree);
+    };
   });
 
   // const normalizedOptions = normalizeOptions(tree, options);

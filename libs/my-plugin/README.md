@@ -1,11 +1,9 @@
-# my-plugin
+# interfacer
 
-This library was generated with [Nx](https://nx.dev).
+Tomas las clases y las convierte a interfaces
 
-## Building
+Recibe la librearía o ruta donde estan las clases
 
-Run `nx build my-plugin` to build the library.
+`nx generate @flash-ws/my-plugin:my-generator libs/dao/src/lib/entity`
 
-## Running unit tests
-
-Run `nx test my-plugin` to execute the unit tests via [Jest](https://jestjs.io).
+Crea los archivos en la misma carpeta con el prefijo i.
