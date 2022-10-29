@@ -1,4 +1,4 @@
-import { OrdenCompra } from '@flash-ws/dao';
+import { IOrdenCompra } from '@flash-ws/api-interfaces';
 import axios from 'axios';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../../app/store';
@@ -6,7 +6,7 @@ import { RootState, AppThunk } from '../../app/store';
 export interface CounterState {
   value: number;
   status: 'idle' | 'loading' | 'failed';
-  ordenes: Array<OrdenCompra>;
+  ordenes: Array<IOrdenCompra>;
 }
 
 const initialState: CounterState = {
@@ -50,8 +50,12 @@ export const counterSlice = createSlice({
     incrementByAmount: (state, action: PayloadAction<number>) => {
       state.value += action.payload;
     },
-    setOrdenes: (state, action: PayloadAction<Array<OrdenCompra>>) => {
+    setOrdenes: (state, action: PayloadAction<Array<IOrdenCompra>>) => {
       state.ordenes = action.payload;
+    },
+    actualizarOrden: (state, action: PayloadAction<IOrdenCompra>) => {
+      const orden = action.payload;
+      state.ordenes = state.ordenes.map((o) => (o.id === orden.id ? orden : o));
     },
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -64,8 +68,13 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { setOrdenes, increment, decrement, incrementByAmount } =
-  counterSlice.actions;
+export const {
+  setOrdenes,
+  increment,
+  decrement,
+  incrementByAmount,
+  actualizarOrden,
+} = counterSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of

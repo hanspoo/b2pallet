@@ -28,7 +28,7 @@ export class OrdenService {
   static loadConLineas(id: number): Promise<OrdenCompra> {
     return dataSource
       .getRepository(OrdenCompra)
-      .findOne({ where: { id }, relations: { lineas: true } });
+      .findOne({ where: { id }, relations: { lineas: true, unidad: true } });
   }
 
   static borrarIds(body: any) {

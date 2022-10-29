@@ -1,0 +1,28 @@
+'debe devolver sólo las líneas de detalle modificadas';
+import { inicializarCencosud } from '@flash-ws/dao';
+import { crearOrdenHelper } from '@flash-ws/test-utils';
+import request = require('supertest');
+import { app } from '../app';
+
+beforeAll(async () => {
+  await inicializarCencosud();
+});
+// ('una orden con dos líneas, sólo debe devolver la modificada');
+
+describe('POST /api/ordenes/cambiar-estado/1', function () {
+  it('si la orden no existe debe dar 404', async function () {
+    const response = await request(app)
+      .post('/api/ordenes/cambiar-estado/1')
+      .send({ ids: [1], estado: 'Rechazada' });
+    expect(response.status).toEqual(404);
+  });
+  it('si insertamos la orden debe dar 200', async function () {
+    const orden = await crearOrdenHelper(2);
+    const response = await request(app)
+      .post('/api/ordenes/cambiar-estado/1')
+      .send({ ids: [1], estado: 'Rechazada' });
+    console.log(response.text);
+
+    expect(response.status).toEqual(200);
+  });
+});

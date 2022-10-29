@@ -17,7 +17,7 @@ type PropsEstadoIProducto = {
   editar: boolean;
   actualizar: (lineas: any) => void;
 };
-export function EstadoIProducto({
+export function EstadoProducto({
   editar = true,
   estado,
   producto,
@@ -29,6 +29,7 @@ export function EstadoIProducto({
   const [error, setError] = useState('');
 
   const onCambiarEstado = () => {
+    console.log('onCambiarEstado EstadoProducto');
     setActualizando(true);
     const postBody: BodyCambioEstadoProdConsolidada = {
       productoID: producto.id,
@@ -41,6 +42,8 @@ export function EstadoIProducto({
       )
       .then((response) => {
         setActualizando(false);
+        console.log('response.data', response.data);
+
         actualizar(response.data);
       })
       .catch((error) => {

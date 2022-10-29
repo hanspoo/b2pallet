@@ -1,6 +1,11 @@
-import { EstadoLinea } from '@flash-ws/api-interfaces';
-import { ILineaDetalle, ILocal, IOrdenCompra, IProducto } from '@flash-ws/api-interfaces';
-import { actualizarOrdenes } from '@flash-ws/reductor';
+import { EstadoLinea, ISuperOrden } from '@flash-ws/api-interfaces';
+import {
+  ILineaDetalle,
+  ILocal,
+  IOrdenCompra,
+  IProducto,
+} from '@flash-ws/api-interfaces';
+import { actualizarOrden, actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
 import { Checkbox, Col, Input, Modal, Row, Table, Typography } from 'antd';
 import { useEffect, useState } from 'react';
@@ -63,16 +68,18 @@ export function ModalLineaConsolidada({
         };
       });
 
-    setData(hidratadas);
+    setData(
+      hidratadas.sort((a, b) => a.local.nombre.localeCompare(b.local.nombre))
+    );
     setLoading(false);
     setIProducto(findProd(productoID));
   }, [orden?.lineas, productoID, queryClient]);
 
   if (loading) return <p>Cargando...</p>;
 
-  function actualizarLineas(estado: EstadoLinea) {
-    dispatch(actualizarOrdenes());
-    actualizarConsolidada();
+  function actualizarLineas(orden: ISuperOrden) {
+    dispatch(actualizarOrden(orden));
+    // actualizarConsolidada();
   }
 
   const columns = [

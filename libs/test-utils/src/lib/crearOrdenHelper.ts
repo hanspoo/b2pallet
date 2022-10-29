@@ -9,7 +9,7 @@ import {
 } from '@flash-ws/dao';
 import * as crypto from 'node:crypto';
 
-export async function crearOrdenHelper(): Promise<OrdenCompra> {
+export async function crearOrdenHelper(numLineas = 1): Promise<OrdenCompra> {
   const sisa = await dataSource
     .getRepository(UnidadNegocio)
     .findOne({ where: { id: 1 } });
@@ -46,11 +46,14 @@ export async function crearOrdenHelper(): Promise<OrdenCompra> {
 
   local = await dataSource.getRepository(Local).save(local);
 
-  const linea = new LineaDetalle();
-  linea.cantidad = 1;
-  linea.producto = producto;
-  linea.local = local;
-  orden.lineas = [linea];
+  orden.lineas = [];
+  for (let index = 0; index < numLineas; index++) {
+    const linea = new LineaDetalle();
+    linea.cantidad = 1;
+    linea.producto = producto;
+    linea.local = local;
+    orden.lineas.push(linea);
+  }
 
   return await dataSource.getRepository(OrdenCompra).save(orden);
 }

@@ -1,14 +1,12 @@
 import {
-  BodyCambioEstadoProdConsolidada,
   CambiarEstadoBody,
   EstadoLinea,
+  ISuperOrden,
 } from '@flash-ws/api-interfaces';
-import { IOrdenCompra, IProducto } from '@flash-ws/api-interfaces';
 import { Button, Spin } from 'antd';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { colores, estados } from '../front-utils';
-import { ILineaConsolidada } from './datos';
 
 type PropsEstadoIProducto = {
   actual: EstadoLinea;
@@ -16,7 +14,7 @@ type PropsEstadoIProducto = {
   ordenID: number;
   lineaID: number;
   editar: boolean;
-  actualizar: (estado: EstadoLinea) => void;
+  actualizar: (orden: ISuperOrden) => void;
 };
 export function EstadoUnitario({
   editar = true,
@@ -30,6 +28,7 @@ export function EstadoUnitario({
   const [error, setError] = useState('');
 
   const onCambiarEstado = () => {
+    console.log('onCambiarEstado EstadoUnitario');
     if (!estado)
       throw Error(
         'debe estar definido el estado a cambiar para llamar este método'
@@ -40,14 +39,14 @@ export function EstadoUnitario({
       estado: estado,
     };
     axios
-      .post<IOrdenCompra>(
+      .post<ISuperOrden>(
         `${process.env['NX_SERVER_URL']}/api/ordenes/cambiar-estado/${ordenID}`,
         postBody
       )
       .then((response) => {
         console.log(response.data);
         setActualizando(false);
-        actualizar(estado);
+        actualizar(response.data);
       })
       .catch((error) => {
         console.log(error);

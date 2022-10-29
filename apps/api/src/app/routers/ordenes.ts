@@ -83,12 +83,25 @@ ordenes.post(
     req: Request<{ id: number }, null, CambiarEstadoBody>,
     res: Response
   ) {
-    const servicio = new ServicioCambioEstado();
-    await servicio.loadOrden(req.params.id);
-    const ids = req.body.ids;
-    const nueva = await servicio.cambiar(ids, req.body.estado);
+    try {
+      const servicio = new ServicioCambioEstado();
+      await servicio.loadOrden(req.params.id);
+      const ids = req.body.ids;
+      const nueva = (await servicio.cambiar(
+        ids,
+        req.body.estado
+      )) as SuperOrden;
 
-    return res.send(nueva);
+      const consolidada: Consolidado = new Consolidado(nueva.lineas);
+
+      nueva.lineasConsolidadas = (await ordenarPorNombreProducto(
+        consolidada.lineas
+      )) as Array<LineaConsolidada>;
+
+      return res.send(nueva);
+    } catch (error) {
+      res.status(404).send();
+    }
   }
 );
 
@@ -122,7 +135,15 @@ ordenes.post(
     );
     const consolidada: Consolidado = await servicio.ejecutar();
 
-    return res.send(consolidada.lineas);
+    const ordenNueva = (await OrdenService.loadConLineas(
+      req.params.id
+    )) as SuperOrden;
+
+    ordenNueva.lineasConsolidadas = (await ordenarPorNombreProducto(
+      consolidada.lineas
+    )) as Array<LineaConsolidada>;
+
+    return res.send(ordenNueva);
   }
 );
 

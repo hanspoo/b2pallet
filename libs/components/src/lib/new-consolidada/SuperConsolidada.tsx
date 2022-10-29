@@ -1,17 +1,17 @@
-import { EstadoLinea } from '@flash-ws/api-interfaces';
+import { EstadoLinea, IOrdenCompra } from '@flash-ws/api-interfaces';
 import {
   ILineaDetalle,
   IProducto,
   ISuperOrden,
 } from '@flash-ws/api-interfaces';
-import { actualizarOrdenes } from '@flash-ws/reductor';
+import { actualizarOrden, actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Checkbox, Col, Input, Row, Select, Spin, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { formatNumber } from '../front-utils';
 import { ILineaConsolidada } from '../tabla-consolidada/datos';
-import { EstadoIProducto } from '../tabla-consolidada/EstadoProducto';
+import { EstadoProducto } from '../tabla-consolidada/EstadoProducto';
 import { ModalLineaConsolidada } from '../tabla-consolidada/ModalLineaConsolidada';
 
 const { Option } = Select;
@@ -61,8 +61,10 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
     setLineas(hidratados);
   }, [orden.lineasConsolidadas, queryClient]);
 
-  function actualizarLineas(lineas: Array<ILineaConsolidada>) {
-    dispatch(actualizarOrdenes());
+  function actualizarLineas(orden: IOrdenCompra) {
+    console.log('orden', orden);
+
+    dispatch(actualizarOrden(orden));
   }
   const columns = [
     {
@@ -127,7 +129,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
       render: (estado: string, a: LineaConsolidadaConIProducto) => {
         if (!editar)
           return (
-            <EstadoIProducto
+            <EstadoProducto
               editar={false}
               actual={estado as EstadoLinea}
               actualizar={actualizarLineas}
@@ -139,7 +141,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
         return (
           <>
             {Object.keys(EstadoLinea).map((est) => (
-              <EstadoIProducto
+              <EstadoProducto
                 key={est}
                 editar={true}
                 actual={estado as EstadoLinea}

@@ -2,7 +2,12 @@ import { Button, Col, Input, Row, Select, Spin, Table } from 'antd';
 
 import { useEffect, useState } from 'react';
 
-import { ILineaDetalle, ILocal, IOrdenCompra, IProducto } from '@flash-ws/api-interfaces';
+import {
+  ILineaDetalle,
+  ILocal,
+  IOrdenCompra,
+  IProducto,
+} from '@flash-ws/api-interfaces';
 import { formatNumber } from '../front-utils';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -150,6 +155,8 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
 
   const handleChange = (e: EstadoLinea) => setEstado(e);
   const onCambiarEstado = () => {
+    console.log('onCambiarEstado tabla lineas');
+
     if (!estado)
       throw Error(
         'debe estar definido el estado a cambiar para llamar este método'
