@@ -1,11 +1,11 @@
 export interface ILineaConsolidada {
   cantidad: number;
-  lineas: ILineaDetalle[];
+  lineas: IILineaDetalle[];
   productoId: number;
   estado: string;
 }
 
-export interface ILineaDetalle {
+export interface IILineaDetalle {
   estado: string;
   id: number;
   cantidad: number;

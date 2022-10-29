@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { dataSource } from '@flash-ws/dao';
 import { app } from './app';
 
@@ -11,7 +13,7 @@ async function f() {
       console.error('Error during Data Source initialization:', err);
     });
 
-  const port = process.env.port || 3333;
+  const port = process.env['NX_PORT'] || 3333;
   const server = app.listen(port, () => {
     console.log('Listening at http://localhost:' + port + '/api');
   });

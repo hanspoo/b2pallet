@@ -1,6 +1,6 @@
 import { Button, Typography } from 'antd';
 
-import { OrdenCompra, Pedido, UnidadNegocio } from '@flash-ws/dao';
+import { IOrdenCompra, IPedido, IUnidadNegocio } from '@flash-ws/api-interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { Spin, Table } from 'antd';
 
@@ -19,7 +19,7 @@ const { Title } = Typography;
 //   {
 //     title: 'Id',
 //     dataIndex: 'id',
-//     sorter: (a: OrdenCompra, b: OrdenCompra) => {
+//     sorter: (a: IOrdenCompra, b: IOrdenCompra) => {
 //       return a.id - b.id;
 //     },
 //   },
@@ -63,18 +63,18 @@ type ListadoProps = {
 };
 
 function ListadoOrdenes(props: ListadoProps) {
-  const ordenes: Array<OrdenCompra> = useSelector(
-    (state: any) => state.counter.ordenes as Array<OrdenCompra>
+  const ordenes: Array<IOrdenCompra> = useSelector(
+    (state: any) => state.counter.ordenes as Array<IOrdenCompra>
   );
   const [search, setSearch] = useState<RegExp>();
   const [selected, setSelected] = useState<Array<number>>();
-  // const [data, setData] = useState<Array<OrdenCompra>>();
+  // const [data, setData] = useState<Array<IOrdenCompra>>();
   const [loading, setLoading] = useState(false);
 
   const queryClient = useQueryClient();
 
   // useEffect(() => {
-  //   const list = queryClient.getQueryData<Array<OrdenCompra>>([
+  //   const list = queryClient.getQueryData<Array<IOrdenCompra>>([
   //     'ordenes',
   //   ]) as any;
   //   setData(list);
@@ -85,7 +85,7 @@ function ListadoOrdenes(props: ListadoProps) {
 
   // useEffect(() => {
   //   axios
-  //     .get<Array<OrdenCompra>>(`${process.env['NX_SERVER_URL']}/api/ordenes`)
+  //     .get<Array<IOrdenCompra>>(`${process.env['NX_SERVER_URL']}/api/ordenes`)
   //     .then((response) => {
   //       setData(response.data);
   //       setLoading(false);
@@ -106,7 +106,7 @@ function ListadoOrdenes(props: ListadoProps) {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
-      sorter: (a: OrdenCompra, b: OrdenCompra) => {
+      sorter: (a: IOrdenCompra, b: IOrdenCompra) => {
         return a.id - b.id;
       },
       render: (id: number) => {
@@ -120,10 +120,10 @@ function ListadoOrdenes(props: ListadoProps) {
     {
       title: 'Numero',
       dataIndex: 'numero',
-      sorter: (a: OrdenCompra, b: OrdenCompra) => {
+      sorter: (a: IOrdenCompra, b: IOrdenCompra) => {
         return a.numero.localeCompare(b.numero);
       },
-      render: (numero: number, orden: OrdenCompra) => {
+      render: (numero: number, orden: IOrdenCompra) => {
         return (
           <Button onClick={() => props.vistaDetalle(orden.id)} type="link">
             {numero}
@@ -134,35 +134,35 @@ function ListadoOrdenes(props: ListadoProps) {
     {
       title: 'Emision',
       dataIndex: 'emision',
-      sorter: (a: OrdenCompra, b: OrdenCompra) => {
+      sorter: (a: IOrdenCompra, b: IOrdenCompra) => {
         return a.emision.localeCompare(b.emision);
       },
     },
     {
       title: 'Entrega',
       dataIndex: 'entrega',
-      sorter: (a: OrdenCompra, b: OrdenCompra) => {
+      sorter: (a: IOrdenCompra, b: IOrdenCompra) => {
         return a.entrega.localeCompare(b.entrega);
       },
     },
     {
       title: 'Unidad',
       dataIndex: 'unidad',
-      render: (unidad: UnidadNegocio) => unidad.nombre,
+      render: (unidad: IUnidadNegocio) => unidad.nombre,
     },
     {
-      title: '#Productos',
+      title: '#IProductos',
       dataIndex: 'unidad',
       align: 'right' as const,
-      render: (unidad: UnidadNegocio, orden: OrdenCompra) => {
+      render: (unidad: IUnidadNegocio, orden: IOrdenCompra) => {
         return formatNumber(orden.lineas.length);
       },
     },
 
     {
-      title: 'Pedido',
+      title: 'IPedido',
       dataIndex: 'pedido',
-      render: (pedido: Pedido) => (pedido ? pedido.id : '--'),
+      render: (pedido: IPedido) => (pedido ? pedido.id : '--'),
     },
   ];
   function onSearch(e: any) {
@@ -174,7 +174,7 @@ function ListadoOrdenes(props: ListadoProps) {
     ? ordenes.filter((prod) => search.test(prod.unidad.nombre))
     : ordenes;
   const rowSelection = {
-    onChange: (selectedRowKeys: any, selectedRows: OrdenCompra[]) => {
+    onChange: (selectedRowKeys: any, selectedRows: IOrdenCompra[]) => {
       setSelected(selectedRowKeys);
     },
   };
@@ -206,7 +206,7 @@ function ListadoOrdenes(props: ListadoProps) {
           type: 'checkbox',
           ...rowSelection,
         }}
-        rowKey={(record: OrdenCompra) => record.id}
+        rowKey={(record: IOrdenCompra) => record.id}
         dataSource={filtradas}
         columns={columns}
         pagination={{ defaultPageSize: 1000 }}

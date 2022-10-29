@@ -1,12 +1,7 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
-import {
-  dataSource,
-  OrdenCompra,
-  SuperOrden,
-  UnidadNegocio,
-} from '@flash-ws/dao';
+import { dataSource, OrdenCompra, UnidadNegocio } from '@flash-ws/dao';
 import {
   ClienteService,
   Consolidado,
@@ -25,13 +20,15 @@ import {
   OrdenesResponseInvalid,
 } from '@flash-ws/api-interfaces';
 
+import { SuperOrden } from '@flash-ws/dao';
+
 const ordenes = express.Router();
 
 ordenes.get('/', async function (req: Request, res: Response) {
   const ordenes = await OrdenService.findAll();
   const conConsolidada = ordenes.map(async (o) => {
-    const orden = <SuperOrden>o;
-    const c = new Consolidado(orden.lineas);
+    const orden = o as unknown as SuperOrden;
+    const c = new Consolidado(o.lineas);
     orden.lineasConsolidadas = (await ordenarPorNombreProducto(
       c.lineas
     )) as Array<LineaConsolidada>;

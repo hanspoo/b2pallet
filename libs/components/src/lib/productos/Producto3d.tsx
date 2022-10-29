@@ -1,6 +1,6 @@
-import { Producto } from '@flash-ws/dao';
+import { IProducto } from '@flash-ws/api-interfaces';
 
-export function Producto3d({ p }: { p: Producto }) {
+export function Producto3d({ p }: { p: IProducto }) {
   let volumen = 1;
   const { largo, ancho, alto } = p.box;
 

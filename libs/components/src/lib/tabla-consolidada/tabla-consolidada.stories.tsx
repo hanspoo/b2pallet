@@ -3,8 +3,8 @@ import { TablaConsolidada } from './tabla-consolidada';
 
 import { lineas } from './datos';
 import productosJSON from './productos.json';
-import { Producto } from '@flash-ws/dao';
-const productos = productosJSON as Producto[];
+import { IProducto } from '@flash-ws/api-interfaces';
+const productos = productosJSON as IProducto[];
 
 export default {
   component: TablaConsolidada,

@@ -21,7 +21,7 @@ export default async function (
     if (!match) return;
     const className = match[1];
     // Juntamos todos los nombres de clases en los fields y les anteponemos I
-    const fields = s.split('\n').filter((line) => /\w+: \w+;/.test(line));
+    const fields = s.split('\n').filter((line) => /\w+\??: \w+.*?;/.test(line));
     const conTipos = fields.map((line) => {
       const [name, type] = line.split(': ');
       const typeFinal = /number|string|boolean/.test(type) ? type : `I${type}`;

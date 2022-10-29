@@ -1,3 +1,3 @@
-export function OrdenCompra3d() {
-  return <p>OrdenCompra3d</p>;
+export function IOrdenCompra3d() {
+  return <p>IOrdenCompra3d</p>;
 }

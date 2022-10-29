@@ -1,4 +1,4 @@
-import { OrdenCompra, SuperOrden } from '@flash-ws/dao';
+import { IOrdenCompra, ISuperOrden } from '@flash-ws/api-interfaces';
 import { actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Descriptions, Spin } from 'antd';
@@ -19,12 +19,12 @@ enum Vista {
 
 export function DetalleOrden({ id }: PropsDetalleOrden) {
   const dispatch = useDispatch();
-  const ordenes: Array<OrdenCompra> = useSelector(
-    (state: any) => state.counter.ordenes as Array<OrdenCompra>
+  const ordenes: Array<IOrdenCompra> = useSelector(
+    (state: any) => state.counter.ordenes as Array<IOrdenCompra>
   );
 
   const [vista, setVista] = useState<Vista>(Vista.CONSOLIDADA);
-  // const [orden, setOrden] = useState<OrdenCompra>();
+  // const [orden, setOrden] = useState<IOrdenCompra>();
   const [loading, setLoading] = useState(false);
   const [recargar, setRecargar] = useState<boolean>();
   const [error, setError] = useState('');
@@ -34,20 +34,20 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
 
   // const [search, setSearch] = useState<RegExp>();
   // const [selected, setSelected] = useState<Array<number>>();
-  // const [data, setData] = useState<Array<OrdenCompra>>();
+  // const [data, setData] = useState<Array<IOrdenCompra>>();
   // const [loading, setLoading] = useState(true);
 
   // useEffect(() => {
-  //   const list = queryClient.getQueryData<Array<OrdenCompra>>([
+  //   const list = queryClient.getQueryData<Array<IOrdenCompra>>([
   //     'ordenes',
   //   ]) as any;
-  //   setOrden(list.find((iter: OrdenCompra) => iter.id === id));
+  //   setOrden(list.find((iter: IOrdenCompra) => iter.id === id));
   //   setLoading(false);
   // }, [id, queryClient]);
 
   // useEffect(() => {
   //   axios
-  //     .get<OrdenCompra>(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
+  //     .get<IOrdenCompra>(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
   //     .then((response) => {
   //       setOrden(response.data);
   //       setLoading(false);
@@ -66,7 +66,7 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
   return (
     <>
       <Descriptions
-        title="OrdenCompra"
+        title="IOrdenCompra"
         bordered
         column={1}
         style={{ marginBottom: '1em' }}
@@ -79,7 +79,9 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         <Descriptions.Item label="Unidad">
           {orden.unidad?.nombre}
         </Descriptions.Item>
-        <Descriptions.Item label="Pedido">{orden.pedido?.id}</Descriptions.Item>
+        <Descriptions.Item label="IPedido">
+          {orden.pedido?.id}
+        </Descriptions.Item>
       </Descriptions>
 
       <div style={{ marginBottom: '1em' }}>
@@ -102,7 +104,7 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         <TablaLineas
           // lineas={orden.lineas}
           orden={orden}
-          recargar={(orden: OrdenCompra) => {
+          recargar={(orden: IOrdenCompra) => {
             dispatch(actualizarOrdenes());
 
             // setOrden(orden);
@@ -112,7 +114,7 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         />
       )}
       {!recargar && vista === Vista.CONSOLIDADA && (
-        <SuperConsolidada orden={orden as SuperOrden} />
+        <SuperConsolidada orden={orden as ISuperOrden} />
       )}
     </>
   );

@@ -2,29 +2,29 @@ import {
   BodyCambioEstadoProdConsolidada,
   EstadoLinea,
 } from '@flash-ws/api-interfaces';
-import { Producto } from '@flash-ws/dao';
+import { IProducto } from '@flash-ws/api-interfaces';
 import { Button, Spin } from 'antd';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { estados, colores } from '../front-utils';
 import { ILineaConsolidada } from './datos';
 
-type PropsEstadoProducto = {
+type PropsEstadoIProducto = {
   actual: EstadoLinea;
   estado: EstadoLinea;
-  producto: Producto;
+  producto: IProducto;
   ordenID: number;
   editar: boolean;
   actualizar: (lineas: any) => void;
 };
-export function EstadoProducto({
+export function EstadoIProducto({
   editar = true,
   estado,
   producto,
   actualizar,
   ordenID,
   actual,
-}: PropsEstadoProducto) {
+}: PropsEstadoIProducto) {
   const [actualizando, setActualizando] = useState(false);
   const [error, setError] = useState('');
 

@@ -2,7 +2,7 @@ import { Button, Col, Input, Row, Select, Spin, Table } from 'antd';
 
 import { useEffect, useState } from 'react';
 
-import { LineaDetalle, Local, OrdenCompra, Producto } from '@flash-ws/dao';
+import { ILineaDetalle, ILocal, IOrdenCompra, IProducto } from '@flash-ws/api-interfaces';
 import { formatNumber } from '../front-utils';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -15,14 +15,14 @@ import { CambiarEstadoBody, EstadoLinea } from '@flash-ws/api-interfaces';
 import axios from 'axios';
 
 export interface TablaLineasProps {
-  orden: OrdenCompra;
-  recargar(orden: OrdenCompra): void;
+  orden: IOrdenCompra;
+  recargar(orden: IOrdenCompra): void;
 }
 
 const { Option } = Select;
 export function TablaLineas({ orden, recargar }: TablaLineasProps) {
   const [search, setSearch] = useState<string>('');
-  const [data, setData] = useState<Array<LineaDetalle>>();
+  const [data, setData] = useState<Array<ILineaDetalle>>();
   const [loading, setLoading] = useState(true);
   const [estado, setEstado] = useState<EstadoLinea>();
   const [actualizando, setActualizando] = useState(false);
@@ -33,17 +33,17 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
   const lineas = orden.lineas;
 
   useEffect(() => {
-    const productos = queryClient.getQueryData<Array<Producto>>([
+    const productos = queryClient.getQueryData<Array<IProducto>>([
       'productos',
-    ]) as Array<Producto>;
-    const locales = queryClient.getQueryData<Array<Local>>(['locales']) as any;
+    ]) as Array<IProducto>;
+    const locales = queryClient.getQueryData<Array<ILocal>>(['locales']) as any;
 
-    function findProd(id: number): Producto | undefined {
-      return productos.find((p: Producto) => p.id === id);
+    function findProd(id: number): IProducto | undefined {
+      return productos.find((p: IProducto) => p.id === id);
     }
 
-    function findLocal(id: number): Local | undefined {
-      return locales.find((p: Local) => p.id === id);
+    function findLocal(id: number): ILocal | undefined {
+      return locales.find((p: ILocal) => p.id === id);
     }
 
     const hidratadas = lineas.map((linea) => {
@@ -84,7 +84,7 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
             return <p>Error</p>;
         }
       },
-      sorter: (a: LineaDetalle, b: LineaDetalle) => {
+      sorter: (a: ILineaDetalle, b: ILineaDetalle) => {
         return a.estado.localeCompare(b.estado);
       },
     },
@@ -92,7 +92,7 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
       title: 'Código',
       dataIndex: 'producto',
       width: '10em',
-      render: (p: Producto) => {
+      render: (p: IProducto) => {
         return p ? p.codigo : 'N/A';
       },
     },
@@ -100,15 +100,15 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
       title: 'CodCenco',
       dataIndex: 'producto',
       width: '10em',
-      render: (p: Producto) => {
+      render: (p: IProducto) => {
         return p ? p.codCenco : 'N/A';
       },
     },
     {
-      title: 'Producto',
+      title: 'IProducto',
       dataIndex: 'producto',
       filteredValue: [search],
-      onFilter: (value: string, record: LineaDetalle) => {
+      onFilter: (value: string, record: ILineaDetalle) => {
         if (!value) return true;
 
         const regex = new RegExp(value, 'i');
@@ -118,14 +118,14 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
         );
       },
 
-      render: (p: Producto) => {
+      render: (p: IProducto) => {
         return p ? p.nombre : 'No encontrado';
       },
     },
     {
-      title: 'Local',
+      title: 'ILocal',
       dataIndex: 'local',
-      render: (p: Local) => {
+      render: (p: ILocal) => {
         return p ? p.nombre : 'No encontrado';
       },
     },
@@ -133,17 +133,17 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
       title: 'Cantidad',
       dataIndex: 'cantidad',
       width: '10em',
-      sorter: (a: LineaDetalle, b: LineaDetalle) => {
+      sorter: (a: ILineaDetalle, b: ILineaDetalle) => {
         return a.cantidad - b.cantidad;
       },
     },
   ];
 
   const rowSelection = {
-    onChange: (selectedRowKeys: Array<any>, selectedRows: LineaDetalle[]) => {
+    onChange: (selectedRowKeys: Array<any>, selectedRows: ILineaDetalle[]) => {
       setSelected(selectedRowKeys);
     },
-    getCheckboxProps: (record: LineaDetalle) => ({
+    getCheckboxProps: (record: ILineaDetalle) => ({
       name: record.id + '',
     }),
   };
@@ -160,7 +160,7 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
       estado: estado,
     };
     axios
-      .post<OrdenCompra>(
+      .post<IOrdenCompra>(
         `${process.env['NX_SERVER_URL']}/api/ordenes/cambiar-estado/${orden.id}`,
         postBody
       )
@@ -218,7 +218,7 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
           ...rowSelection,
         }}
         id="lineas"
-        rowKey={(linea: LineaDetalle) => linea.id}
+        rowKey={(linea: ILineaDetalle) => linea.id}
         className="lineas"
         dataSource={data}
         columns={columns as any}

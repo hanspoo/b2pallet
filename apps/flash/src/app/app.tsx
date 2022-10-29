@@ -8,7 +8,7 @@ import {
 import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-import { Productos } from '@flash-ws/components';
+import { IProductos } from '@flash-ws/components';
 import Ordenes from '../../../../libs/components/src/lib/ordenes/ordenes';
 
 const { Header, Sider, Content } = Layout;
@@ -44,7 +44,7 @@ const App = () => {
             {
               key: Modo.PRODUCTOS,
               icon: <UploadOutlined />,
-              label: 'Productos',
+              label: 'IProductos',
             },
             {
               key: Modo.ORDENES,
@@ -97,7 +97,7 @@ const App = () => {
             minHeight: 280,
           }}
         >
-          {modo === Modo.PRODUCTOS && <Productos />}
+          {modo === Modo.PRODUCTOS && <IProductos />}
           {modo === Modo.ORDENES && <Ordenes />}
           {modo === Modo.PREFS && <p>Preferencias</p>}
         </Content>

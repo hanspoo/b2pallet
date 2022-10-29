@@ -2,7 +2,7 @@ import { Button, message, Upload } from 'antd';
 
 import { UploadOutlined } from '@ant-design/icons';
 
-const SubirProductos = () => {
+const SubirIProductos = () => {
   const props = {
     name: 'file',
     action: `${process.env['NX_SERVER_URL']}/api/productos/masivo`,
@@ -29,4 +29,4 @@ const SubirProductos = () => {
   );
 };
 
-export { SubirProductos };
+export { SubirIProductos };

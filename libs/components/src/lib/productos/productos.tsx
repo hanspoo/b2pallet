@@ -1,14 +1,13 @@
 import { Typography } from 'antd';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { Producto } from '@flash-ws/dao';
+import { IProducto } from '@flash-ws/api-interfaces';
 
 import { Spin, Table } from 'antd';
 
 import styles from './productos.module.css';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { SubirProductos } from './SubirProductos';
+import { SubirIProductos } from './SubirProductos';
 import { Producto3d } from './Producto3d';
 import Search from 'antd/lib/input/Search';
 import {
@@ -24,14 +23,14 @@ const columns = [
   {
     title: 'Código',
     dataIndex: 'codigo',
-    sorter: (a: Producto, b: Producto) => {
+    sorter: (a: IProducto, b: IProducto) => {
       return a.codigo.localeCompare(b.codigo);
     },
   },
   {
     title: 'Nombre',
     dataIndex: 'nombre',
-    sorter: (a: Producto, b: Producto) => {
+    sorter: (a: IProducto, b: IProducto) => {
       return a.nombre.localeCompare(b.nombre);
     },
   },
@@ -39,7 +38,7 @@ const columns = [
     title: 'Peso',
     dataIndex: 'peso',
     align: 'right' as const,
-    sorter: (a: Producto, b: Producto) => {
+    sorter: (a: IProducto, b: IProducto) => {
       return a.peso - b.peso;
     },
 
@@ -48,7 +47,7 @@ const columns = [
   {
     title: 'Cencosud',
     dataIndex: 'codCenco',
-    sorter: (a: Producto, b: Producto) => {
+    sorter: (a: IProducto, b: IProducto) => {
       return a.codCenco.localeCompare(b.codCenco);
     },
   },
@@ -57,7 +56,7 @@ const columns = [
     title: 'Largo',
     dataIndex: 'box',
     align: 'right' as const,
-    sorter: (a: Producto, b: Producto) => {
+    sorter: (a: IProducto, b: IProducto) => {
       return a.box.largo - b.box.largo;
     },
 
@@ -69,7 +68,7 @@ const columns = [
     title: 'Ancho',
     dataIndex: 'box',
     align: 'right' as const,
-    sorter: (a: Producto, b: Producto) => {
+    sorter: (a: IProducto, b: IProducto) => {
       return a.box.ancho - b.box.ancho;
     },
 
@@ -81,7 +80,7 @@ const columns = [
     title: 'Alto',
     dataIndex: 'box',
     align: 'right' as const,
-    sorter: (a: Producto, b: Producto) => {
+    sorter: (a: IProducto, b: IProducto) => {
       return a.box.alto - b.box.alto;
     },
 
@@ -92,15 +91,15 @@ const columns = [
   {
     title: 'Volumen',
     dataIndex: 'codigo',
-    sorter: (a: Producto, b: Producto) => {
+    sorter: (a: IProducto, b: IProducto) => {
       return volumen(a.box) - volumen(b.box);
     },
-    render: (codigo: any, producto: Producto) => <Producto3d p={producto} />,
+    render: (codigo: any, producto: IProducto) => <Producto3d p={producto} />,
   },
   {
     title: 'Vig',
     dataIndex: 'vigente',
-    sorter: (a: Producto, b: Producto) => {
+    sorter: (a: IProducto, b: IProducto) => {
       return comparaVigencia(a, b);
     },
 
@@ -111,16 +110,16 @@ const columns = [
 /* eslint-disable-next-line */
 export interface ProductosProps {}
 
-export function Productos(props: ProductosProps) {
+export function IProductos(props: ProductosProps) {
   const [search, setSearch] = useState<RegExp>();
-  const [data, setData] = useState<Array<Producto>>();
+  const [data, setData] = useState<Array<IProducto>>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const productos = queryClient.getQueryData<Array<Producto>>([
+    const productos = queryClient.getQueryData<Array<IProducto>>([
       'productos',
     ]) as any;
     setData(productos);
@@ -149,9 +148,9 @@ export function Productos(props: ProductosProps) {
   return (
     <div className={styles['container']}>
       <div style={{ float: 'right', position: 'relative', top: '+48px' }}>
-        <SubirProductos />
+        <SubirIProductos />
       </div>
-      <Title level={2}>Productos</Title>
+      <Title level={2}>IProductos</Title>
       <p>Hay {productos.length} productos</p>
       <Search
         style={{ marginBottom: '0.5em' }}
@@ -170,4 +169,4 @@ export function Productos(props: ProductosProps) {
   );
 }
 
-export default Productos;
+export default IProductos;

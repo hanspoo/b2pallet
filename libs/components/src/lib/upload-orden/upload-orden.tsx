@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Select, Spin } from 'antd';
-import { UnidadNegocio } from '@flash-ws/dao';
+import { IUnidadNegocio } from '@flash-ws/api-interfaces';
 import { OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
 import { MostrarErrores } from './MostrarErrores';
 
@@ -11,13 +11,13 @@ type UploadResponse = {
 };
 
 const UploadOrden = () => {
-  const [unidades, setunidades] = React.useState<UnidadNegocio[]>();
+  const [unidades, setunidades] = React.useState<IUnidadNegocio[]>();
   const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     axios
-      .get<UnidadNegocio[]>(`${process.env['NX_SERVER_URL']}/api/unidades`)
+      .get<IUnidadNegocio[]>(`${process.env['NX_SERVER_URL']}/api/unidades`)
       .then((response) => {
         setunidades(response.data);
         setLoading(false);
@@ -43,14 +43,14 @@ const UploadOrden = () => {
   return <UploadOrdenReally unidades={unidades} />;
 };
 type UploadOrdenReallyArgs = {
-  unidades: UnidadNegocio[];
+  unidades: IUnidadNegocio[];
 };
 
 const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<OrdenesResponseInvalid>();
   const [data, setData] = useState<UploadResponse>();
-  const [unidad, setUnidad] = useState<UnidadNegocio>();
+  const [unidad, setUnidad] = useState<IUnidadNegocio>();
   const [file, setFile] = React.useState('');
 
   const handleSubmit = async (event: any) => {
@@ -90,7 +90,7 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
       <>
         <p>{msg}</p>
         <MostrarErrores
-          title="Productos no encontrados"
+          title="IProductos no encontrados"
           list={productosNoEncontrados}
         />
         <MostrarErrores
@@ -105,7 +105,7 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
   return (
     <form onSubmit={handleSubmit}>
       <div style={{ marginBottom: '0.5em' }}>
-        <label>UnidadNegocio</label>
+        <label>IUnidadNegocio</label>
         <div>
           <Select
             style={{ width: 240 }}
@@ -114,8 +114,8 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
             showSearch
             placeholder="Seleccione la unidad de negocio"
           >
-            {unidades.map((UnidadNegocio) => (
-              <Option value={UnidadNegocio.id}>{UnidadNegocio.nombre}</Option>
+            {unidades.map((IUnidadNegocio) => (
+              <Option value={IUnidadNegocio.id}>{IUnidadNegocio.nombre}</Option>
             ))}
           </Select>
         </div>

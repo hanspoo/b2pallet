@@ -1,14 +1,14 @@
 import styles from './modal-producto.module.css';
 
 /* eslint-disable-next-line */
-export interface ModalProductoProps {}
+export interface ModalIProductoProps {}
 
-export function ModalProducto(props: ModalProductoProps) {
+export function ModalIProducto(props: ModalIProductoProps) {
   return (
     <div className={styles['container']}>
-      <h1>Welcome to ModalProducto!</h1>
+      <h1>Welcome to ModalIProducto!</h1>
     </div>
   );
 }
 
-export default ModalProducto;
+export default ModalIProducto;

@@ -1,5 +1,5 @@
 import { EstadoLinea } from '@flash-ws/api-interfaces';
-import { LineaDetalle, Local, OrdenCompra, Producto } from '@flash-ws/dao';
+import { ILineaDetalle, ILocal, IOrdenCompra, IProducto } from '@flash-ws/api-interfaces';
 import { actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
 import { Checkbox, Col, Input, Modal, Row, Table, Typography } from 'antd';
@@ -14,7 +14,7 @@ const { Title } = Typography;
 
 export type ModalLineaConsolidadaProps = {
   productoID: number;
-  orden: OrdenCompra;
+  orden: IOrdenCompra;
   cerrar: () => void;
   actualizarConsolidada: () => void;
   editar: boolean;
@@ -26,8 +26,8 @@ export function ModalLineaConsolidada({
   actualizarConsolidada,
 }: ModalLineaConsolidadaProps) {
   const dispatch = useDispatch();
-  const [producto, setProducto] = useState<Producto>();
-  const [data, setData] = useState<Array<LineaDetalle>>();
+  const [producto, setIProducto] = useState<IProducto>();
+  const [data, setData] = useState<Array<ILineaDetalle>>();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState<string>('');
   const [editar, setEditar] = useState(false);
@@ -35,17 +35,17 @@ export function ModalLineaConsolidada({
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const productos = queryClient.getQueryData<Array<Producto>>([
+    const productos = queryClient.getQueryData<Array<IProducto>>([
       'productos',
-    ]) as Array<Producto>;
-    const locales = queryClient.getQueryData<Array<Local>>(['locales']) as any;
+    ]) as Array<IProducto>;
+    const locales = queryClient.getQueryData<Array<ILocal>>(['locales']) as any;
 
-    function findProd(id: number): Producto | undefined {
-      return productos.find((p: Producto) => p.id === id);
+    function findProd(id: number): IProducto | undefined {
+      return productos.find((p: IProducto) => p.id === id);
     }
 
-    function findLocal(id: number): Local | undefined {
-      return locales.find((p: Local) => p.id === id);
+    function findLocal(id: number): ILocal | undefined {
+      return locales.find((p: ILocal) => p.id === id);
     }
 
     const hidratadas = orden?.lineas
@@ -65,7 +65,7 @@ export function ModalLineaConsolidada({
 
     setData(hidratadas);
     setLoading(false);
-    setProducto(findProd(productoID));
+    setIProducto(findProd(productoID));
   }, [orden?.lineas, productoID, queryClient]);
 
   if (loading) return <p>Cargando...</p>;
@@ -77,20 +77,20 @@ export function ModalLineaConsolidada({
 
   const columns = [
     {
-      title: 'Local',
+      title: 'ILocal',
       dataIndex: 'local',
       filteredValue: [search],
-      onFilter: (value: string, record: LineaDetalle) => {
+      onFilter: (value: string, record: ILineaDetalle) => {
         if (!value) return true;
 
         const regex = new RegExp(value, 'i');
         return regex.test(record.local?.nombre);
       },
-      sorter: (a: LineaDetalle, b: LineaDetalle) => {
+      sorter: (a: ILineaDetalle, b: ILineaDetalle) => {
         return a.local.nombre.localeCompare(b.local.nombre);
       },
 
-      render: (p: Local) => {
+      render: (p: ILocal) => {
         return p ? p.nombre : 'No encontrado';
       },
     },
@@ -99,7 +99,7 @@ export function ModalLineaConsolidada({
       title: 'Cantidad',
       dataIndex: 'cantidad',
       width: '10em',
-      sorter: (a: LineaDetalle, b: LineaDetalle) => {
+      sorter: (a: ILineaDetalle, b: ILineaDetalle) => {
         return a.cantidad - b.cantidad;
       },
     },
@@ -107,7 +107,7 @@ export function ModalLineaConsolidada({
       title: 'Estado',
       dataIndex: 'estado',
       width: `${editar ? 18 : 4}em`,
-      render: (estado: string, linea: LineaDetalle) => {
+      render: (estado: string, linea: ILineaDetalle) => {
         if (!editar)
           return (
             <EstadoUnitario
@@ -134,7 +134,7 @@ export function ModalLineaConsolidada({
           </>
         );
       },
-      sorter: (a: LineaDetalle, b: LineaDetalle) => {
+      sorter: (a: ILineaDetalle, b: ILineaDetalle) => {
         return a.estado.localeCompare(b.estado);
       },
     },
@@ -176,7 +176,7 @@ export function ModalLineaConsolidada({
 
         <Table
           id="lineas"
-          rowKey={(linea: LineaDetalle) => linea.id}
+          rowKey={(linea: ILineaDetalle) => linea.id}
           className="lineas"
           dataSource={data}
           columns={columns as any}

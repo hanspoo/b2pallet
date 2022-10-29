@@ -1,4 +1,4 @@
-import { User } from '@flash-ws/dao';
+import { IUser } from '@flash-ws/api-interfaces';
 import { Spin, Table } from 'antd';
 
 import styles from './usuarios.module.css';
@@ -21,7 +21,7 @@ const columns = [
 export interface UsuariosProps {}
 
 export function Usuarios(props: UsuariosProps) {
-  const [data, setData] = useState<Array<User>>();
+  const [data, setData] = useState<Array<IUser>>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 

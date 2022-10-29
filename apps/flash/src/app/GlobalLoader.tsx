@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-function requestProductos() {
+function requestIProductos() {
   return axios
     .get(`${process.env['NX_SERVER_URL']}/api/productos`)
     .then((response) => response.data);
@@ -29,7 +29,7 @@ type GlobalLoaderProps = {
 
 export function GlobalLoader({ children }: GlobalLoaderProps) {
   const dispatch = useDispatch();
-  const p = useQuery(['productos'], requestProductos);
+  const p = useQuery(['productos'], requestIProductos);
   const l = useQuery(['locales'], requestLocales);
 
   useEffect(() => {

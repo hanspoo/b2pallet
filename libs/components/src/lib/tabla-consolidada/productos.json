@@ -1149,7 +1149,7 @@
     },
     {
         "id": 269,
-        "nombre": "Producto de prueba",
+        "nombre": "IProducto de prueba",
         "codigo": "1234567",
         "peso": 1,
         "codCenco": "1647753",
@@ -1373,7 +1373,7 @@
     },
     {
         "id": 270,
-        "nombre": "Producto de prueba",
+        "nombre": "IProducto de prueba",
         "codigo": "1234567",
         "peso": 1,
         "codCenco": "1647753",

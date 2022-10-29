@@ -1,5 +1,9 @@
 import { EstadoLinea } from '@flash-ws/api-interfaces';
-import { LineaDetalle, Producto, SuperOrden } from '@flash-ws/dao';
+import {
+  ILineaDetalle,
+  IProducto,
+  ISuperOrden,
+} from '@flash-ws/api-interfaces';
 import { actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Checkbox, Col, Input, Row, Select, Spin, Table } from 'antd';
@@ -7,41 +11,41 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { formatNumber } from '../front-utils';
 import { ILineaConsolidada } from '../tabla-consolidada/datos';
-import { EstadoProducto } from '../tabla-consolidada/EstadoProducto';
+import { EstadoIProducto } from '../tabla-consolidada/EstadoProducto';
 import { ModalLineaConsolidada } from '../tabla-consolidada/ModalLineaConsolidada';
 
 const { Option } = Select;
 
 type SuperConsolidadaProps = {
-  orden: SuperOrden;
+  orden: ISuperOrden;
 };
 
 /*
   cantidad: number;
-  lineas: Array<LineaDetalle>;
+  lineas: Array<ILineaDetalle>;
   productoId: number;
   estado: EstadoLinea;
 **/
 
-type LineaConsolidadaConProducto = ILineaConsolidada & { producto: Producto };
+type LineaConsolidadaConIProducto = ILineaConsolidada & { producto: IProducto };
 
 export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
   const dispatch = useDispatch();
-  const [lineas, setLineas] = useState<Array<LineaConsolidadaConProducto>>();
+  const [lineas, setLineas] = useState<Array<LineaConsolidadaConIProducto>>();
   const [search, setSearch] = useState<string>('');
   const [editar, setEditar] = useState(false);
-  const [productoID, setProductoID] = useState<number>();
+  const [productoID, setIProductoID] = useState<number>();
   const [selected, setSelected] = useState<Array<number>>([]);
   const [estado, setEstado] = useState<EstadoLinea>();
   const [actualizando, setActualizando] = useState(false);
 
   const queryClient = useQueryClient();
   useEffect(() => {
-    const productos = queryClient.getQueryData<Array<Producto>>([
+    const productos = queryClient.getQueryData<Array<IProducto>>([
       'productos',
-    ]) as Array<Producto>;
-    const INICIAL: Record<number, Producto> = {};
-    const mapaProductos: Record<number, Producto> = productos.reduce(
+    ]) as Array<IProducto>;
+    const INICIAL: Record<number, IProducto> = {};
+    const mapaIProductos: Record<number, IProducto> = productos.reduce(
       (acc, iter) => {
         acc[iter.id] = iter;
         return acc;
@@ -51,7 +55,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
     const lcons = orden.lineasConsolidadas as Array<ILineaConsolidada>;
     const hidratados = lcons.map((linea) => ({
       ...linea,
-      producto: mapaProductos[linea.productoId],
+      producto: mapaIProductos[linea.productoId],
     }));
 
     setLineas(hidratados);
@@ -62,25 +66,25 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
   }
   const columns = [
     {
-      title: 'Producto',
+      title: 'IProducto',
       dataIndex: 'producto',
       filteredValue: [search],
-      onFilter: (value: string, record: LineaConsolidadaConProducto) => {
+      onFilter: (value: string, record: LineaConsolidadaConIProducto) => {
         if (!value) return true;
 
         const regex = new RegExp(value, 'i');
         return regex.test(record.producto?.nombre);
       },
       sorter: (
-        a: LineaConsolidadaConProducto,
-        b: LineaConsolidadaConProducto
+        a: LineaConsolidadaConIProducto,
+        b: LineaConsolidadaConIProducto
       ) => {
         return a.producto.nombre.localeCompare(b.producto.nombre);
       },
 
-      render: (p: Producto) => {
+      render: (p: IProducto) => {
         return p ? (
-          <Button type="link" onClick={() => setProductoID(p.id)}>
+          <Button type="link" onClick={() => setIProductoID(p.id)}>
             {p.nombre}
           </Button>
         ) : (
@@ -92,12 +96,12 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
       title: 'Locales',
       dataIndex: 'lineas',
       width: '10em',
-      render: (lineas: Array<LineaDetalle>) => (
+      render: (lineas: Array<ILineaDetalle>) => (
         <span style={{ float: 'right' }}>{lineas.length}</span>
       ),
       sorter: (
-        a: LineaConsolidadaConProducto,
-        b: LineaConsolidadaConProducto
+        a: LineaConsolidadaConIProducto,
+        b: LineaConsolidadaConIProducto
       ) => {
         return a.lineas.length - b.lineas.length;
       },
@@ -110,8 +114,8 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
         <span style={{ float: 'right' }}>{cantidad}</span>
       ),
       sorter: (
-        a: LineaConsolidadaConProducto,
-        b: LineaConsolidadaConProducto
+        a: LineaConsolidadaConIProducto,
+        b: LineaConsolidadaConIProducto
       ) => {
         return a.cantidad - b.cantidad;
       },
@@ -120,10 +124,10 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
       title: 'Estado',
       dataIndex: 'estado',
       width: `${editar ? 18 : 4}em`,
-      render: (estado: string, a: LineaConsolidadaConProducto) => {
+      render: (estado: string, a: LineaConsolidadaConIProducto) => {
         if (!editar)
           return (
-            <EstadoProducto
+            <EstadoIProducto
               editar={false}
               actual={estado as EstadoLinea}
               actualizar={actualizarLineas}
@@ -135,7 +139,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
         return (
           <>
             {Object.keys(EstadoLinea).map((est) => (
-              <EstadoProducto
+              <EstadoIProducto
                 key={est}
                 editar={true}
                 actual={estado as EstadoLinea}
@@ -149,8 +153,8 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
         );
       },
       sorter: (
-        a: LineaConsolidadaConProducto,
-        b: LineaConsolidadaConProducto
+        a: LineaConsolidadaConIProducto,
+        b: LineaConsolidadaConIProducto
       ) => {
         return a.estado.localeCompare(b.estado);
       },
@@ -161,7 +165,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
     onChange: (selectedRowKeys: Array<any>) => {
       setSelected(selectedRowKeys);
     },
-    getCheckboxProps: (record: LineaConsolidadaConProducto) => ({
+    getCheckboxProps: (record: LineaConsolidadaConIProducto) => ({
       name: record.productoId + '',
     }),
   };
@@ -223,7 +227,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
         <ModalLineaConsolidada
           editar={editar}
           actualizarConsolidada={actualizarConsolidada}
-          cerrar={() => setProductoID(undefined)}
+          cerrar={() => setIProductoID(undefined)}
           productoID={productoID}
           orden={orden}
         />
@@ -235,7 +239,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
           ...rowSelection,
         }}
         id="lineas"
-        rowKey={(linea: LineaConsolidadaConProducto) => linea.productoId}
+        rowKey={(linea: LineaConsolidadaConIProducto) => linea.productoId}
         className="lineas"
         dataSource={lineas}
         columns={columns as any}

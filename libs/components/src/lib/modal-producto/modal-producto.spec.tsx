@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 
-import ModalProducto from './modal-producto';
+import ModalIProducto from './modal-producto';
 
-describe('ModalProducto', () => {
+describe('ModalIProducto', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<ModalProducto />);
+    const { baseElement } = render(<ModalIProducto />);
     expect(baseElement).toBeTruthy();
   });
 });

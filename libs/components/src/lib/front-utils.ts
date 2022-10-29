@@ -5,14 +5,14 @@ import {
   PauseOutlined,
   WarningOutlined,
 } from '@ant-design/icons';
-import { Box, Producto } from '@flash-ws/dao';
+import { IBox, IProducto } from '@flash-ws/api-interfaces';
 
 export function formatNumber(x: any) {
   if (typeof x === 'undefined') return '-1';
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
-export function comparaVigencia(a: Producto, b: Producto) {
+export function comparaVigencia(a: IProducto, b: IProducto) {
   const x = a.vigente ? 1 : 0;
   const y = b.vigente ? 1 : 0;
 
@@ -23,7 +23,7 @@ export function fmtMedida(n: number) {
   return n / 10;
 }
 
-export function volumen(box: Box) {
+export function volumen(box: IBox) {
   const { largo, ancho, alto } = box;
   return largo * ancho * alto;
 }
