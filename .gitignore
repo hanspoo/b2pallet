@@ -40,3 +40,4 @@ Thumbs.db
 uploadas
 uploads
 .~lock*
+.env.local
