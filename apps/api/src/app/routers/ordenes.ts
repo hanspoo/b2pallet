@@ -121,7 +121,9 @@ ordenes.post(
     if (!orden)
       return res.status(400).send(`Orden ${req.params.id} no encontrada`);
 
-    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    console.log(
+      'loadConLineas: ' + (new Date().getTime() - d1.getTime()) / 1000
+    );
     d1 = new Date();
 
     const { estado, productoID } = req.body;
@@ -132,7 +134,10 @@ ordenes.post(
     if (!producto)
       return res.status(400).send(`Producto ${productoID} no encontrado`);
 
-    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    console.log(
+      'ProductoService.findById: ' +
+        (new Date().getTime() - d1.getTime()) / 1000
+    );
     d1 = new Date();
     if (!estado) return res.status(400).send(`Debe entregar el estado`);
 
@@ -149,12 +154,11 @@ ordenes.post(
       producto,
       e
     );
-    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
-    d1 = new Date();
     const consolidada: Consolidado = await servicio.ejecutar();
 
     console.log(
-      'ejecución de consolidado ' + (new Date().getTime() - d1.getTime()) / 1000
+      'ServicioCambioEstadoProdConsolidada: ' +
+        (new Date().getTime() - d1.getTime()) / 1000
     );
     // d1 = new Date();
     // const ordenNueva = (await OrdenService.loadConLineas(
@@ -169,7 +173,10 @@ ordenes.post(
       consolidada.lineas
     )) as Array<LineaConsolidada>;
 
-    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    console.log(
+      'ordenarPorNombreProducto: ' +
+        (new Date().getTime() - d1.getTime()) / 1000
+    );
     d1 = new Date();
     return res.send(superOrden);
   }
