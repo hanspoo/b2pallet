@@ -1,3 +1,4 @@
+import { DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 import { EstadoLinea, IOrdenCompra } from '@flash-ws/api-interfaces';
 import {
   ILineaDetalle,
@@ -10,6 +11,7 @@ import { Button, Checkbox, Col, Input, Row, Select, Spin, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { formatNumber } from '../front-utils';
+import SelectorEstado from '../selector-estado/selector-estado';
 import { ILineaConsolidada } from '../tabla-consolidada/datos';
 import { EstadoProducto } from '../tabla-consolidada/EstadoProducto';
 import { ModalLineaConsolidada } from '../tabla-consolidada/ModalLineaConsolidada';
@@ -34,9 +36,11 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
   const [lineas, setLineas] = useState<Array<LineaConsolidadaConIProducto>>();
   const [search, setSearch] = useState<string>('');
   const [editar, setEditar] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [productoID, setIProductoID] = useState<number>();
   const [selected, setSelected] = useState<Array<number>>([]);
   const [estado, setEstado] = useState<EstadoLinea>();
+  const [estadoBuscar, setEstadoBuscar] = useState<EstadoLinea>();
   const [actualizando, setActualizando] = useState(false);
 
   const queryClient = useQueryClient();
@@ -130,6 +134,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
         if (!editar)
           return (
             <EstadoProducto
+              linea={a}
               editar={false}
               actual={estado as EstadoLinea}
               actualizar={actualizarLineas}
@@ -147,6 +152,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
                 actual={estado as EstadoLinea}
                 actualizar={actualizarLineas}
                 estado={est as EstadoLinea}
+                linea={a}
                 producto={a.producto}
                 ordenID={orden.id}
               />
@@ -185,6 +191,14 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
     dispatch(actualizarOrdenes());
   }
 
+  const reload = () => {
+    setLoading(true);
+    actualizarOrden(orden);
+    setTimeout(() => setLoading(false), 2000);
+  };
+
+  if (loading) return <Spin />;
+
   return (
     <div>
       <Row style={{ marginBottom: '0.5em' }}>
@@ -195,10 +209,18 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
             alignItems: 'center',
           }}
         >
-          Hay {formatNumber(lineas?.length)} items
+          hay {formatNumber(lineas?.length)} items
         </Col>
         <Col span={16} style={{ textAlign: 'right' }}>
-          <span style={{ display: 'none' }}>
+          <ReloadOutlined
+            onClick={reload}
+            style={{ marginRight: '1em', color: 'green' }}
+          />
+          <SelectorEstado
+            onChange={(s: EstadoLinea) => setEstadoBuscar(s)}
+            estado={estadoBuscar}
+          />
+          <span style={{ marginLeft: '1em', display: 'none' }}>
             <Select style={{ width: 120 }} onChange={handleChange} allowClear>
               {Object.keys(EstadoLinea).map((o) => (
                 <Option value={o}>{o}</Option>
@@ -211,7 +233,13 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
               {actualizando ? <Spin size="small" /> : 'Cambiar estado'}
             </Button>
           </span>
-          <Checkbox onChange={() => setEditar(!editar)}>Editar</Checkbox>
+
+          <Checkbox
+            style={{ marginLeft: '1em' }}
+            onChange={() => setEditar(!editar)}
+          >
+            Editar
+          </Checkbox>
         </Col>
       </Row>
       <Input
@@ -243,7 +271,11 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
         id="lineas"
         rowKey={(linea: LineaConsolidadaConIProducto) => linea.productoId}
         className="lineas"
-        dataSource={lineas}
+        dataSource={
+          estadoBuscar
+            ? lineas?.filter((l) => l.estado === estadoBuscar)
+            : lineas
+        }
         columns={columns as any}
         pagination={{ defaultPageSize: 100 }}
       />

@@ -1,5 +1,6 @@
-import { ISuperOrden } from '@flash-ws/api-interfaces';
+import { EstadoLinea, ISuperOrden } from '@flash-ws/api-interfaces';
 import { Totales } from '@flash-ws/shared';
+import { colores } from '../front-utils';
 import styles from './grafico-avance.module.css';
 import ProgressBar from './ProgressBar';
 

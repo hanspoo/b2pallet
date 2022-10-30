@@ -7,7 +7,7 @@ import { Button, Spin } from 'antd';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { estados, colores } from '../front-utils';
-import { ILineaConsolidada } from './datos';
+import { IILineaDetalle, ILineaConsolidada } from './datos';
 
 type PropsEstadoIProducto = {
   actual: EstadoLinea;
@@ -15,6 +15,7 @@ type PropsEstadoIProducto = {
   producto: IProducto;
   ordenID: number;
   editar: boolean;
+  linea: ILineaConsolidada;
   actualizar: (lineas: any) => void;
 };
 export function EstadoProducto({
@@ -24,6 +25,7 @@ export function EstadoProducto({
   actualizar,
   ordenID,
   actual,
+  linea,
 }: PropsEstadoIProducto) {
   const [actualizando, setActualizando] = useState(false);
   const [error, setError] = useState('');
@@ -53,10 +55,14 @@ export function EstadoProducto({
   if (actualizando) return <Spin />;
   if (error) return <p>{error}</p>;
 
-  if (!editar)
+  if (!editar) {
+    let color = colores[estado];
+    if (estado === EstadoLinea.Multiple && !todasFinales(linea.lineas))
+      color = 'red';
     return React.createElement(estados[estado], {
-      style: { color: colores[estado] },
+      style: { color },
     });
+  }
 
   return (
     <Button
@@ -71,5 +77,14 @@ export function EstadoProducto({
       style={{ marginRight: '0.5em' }}
       icon={React.createElement(estados[estado])}
     />
+  );
+}
+function todasFinales(lineas: IILineaDetalle[]): boolean {
+  return (
+    lineas.filter(
+      (linea) =>
+        linea.estado === EstadoLinea.Aprobada ||
+        linea.estado === EstadoLinea.Rechazada
+    ).length === lineas.length
   );
 }

@@ -164,7 +164,7 @@ export function ModalLineaConsolidada({
               alignItems: 'center',
             }}
           >
-            Hay {formatNumber(lineas?.length)} items
+            hay {formatNumber(lineas?.length)} items
           </Col>
           <Col span={16} style={{ textAlign: 'right' }}>
             <Checkbox onChange={() => setEditar(!editar)}>Editar</Checkbox>

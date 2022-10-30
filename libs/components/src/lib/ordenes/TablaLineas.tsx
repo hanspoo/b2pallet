@@ -192,7 +192,7 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
             alignItems: 'center',
           }}
         >
-          Hay {formatNumber(lineas.length)} items
+          hay {formatNumber(lineas.length)} items
         </Col>
         <Col span={16} style={{ textAlign: 'right' }}>
           <Select style={{ width: 120 }} onChange={handleChange} allowClear>

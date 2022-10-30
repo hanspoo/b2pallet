@@ -41,5 +41,5 @@ export const colores: Record<string, string> = {
   Aprobada: 'green',
   Rechazada: 'red',
   Pendiente: 'cyan',
-  Multiple: 'magenta',
+  Multiple: 'gray',
 };
