@@ -24,6 +24,7 @@
       "@flash-ws/my-plugin": ["libs/my-plugin/src/index.ts"],
       "@flash-ws/prueba1": ["libs/prueba1/src/index.ts"],
       "@flash-ws/reductor": ["libs/reductor/src/index.ts"],
+      "@flash-ws/shared": ["libs/shared/src/index.ts"],
       "@flash-ws/test-utils": ["libs/test-utils/src/index.ts"],
       "@flash-ws/worker": ["libs/worker/src/index.ts"]
     }

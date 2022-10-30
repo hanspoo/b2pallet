@@ -15,6 +15,7 @@
     "my-plugin-e2e": "apps/my-plugin-e2e",
     "prueba1": "libs/prueba1",
     "reductor": "libs/reductor",
+    "shared": "libs/shared",
     "test-utils": "libs/test-utils",
     "worker": "libs/worker"
   }

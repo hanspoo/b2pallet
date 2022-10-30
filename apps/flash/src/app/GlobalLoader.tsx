@@ -29,8 +29,8 @@ type GlobalLoaderProps = {
 
 export function GlobalLoader({ children }: GlobalLoaderProps) {
   const dispatch = useDispatch();
-  const p = useQuery(['productos'], requestIProductos);
-  const l = useQuery(['locales'], requestLocales);
+  const p = useQuery(['productos'], requestIProductos, { cacheTime: 120000 });
+  const l = useQuery(['locales'], requestLocales, { cacheTime: 120000 });
 
   useEffect(() => {
     axios
