@@ -156,21 +156,22 @@ ordenes.post(
     console.log(
       'ejecución de consolidado ' + (new Date().getTime() - d1.getTime()) / 1000
     );
-    d1 = new Date();
-    const ordenNueva = (await OrdenService.loadConLineas(
-      req.params.id
-    )) as SuperOrden;
+    // d1 = new Date();
+    // const ordenNueva = (await OrdenService.loadConLineas(
+    //   req.params.id
+    // )) as SuperOrden;
 
-    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    // console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
     d1 = new Date();
+    const superOrden = orden as SuperOrden;
 
-    ordenNueva.lineasConsolidadas = (await ordenarPorNombreProducto(
+    superOrden.lineasConsolidadas = (await ordenarPorNombreProducto(
       consolidada.lineas
     )) as Array<LineaConsolidada>;
 
     console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
     d1 = new Date();
-    return res.send(ordenNueva);
+    return res.send(superOrden);
   }
 );
 
