@@ -1,6 +1,7 @@
 'debe devolver sólo las líneas de detalle modificadas';
-import { inicializarCencosud } from '@flash-ws/dao';
+import { dataSource, inicializarCencosud, OrdenCompra } from '@flash-ws/dao';
 import { crearOrdenHelper } from '@flash-ws/test-utils';
+import { OrdenService } from '@flash-ws/worker';
 import request = require('supertest');
 import { app } from '../app';
 
@@ -17,11 +18,10 @@ describe('POST /api/ordenes/cambiar-estado/1', function () {
     expect(response.status).toEqual(404);
   });
   it('si insertamos la orden debe dar 200', async function () {
-    const orden = await crearOrdenHelper(2);
+    const orden = await crearOrdenHelper(5000);
     const response = await request(app)
       .post('/api/ordenes/cambiar-estado/1')
       .send({ ids: [1], estado: 'Rechazada' });
-    console.log(response.text);
 
     expect(response.status).toEqual(200);
   });

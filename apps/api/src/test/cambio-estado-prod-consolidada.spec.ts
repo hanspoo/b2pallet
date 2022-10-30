@@ -1,3 +1,4 @@
+import { EstadoLinea } from '@flash-ws/api-interfaces';
 import { inicializarCencosud } from '@flash-ws/dao';
 import { crearOrdenHelper } from '@flash-ws/test-utils';
 
@@ -20,11 +21,12 @@ describe('cambia estado de producto en consolidada', () => {
     expect(res.statusCode).toEqual(400);
     // expect(res.body).toHaveProperty('post');
   });
-  it.skip('debe dar 200 con orden valida', async () => {
+  it('debe dar 200 con orden valida', async () => {
     const res = await request(app)
       .post('/api/ordenes/cambiar-estado-consolidada/1')
       .send({
-        producto: 1,
+        productoID: 1,
+        estado: EstadoLinea.Aprobada,
         mensaje: 'test is cool',
       });
     expect(res.statusCode).toEqual(200);

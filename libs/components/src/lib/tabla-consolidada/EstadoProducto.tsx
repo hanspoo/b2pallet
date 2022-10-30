@@ -42,8 +42,6 @@ export function EstadoProducto({
       )
       .then((response) => {
         setActualizando(false);
-        console.log('response.data', response.data);
-
         actualizar(response.data);
       })
       .catch((error) => {

@@ -4,8 +4,10 @@ import { EstadoLinea } from '@flash-ws/api-interfaces';
 
 export class ServicioCambioEstadoProdConsolidada {
   async ejecutar() {
-    const target = this.orden.lineas.filter(
-      (linea) => linea.productoId === this.producto.id
+    const target = this.orden.lineas.filter((linea) =>
+      linea.productoId
+        ? linea.productoId === this.producto.id
+        : linea.producto.id === this.producto.id
     );
 
     const promesas = target.map((linea) => {
@@ -17,7 +19,9 @@ export class ServicioCambioEstadoProdConsolidada {
       }
     });
     await Promise.all(promesas.filter((p) => p !== null));
-    return new Consolidado(this.orden.lineas);
+    const conso = new Consolidado(this.orden.lineas);
+    await conso.calcular();
+    return conso;
   }
   constructor(
     public orden: OrdenCompra,

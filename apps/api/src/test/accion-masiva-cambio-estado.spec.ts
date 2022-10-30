@@ -7,20 +7,16 @@ import { app } from '../app';
 
 beforeAll(async () => {
   await inicializarCencosud();
-  await crearOrdenHelper();
+  await crearOrdenHelper(3);
 });
-it('prueba api res de cambio de estado de lineas', (done) => {
-  request(app)
+it.skip('prueba api res de cambio de estado de lineas', async () => {
+  const response = await request(app)
     .post(`/api/ordenes/cambiar-estado/1`)
     .send({
       ids: [1, 2, 3],
       estado: 'Aprobado',
     })
     .set('Content-Type', 'application/json')
-    .set('Accept', 'application/json')
-    .expect(200)
-    .end(function (err, res) {
-      if (err) throw err;
-      done();
-    });
+    .set('Accept', 'application/json');
+  expect(response.status).toBe(200);
 });

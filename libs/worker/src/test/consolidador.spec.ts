@@ -7,31 +7,30 @@
  * Por el momento no hemos considerado modificar la cantidad de la línea original, pero el consolidador no la ve.
  */
 
-import { LineaDetalle } from '../lib/entity/linea-detalle.entity';
-import { Producto } from '../lib/entity/producto.entity';
-import { Consolidado } from '../lib/consolidado/Consolidado';
-import { EstadoLinea } from '@flash-ws/api-interfaces';
+import { LineaDetalle, Producto } from '@flash-ws/dao';
+import { Consolidado } from '../lib/consoli/Consolidado';
 
 describe('consolidador de lineas', () => {
-  it('consolidar una línea una linea consolidada con una unidad', () => {
+  it('consolidar una línea una linea consolidada con una unidad', async () => {
     const l = new LineaDetalle();
     l.producto = new Producto();
     l.cantidad = 1;
     const c = new Consolidado([l]);
-
+    await c.calcular();
     expect(c.lineas.length).toBe(1);
     expect(c.lineas[0].cantidad).toBe(1);
   });
-  it('consolidar dos lineas iguales una linea con dos productos', () => {
+  it('consolidar dos lineas iguales una linea con dos productos', async () => {
     const l = new LineaDetalle();
     l.producto = new Producto();
     l.cantidad = 1;
     const c = new Consolidado([l, l]);
+    await c.calcular();
 
     expect(c.lineas.length).toBe(1);
     expect(c.lineas[0].cantidad).toBe(2);
   });
-  it('consolidar dos líneas con productos separados, dos lineas', () => {
+  it('consolidar dos líneas con productos separados, dos lineas', async () => {
     const l1 = new LineaDetalle();
     const p1 = new Producto();
     p1.id = 1;
@@ -45,6 +44,7 @@ describe('consolidador de lineas', () => {
     l2.productoId = 2;
     l2.cantidad = 3;
     const c = new Consolidado([l1, l2]);
+    await c.calcular();
     expect(c.lineas.length).toBe(2);
     expect(
       c.lineas.reduce((acc, iter) => {

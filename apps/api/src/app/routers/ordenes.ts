@@ -29,6 +29,7 @@ ordenes.get('/', async function (req: Request, res: Response) {
   const conConsolidada = ordenes.map(async (o) => {
     const orden = o as unknown as SuperOrden;
     const c = new Consolidado(o.lineas);
+    await c.calcular();
     orden.lineasConsolidadas = (await ordenarPorNombreProducto(
       c.lineas
     )) as Array<LineaConsolidada>;
@@ -49,6 +50,7 @@ ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
   if (!orden) throw Error(`orden id ${id} no encontrada`);
 
   const c = new Consolidado(orden.lineas);
+  await c.calcular();
   return res.send(c.lineas);
 });
 
@@ -60,6 +62,7 @@ ordenes.get('/:id', async function (req: Request, res: Response) {
   });
   const orden = results[0] as SuperOrden;
   const c = new Consolidado(orden.lineas);
+  await c.calcular();
   orden.lineasConsolidadas = (await ordenarPorNombreProducto(
     c.lineas
   )) as Array<LineaConsolidada>;
@@ -93,6 +96,7 @@ ordenes.post(
       )) as SuperOrden;
 
       const consolidada: Consolidado = new Consolidado(nueva.lineas);
+      await consolidada.calcular();
 
       nueva.lineasConsolidadas = (await ordenarPorNombreProducto(
         consolidada.lineas
@@ -111,38 +115,61 @@ ordenes.post(
     req: Request<{ id: number }, null, BodyCambioEstadoProdConsolidada>,
     res: Response
   ) {
+    let i = 0;
+    let d1 = new Date();
     const orden = await OrdenService.loadConLineas(req.params.id);
     if (!orden)
       return res.status(400).send(`Orden ${req.params.id} no encontrada`);
 
+    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    d1 = new Date();
+
     const { estado, productoID } = req.body;
     if (!productoID) return res.status(400).send(`Debe entregar el producto`);
-
+    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    d1 = new Date();
     const producto = await ProductoService.findById(productoID);
     if (!producto)
       return res.status(400).send(`Producto ${productoID} no encontrado`);
 
+    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    d1 = new Date();
     if (!estado) return res.status(400).send(`Debe entregar el estado`);
 
+    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    d1 = new Date();
     if (!EstadoLinea[estado])
       return res.status(400).send(`Estado ${estado} inválido`);
 
+    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    d1 = new Date();
     const e = estado as EstadoLinea;
     const servicio = new ServicioCambioEstadoProdConsolidada(
       orden,
       producto,
       e
     );
+    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    d1 = new Date();
     const consolidada: Consolidado = await servicio.ejecutar();
 
+    console.log(
+      'ejecución de consolidado ' + (new Date().getTime() - d1.getTime()) / 1000
+    );
+    d1 = new Date();
     const ordenNueva = (await OrdenService.loadConLineas(
       req.params.id
     )) as SuperOrden;
+
+    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    d1 = new Date();
 
     ordenNueva.lineasConsolidadas = (await ordenarPorNombreProducto(
       consolidada.lineas
     )) as Array<LineaConsolidada>;
 
+    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    d1 = new Date();
     return res.send(ordenNueva);
   }
 );

@@ -7,13 +7,12 @@
  * Por el momento no hemos considerado modificar la cantidad de la línea original, pero el consolidador no la ve.
  */
 
-import { LineaDetalle } from '../lib/entity/linea-detalle.entity';
-import { Producto } from '../lib/entity/producto.entity';
-import { Consolidado } from '../lib/consolidado/Consolidado';
 import { EstadoLinea } from '@flash-ws/api-interfaces';
+import { LineaDetalle, Producto } from '@flash-ws/dao';
+import { Consolidado } from '../lib/consoli/Consolidado';
 
 describe('el estado de la consolidada', () => {
-  it('una linea en Nada, la consolidada debe estar en Nada', () => {
+  it('una linea en Nada, la consolidada debe estar en Nada', async () => {
     const l1 = new LineaDetalle();
     l1.estado = EstadoLinea.Nada;
     const p1 = new Producto();
@@ -21,9 +20,10 @@ describe('el estado de la consolidada', () => {
     l1.producto = p1;
     l1.cantidad = 2;
     const c = new Consolidado([l1]);
+    await c.calcular();
     expect(c.lineas[0].estado).toBe(EstadoLinea.Nada);
   });
-  it('una linea Aprobada, la consolidada debe estar Aprobada', () => {
+  it('una linea Aprobada, la consolidada debe estar Aprobada', async () => {
     const l1 = new LineaDetalle();
     l1.estado = EstadoLinea.Aprobada;
     const p1 = new Producto();
@@ -31,24 +31,26 @@ describe('el estado de la consolidada', () => {
     l1.producto = p1;
     l1.cantidad = 2;
     const c = new Consolidado([l1]);
-
+    await c.calcular();
     expect(c.lineas[0].estado).toBe(EstadoLinea.Aprobada);
   });
-  it('una linea Aprobada otra en Nada, la consolidada debe estar Multiple', () => {
+  it('una linea Aprobada otra en Nada, la consolidada debe estar Multiple', async () => {
     const l1 = conLinea(EstadoLinea.Nada);
     const l2 = conLinea(EstadoLinea.Aprobada);
     const c = new Consolidado([l1, l2]);
+    await c.calcular();
 
     expect(c.lineas[0].estado).toBe(EstadoLinea.Multiple);
   });
-  it('dos lineas Aprobadas, la consolidada debe estar Aprobada', () => {
+  it('dos lineas Aprobadas, la consolidada debe estar Aprobada', async () => {
     const l1 = conLinea(EstadoLinea.Aprobada);
     const l2 = conLinea(EstadoLinea.Aprobada);
     const c = new Consolidado([l1, l2]);
 
+    await c.calcular();
     expect(c.lineas[0].estado).toBe(EstadoLinea.Aprobada);
   });
-  it('dos lineas p1 Aprobadas y Nada, linea p2 Rechazada, l1: Multiple, l2: Rechazada', () => {
+  it('dos lineas p1 Aprobadas y Nada, linea p2 Rechazada, l1: Multiple, l2: Rechazada', async () => {
     const l1 = new LineaBuilder()
       .conEstado(EstadoLinea.Aprobada)
       .conProductoId(1)
@@ -63,7 +65,7 @@ describe('el estado de la consolidada', () => {
       .build();
 
     const c = new Consolidado([l1, l2, l3]);
-
+    await c.calcular();
     expect(c.lineas.length).toBe(2);
     expect(c.lineas[0].estado).toBe(EstadoLinea.Multiple);
     expect(c.lineas[1].estado).toBe(EstadoLinea.Rechazada);

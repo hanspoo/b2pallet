@@ -1,8 +1,8 @@
-import { EstadoLinea } from '@flash-ws/api-interfaces';
+import { EstadoLinea } from '../../../../api-interfaces/src';
 import { LineaDetalle } from '../entity/linea-detalle.entity';
 import { LineaConsolidada } from './LineaConsolidada';
 
-export class Consolidado {
+export class ConsolidadoLegacy {
   lineas: Array<LineaConsolidada> = [];
   constructor(public lineasDetalle: Array<LineaDetalle>) {
     if (!lineasDetalle) throw Error('Deben venir las líneas de detalle');
@@ -19,7 +19,7 @@ export class Consolidado {
         } else {
           const nueva = new LineaConsolidada();
           nueva.lineas = [iter];
-          nueva.productoId = iter.productoId;
+          nueva.productoId = iter.productoId!;
           nueva.cantidad = iter.cantidad;
           acc.push(nueva);
         }
