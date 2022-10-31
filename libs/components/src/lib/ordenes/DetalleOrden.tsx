@@ -69,7 +69,7 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
       <Descriptions
         title="IOrdenCompra"
         bordered
-        column={1}
+        column={2}
         style={{ marginBottom: '1em' }}
         labelStyle={{ width: '1em' }}
       >

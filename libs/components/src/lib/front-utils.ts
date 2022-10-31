@@ -43,3 +43,11 @@ export const colores: Record<string, string> = {
   Pendiente: 'cyan',
   Multiple: 'gray',
 };
+
+export const coloresFondo: Record<string, string> = {
+  Nada: `#ffee65`,
+  Aprobada: `#b2e061`,
+  Rechazada: `#fd7f6f`,
+  Pendiente: '#7eb0d5',
+  Multiple: '#ffb55a',
+};

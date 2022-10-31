@@ -15,12 +15,14 @@ export class Totales {
       return;
     }
     const nListas = this.so.lineas.reduce((acc, iter) => {
-      this.porEstado[iter.estado]++;
+      // this.porEstado[iter.estado]++;
       const lista =
         iter.estado === EstadoLinea.Aprobada ||
         iter.estado === EstadoLinea.Rechazada;
       return lista ? acc + 1 : acc;
     }, 0);
+    this.so.lineasConsolidadas.forEach((iter) => this.porEstado[iter.estado]++);
+
     this.avance = (100 * nListas) / this.so.lineas.length;
   }
   constructor(public so: ISuperOrden) {}
