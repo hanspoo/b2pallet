@@ -1,11 +1,13 @@
+import { MailOutlined } from '@ant-design/icons';
 import { IOrdenCompra, ISuperOrden } from '@flash-ws/api-interfaces';
 import { actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Descriptions, Spin } from 'antd';
+import { Button, Descriptions, Menu, Spin } from 'antd';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import GraficoAvance from '../grafico-avance/grafico-avance';
 import { SuperConsolidada } from '../new-consolidada/SuperConsolidada';
+import PalletsGenerator from '../pallets-generator/pallets-generator';
 
 import TablaLineas from './TablaLineas';
 
@@ -14,8 +16,9 @@ type PropsDetalleOrden = {
 };
 
 enum Vista {
-  NORMAL,
-  CONSOLIDADA,
+  CONSOLIDADA = 'CONSOLIDADA',
+  NORMAL = 'NORMAL',
+  PALLETS = 'PALLETS',
 }
 
 export function DetalleOrden({ id }: PropsDetalleOrden) {
@@ -64,6 +67,16 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
 
   if (!orden) return <p>Internal error</p>;
 
+  const items = [
+    { label: 'item 1', key: 'item-1' }, // remember to pass the key prop
+    { label: 'item 2', key: 'item-2' }, // which is required
+    {
+      label: 'sub menu',
+      key: 'submenu',
+      children: [{ label: 'item 3', key: 'submenu-item-1' }],
+    },
+  ];
+
   return (
     <>
       <Descriptions
@@ -85,20 +98,22 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         </Descriptions.Item>
       </Descriptions>
 
-      <div style={{ marginBottom: '1em' }}>
-        <Button
-          type={vista === Vista.CONSOLIDADA ? 'primary' : 'default'}
-          onClick={() => setVista(Vista.CONSOLIDADA)}
-        >
-          Consolidada
-        </Button>
-        <Button
-          type={vista === Vista.NORMAL ? 'primary' : 'default'}
-          onClick={() => setVista(Vista.NORMAL)}
-        >
-          Detallada
-        </Button>
-      </div>
+      <Menu
+        style={{ marginBottom: '1em' }}
+        mode="horizontal"
+        onSelect={(s: any) => {
+          setVista(s.key);
+        }}
+      >
+        {Object.keys(Vista).map((x) => {
+          const v = x as unknown as Vista;
+          return (
+            <Menu.Item key={v} icon={<MailOutlined />}>
+              {cap(v)}
+            </Menu.Item>
+          );
+        })}
+      </Menu>
       {recargar && <p>Espere...</p>}
 
       {!recargar && vista === Vista.NORMAL && (
@@ -120,6 +135,15 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
           <SuperConsolidada orden={orden as ISuperOrden} />
         </span>
       )}
+      {!recargar && vista === Vista.PALLETS && (
+        <span>
+          <PalletsGenerator orden={orden} />
+        </span>
+      )}
     </>
   );
+}
+
+function cap(s: string) {
+  return s.substring(0, 1) + s.substring(1).toLocaleLowerCase();
 }

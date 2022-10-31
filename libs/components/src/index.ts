@@ -1,3 +1,4 @@
+export * from './lib/pallets-generator/pallets-generator';
 export * from './lib/avance-estado/avance-estado';
 export * from './lib/selector-estado/selector-estado';
 export * from './lib/grafico-avance/grafico-avance';
