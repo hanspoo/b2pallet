@@ -7,6 +7,7 @@ import {
   Unique,
 } from 'typeorm';
 import { LineaDetalle } from './linea-detalle.entity';
+import { Pallet } from './pallet.entity';
 import { UnidadNegocio } from './unidad-negocio.entity';
 import { Pedido } from './pedido.entity';
 
@@ -33,6 +34,12 @@ export class OrdenCompra {
     onDelete: 'CASCADE',
   })
   lineas: LineaDetalle[];
+
+  @OneToMany(() => Pallet, (pallet) => pallet.ordenCompra, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  pallets: Pallet[];
 
   @ManyToOne(() => Pedido, (pedido) => pedido.ordenes, { nullable: true })
   pedido?: Pedido;

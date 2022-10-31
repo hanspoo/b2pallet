@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { UnidadNegocio } from './unidad-negocio.entity';
 import { LineaDetalle } from './linea-detalle.entity';
+import { Pallet } from './pallet.entity';
 
 @Entity()
 export class Local {
@@ -24,4 +25,10 @@ export class Local {
 
   @OneToMany(() => LineaDetalle, (linea) => linea.local)
   lineas: LineaDetalle[];
+
+  @OneToMany(() => Pallet, (pallet) => pallet.local, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  pallets: Pallet[];
 }

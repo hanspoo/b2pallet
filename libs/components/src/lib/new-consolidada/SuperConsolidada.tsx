@@ -10,7 +10,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button, Checkbox, Col, Input, Row, Select, Spin, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { AvanceEstado } from '../avance-estado/avance-estado';
+import { AvanceEstadoConsolidada } from '../avance-estado/avance-estado';
 import { formatNumber } from '../front-utils';
 import SelectorEstado from '../selector-estado/selector-estado';
 import { ILineaConsolidada } from '../tabla-consolidada/datos';
@@ -202,7 +202,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
 
   return (
     <div>
-      <AvanceEstado
+      <AvanceEstadoConsolidada
         orden={orden}
         estado={estadoBuscar}
         onChange={(s?: EstadoLinea) => setEstadoBuscar(s)}

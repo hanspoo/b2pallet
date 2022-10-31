@@ -9,6 +9,7 @@ import { LineaDetalle } from './entity/linea-detalle.entity';
 import { Producto } from './entity/producto.entity';
 import { Pedido } from './entity/pedido.entity';
 import { Box } from './entity/box.entity';
+import { Pallet } from './entity/pallet.entity';
 
 const testEnv = 'test';
 
@@ -23,6 +24,7 @@ const dataSource = new DataSource({
       ? '/tmp/db/' + crypto.randomBytes(12).toString('hex')
       : 'flash',
   entities: [
+    Pallet,
     User,
     Local,
     Cliente,

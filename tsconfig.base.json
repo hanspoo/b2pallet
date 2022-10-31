@@ -11,23 +11,47 @@
     "strictPropertyInitialization": false,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "noPropertyAccessFromIndexSignature": false,
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@flash-ws/api-interfaces": ["libs/api-interfaces/src/index.ts"],
-      "@flash-ws/components": ["libs/components/src/index.ts"],
-      "@flash-ws/dao": ["libs/dao/src/index.ts"],
-      "@flash-ws/my-plugin": ["libs/my-plugin/src/index.ts"],
-      "@flash-ws/prueba1": ["libs/prueba1/src/index.ts"],
-      "@flash-ws/reductor": ["libs/reductor/src/index.ts"],
-      "@flash-ws/shared": ["libs/shared/src/index.ts"],
-      "@flash-ws/test-utils": ["libs/test-utils/src/index.ts"],
-      "@flash-ws/worker": ["libs/worker/src/index.ts"]
+      "@flash-ws/api-interfaces": [
+        "libs/api-interfaces/src/index.ts"
+      ],
+      "@flash-ws/components": [
+        "libs/components/src/index.ts"
+      ],
+      "@flash-ws/dao": [
+        "libs/dao/src/index.ts"
+      ],
+      "@flash-ws/my-plugin": [
+        "libs/my-plugin/src/index.ts"
+      ],
+      "@flash-ws/prueba1": [
+        "libs/prueba1/src/index.ts"
+      ],
+      "@flash-ws/reductor": [
+        "libs/reductor/src/index.ts"
+      ],
+      "@flash-ws/shared": [
+        "libs/shared/src/index.ts"
+      ],
+      "@flash-ws/test-utils": [
+        "libs/test-utils/src/index.ts"
+      ],
+      "@flash-ws/worker": [
+        "libs/worker/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

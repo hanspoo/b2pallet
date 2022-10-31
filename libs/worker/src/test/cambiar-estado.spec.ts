@@ -32,6 +32,7 @@ describe('cambiar estado lineas', () => {
       emision: '15-09-2022',
       entrega: '22-09-2022',
       lineas: [],
+      pallets: [],
     };
     orden.lineas = [];
     orden.lineas.push(new LineaDetalle());

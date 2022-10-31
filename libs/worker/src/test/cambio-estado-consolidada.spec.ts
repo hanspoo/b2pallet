@@ -82,6 +82,7 @@ class OrdenBuiler {
     entrega: '22-09-2022',
     unidad: sisa,
     lineas: [],
+    pallets: [],
   };
 
   lineas: Array<LineaDetalle> = [];

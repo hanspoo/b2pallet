@@ -4,16 +4,20 @@ import { Totales } from '@flash-ws/shared';
 import { Col, Row, Typography } from 'antd';
 import { colores, coloresFondo } from '../front-utils';
 
-export interface AvanceEstadoProps {
+export interface AvanceEstadoConsolidadaProps {
   orden: ISuperOrden;
   onChange: (s: EstadoLinea | undefined) => void;
   estado?: EstadoLinea;
 }
 
-export function AvanceEstado({ estado, orden, onChange }: AvanceEstadoProps) {
+export function AvanceEstadoConsolidada({
+  estado,
+  orden,
+  onChange,
+}: AvanceEstadoConsolidadaProps) {
   const totales = new Totales(orden);
   totales.calcular();
-  const mapa = totales.porEstado;
+  const mapa = totales.porEstadoConsolidada;
   const data = Object.keys(mapa).map((k) => {
     const key = k as EstadoLinea;
     return { estado: k, valor: mapa[key], color: 'orange' };
