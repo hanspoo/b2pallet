@@ -164,6 +164,7 @@ ordenes.post(
     const e = estado as EstadoLinea;
     const servicio = new CambioEstadoProdConsolidada(orden, producto, e);
     const consolidada: Consolidado = await servicio.ejecutar();
+    await servicio.salvar();
 
     console.log(
       'CambioEstadoProdConsolidada: ' +

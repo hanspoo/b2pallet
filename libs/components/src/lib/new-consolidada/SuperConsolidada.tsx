@@ -227,7 +227,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
             estado={estadoBuscar}
           /> */}
 
-          <span style={{ marginLeft: '1em', display: 'none' }}>
+          <span style={{ marginLeft: '1em' }}>
             <Select style={{ width: 120 }} onChange={handleChange} allowClear>
               {Object.keys(EstadoLinea).map((o) => (
                 <Option value={o}>{o}</Option>

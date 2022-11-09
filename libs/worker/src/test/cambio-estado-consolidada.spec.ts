@@ -19,7 +19,7 @@ let sisa: UnidadNegocio;
 beforeAll(async () => {
   await inicializarCencosud();
   const cliente = await ClienteService.findById(1);
-  sisa = cliente.unidades.find((u) => u.nombre === 'Sisa');
+  sisa = await cliente.unidades.find((u) => u.nombre === 'Sisa');
   const local = new Local();
   local.nombre = 'Local 1';
   local.unidad = sisa;
@@ -48,15 +48,23 @@ describe('cambio estado en consolidada', () => {
     await servicio.ejecutar();
     expect(orden.lineas[0].estado).toBe(EstadoLinea.Aprobada);
   });
-  it('dos líneas, dos productos, solo cambia la de producto 1', () => {
+  it('dos líneas, dos productos, solo cambia la de producto 1', async () => {
     const p1 = new ProductoBuilder().conID(1).build();
     const p2 = new ProductoBuilder().conID(2).build();
     const orden = new OrdenBuiler()
       .conLinea(
-        new LineaBuilder().conEstado(EstadoLinea.Nada).conProducto(p1).build()
+        new LineaBuilder()
+          .conLocal(sisa.locales[0])
+          .conEstado(EstadoLinea.Nada)
+          .conProducto(p1)
+          .build()
       )
       .conLinea(
-        new LineaBuilder().conEstado(EstadoLinea.Nada).conProducto(p2).build()
+        new LineaBuilder()
+          .conLocal(sisa.locales[0])
+          .conEstado(EstadoLinea.Nada)
+          .conProducto(p2)
+          .build()
       )
       .build();
     const servicio = new CambioEstadoProdConsolidada(
@@ -64,7 +72,7 @@ describe('cambio estado en consolidada', () => {
       p1,
       EstadoLinea.Aprobada
     );
-    servicio.ejecutar();
+    await servicio.ejecutar();
     expect(orden.lineas.find((linea) => linea.producto === p1).estado).toBe(
       EstadoLinea.Aprobada
     );

@@ -3,6 +3,13 @@ import { dataSource, LineaDetalle, OrdenCompra, Producto } from '@flash-ws/dao';
 import { EstadoLinea } from '@flash-ws/api-interfaces';
 
 export class CambioEstadoProdConsolidada {
+  lineasModificadas: Array<LineaDetalle> = [];
+
+  async salvar() {
+    const repo = dataSource.getRepository(LineaDetalle);
+    const promesas = this.lineasModificadas.map((linea) => repo.save(linea));
+    await Promise.all(promesas);
+  }
   async ejecutar() {
     const target = this.orden.lineas.filter((linea) =>
       linea.productoId
@@ -13,7 +20,7 @@ export class CambioEstadoProdConsolidada {
     const promesas = target.map((linea) => {
       if (linea.estado !== this.estado) {
         linea.estado = this.estado;
-        return dataSource.getRepository(LineaDetalle).save(linea);
+        this.lineasModificadas.push(linea);
       } else {
         return null;
       }
