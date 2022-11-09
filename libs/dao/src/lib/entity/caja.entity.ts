@@ -22,6 +22,9 @@ export class Caja {
   })
   linea: LineaDetalle;
 
-  @ManyToOne(() => Pallet, (pallet) => pallet.cajas, { nullable: true })
+  @ManyToOne(() => Pallet, (pallet) => pallet.cajas, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   pallet: Pallet;
 }

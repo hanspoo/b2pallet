@@ -3,6 +3,11 @@ import { dataSource, LineaDetalle, OrdenCompra, Producto } from '@flash-ws/dao';
 import { EstadoLinea } from '@flash-ws/api-interfaces';
 
 export class CambioEstadoProdConsolidada {
+  constructor(
+    public orden: OrdenCompra,
+    public productos: Producto[],
+    public estado: EstadoLinea
+  ) {}
   lineasModificadas: Array<LineaDetalle> = [];
 
   async salvar() {
@@ -11,10 +16,9 @@ export class CambioEstadoProdConsolidada {
     await Promise.all(promesas);
   }
   async ejecutar() {
+    const ids = new Set(this.productos.map((p) => p.id));
     const target = this.orden.lineas.filter((linea) =>
-      linea.productoId
-        ? linea.productoId === this.producto.id
-        : linea.producto.id === this.producto.id
+      linea.productoId ? ids.has(linea.productoId) : ids.has(linea.producto.id)
     );
 
     const promesas = target.map((linea) => {
@@ -30,9 +34,4 @@ export class CambioEstadoProdConsolidada {
     await conso.calcular();
     return conso;
   }
-  constructor(
-    public orden: OrdenCompra,
-    public producto: Producto,
-    public estado: EstadoLinea
-  ) {}
 }

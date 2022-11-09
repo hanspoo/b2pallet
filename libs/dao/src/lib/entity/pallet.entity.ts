@@ -38,6 +38,6 @@ export class Pallet {
   @Column()
   localId?: number;
 
-  @OneToMany(() => Caja, (caja) => caja.pallet)
+  @OneToMany(() => Caja, (caja) => caja.pallet, { onDelete: 'SET NULL' })
   cajas: Caja[];
 }

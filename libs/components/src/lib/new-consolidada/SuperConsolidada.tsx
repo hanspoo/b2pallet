@@ -1,5 +1,9 @@
 import { DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
-import { EstadoLinea, IOrdenCompra } from '@flash-ws/api-interfaces';
+import {
+  BodyCambioEstadoProdConsolidada,
+  EstadoLinea,
+  IOrdenCompra,
+} from '@flash-ws/api-interfaces';
 import {
   ILineaDetalle,
   IProducto,
@@ -8,6 +12,7 @@ import {
 import { actualizarOrden, actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Checkbox, Col, Input, Row, Select, Spin, Table } from 'antd';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AvanceEstadoConsolidada } from '../avance-estado/avance-estado';
@@ -181,11 +186,25 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
 
   const handleChange = (e: EstadoLinea) => setEstado(e);
   const onCambiarEstado = () => {
-    if (!estado)
-      throw Error(
-        'debe estar definido el estado a cambiar para llamar este método'
-      );
+    console.log('onCambiarEstado EstadoProducto');
     setActualizando(true);
+    const postBody: BodyCambioEstadoProdConsolidada = {
+      productos: selected,
+      estado: estado!,
+    };
+    axios
+      .post<Array<ILineaConsolidada>>(
+        `${process.env['NX_SERVER_URL']}/api/ordenes/cambiar-estado-consolidada/${orden.id}`,
+        postBody
+      )
+      .then((response) => {
+        setActualizando(false);
+        actualizarLineas(response.data as any);
+      })
+      .catch((error) => {
+        console.log(error);
+        setActualizando(false);
+      });
   };
 
   function actualizarConsolidada() {

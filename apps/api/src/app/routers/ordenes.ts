@@ -66,6 +66,20 @@ ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
   return res.send(c.lineas);
 });
 
+ordenes.get('/:id/pallets', async function (req: Request, res: Response) {
+  const id = req.params.id as unknown as number;
+  if (!id) throw Error('No viene el id, cancelando petición REST');
+  const results = await dataSource.getRepository(OrdenCompra).find({
+    where: { id },
+    relations: { pallets: true },
+  });
+
+  const orden = results[0];
+  if (!orden) throw Error(`orden id ${id} no encontrada`);
+
+  return res.send(orden);
+});
+
 ordenes.get('/:id', async function (req: Request, res: Response) {
   const id = req.params.id as unknown as number;
   const results = await dataSource.getRepository(OrdenCompra).find({
@@ -127,67 +141,69 @@ ordenes.post(
     req: Request<{ id: number }, null, BodyCambioEstadoProdConsolidada>,
     res: Response
   ) {
-    let i = 0;
-    let d1 = new Date();
+    // let i = 0;
+    // let // d1 = new Date();
     const orden = await OrdenService.loadConLineas(req.params.id);
     if (!orden)
       return res.status(400).send(`Orden ${req.params.id} no encontrada`);
 
-    console.log(
-      'loadConLineas: ' + (new Date().getTime() - d1.getTime()) / 1000
-    );
-    d1 = new Date();
-    console.log(req.body);
+    // console.log(
+    //   'loadConLineas: ' + (new Date().getTime() - d1.getTime()) / 1000
+    // );
+    // d1 = new Date();
+    // console.log(req.body);
 
-    const { estado, productoID, productos } = req.body;
-    if (!productoID) return res.status(400).send(`Debe entregar el producto`);
-    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
-    d1 = new Date();
-    const producto = await ProductoService.findById(productoID);
-    if (!producto)
-      return res.status(400).send(`Producto ${productoID} no encontrado`);
+    const estado = req.body.estado;
+    const ids = req.body.productos;
 
-    console.log(
-      'ProductoService.findById: ' +
-        (new Date().getTime() - d1.getTime()) / 1000
+    if (!ids) return res.status(400).send(`Debe entregar los productos`);
+    // console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    // d1 = new Date();
+
+    const promesasProductos = ids.map((idProd) =>
+      ProductoService.findById(idProd)
     );
-    d1 = new Date();
+    const productos = await Promise.all(promesasProductos);
+    if (productos.filter((p) => `${p}` === 'null').length > 0)
+      return res.status(400).send(`Hay productos inválidos`);
+
+    // d1 = new Date();
     if (!estado) return res.status(400).send(`Debe entregar el estado`);
 
-    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
-    d1 = new Date();
+    // console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    // d1 = new Date();
     if (!EstadoLinea[estado])
       return res.status(400).send(`Estado ${estado} inválido`);
 
-    console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
-    d1 = new Date();
+    // console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
+    // d1 = new Date();
     const e = estado as EstadoLinea;
-    const servicio = new CambioEstadoProdConsolidada(orden, producto, e);
+    const servicio = new CambioEstadoProdConsolidada(orden, productos, e);
     const consolidada: Consolidado = await servicio.ejecutar();
     await servicio.salvar();
 
-    console.log(
-      'CambioEstadoProdConsolidada: ' +
-        (new Date().getTime() - d1.getTime()) / 1000
-    );
-    // d1 = new Date();
+    // console.log(
+    //   'CambioEstadoProdConsolidada: ' +
+    //     (new Date().getTime() - d1.getTime()) / 1000
+    // );
+    // // d1 = new Date();
     // const ordenNueva = (await OrdenService.loadConLineas(
     //   req.params.id
     // )) as SuperOrden;
 
     // console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
-    d1 = new Date();
+    // d1 = new Date();
     const superOrden = orden as SuperOrden;
 
     superOrden.lineasConsolidadas = (await ordenarPorNombreProducto(
       consolidada.lineas
     )) as Array<LineaConsolidada>;
 
-    console.log(
-      'ordenarPorNombreProducto: ' +
-        (new Date().getTime() - d1.getTime()) / 1000
-    );
-    d1 = new Date();
+    // console.log(
+    //   'ordenarPorNombreProducto: ' +
+    //     (new Date().getTime() - d1.getTime()) / 1000
+    // );
+    // d1 = new Date();
     return res.send(superOrden);
   }
 );
@@ -208,6 +224,7 @@ ordenes.post(
         'lineas.cajas.linea.producto',
         'lineas.cajas.linea.producto.box',
         'lineas.producto',
+        'pallets',
       ],
     });
     if (!orden)
@@ -217,6 +234,10 @@ ordenes.post(
 
     // OrdenCompra.expandirCajas(orden);
     const protoID = req.body.protoID;
+
+    const repoPallets = dataSource.getRepository(Pallet);
+
+    await repoPallets.remove(orden.pallets);
 
     const robot = new PalletRobot(orden);
     const proto = await dataSource
@@ -237,13 +258,14 @@ ordenes.post(
     );
     await Promise.all(promesas);
 
-    orden.lineas.forEach((linea) =>
-      linea.cajas.forEach((caja) => (caja.linea = undefined))
-    );
+    // orden.lineas.forEach((linea) =>
+    //   linea.cajas.forEach((caja) => (caja.linea = undefined))
+    // );
 
-    const result = JSON.parse(JSON.stringify(orden, getCircularReplacer()));
+    // const result = JSON.parse(JSON.stringify(orden, getCircularReplacer()));
 
-    return res.send(result);
+    const pallets = await consolidaPallets(req.params.id);
+    return res.send(pallets as unknown as IPalletConsolidado[]);
   }
 );
 ordenes.get(

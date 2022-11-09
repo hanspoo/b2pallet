@@ -34,7 +34,7 @@ export function EstadoProducto({
     console.log('onCambiarEstado EstadoProducto');
     setActualizando(true);
     const postBody: BodyCambioEstadoProdConsolidada = {
-      productoID: producto.id,
+      productos: [producto.id],
       estado: estado,
     };
     axios

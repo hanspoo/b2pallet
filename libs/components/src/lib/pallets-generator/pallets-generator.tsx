@@ -4,11 +4,13 @@ import {
   ILocal,
   IOrdenCompra,
   IPallet,
+  IPalletConsolidado,
 } from '@flash-ws/api-interfaces';
 
 import { Button, Spin, Table } from 'antd';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Pallets from '../pallets/pallets';
 import styles from './pallets-generator.module.css';
 import { useLocal } from './useLocal';
 
@@ -25,9 +27,67 @@ type LocalEntry = {
 type PorLocal = Array<LocalEntry>;
 
 export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
+  const [loading, setLoading] = useState(true);
+  const [mostrarGenerador, setMostrarGenerador] = useState(false);
+  const [error, setError] = useState('');
+  const [pallets, setPallets] = useState<IPalletConsolidado[]>();
+
+  useEffect(() => {
+    setLoading(true);
+    const url = `${process.env['NX_SERVER_URL']}/api/ordenes/${orden.id}/pallets-cons`;
+    axios
+      .get<IPalletConsolidado[]>(url)
+      .then((response) => {
+        setPallets(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(JSON.stringify(error));
+        setLoading(false);
+      });
+  }, [orden]);
+
+  if (loading) return <Spin />;
+  if (error) return <p>{error}</p>;
+  if (!pallets) return <p>Error interno al recuperar los pallets</p>;
+
+  if (pallets.length === 0 || mostrarGenerador) {
+    return (
+      <PalletsGeneratorImpl
+        orden={orden}
+        setPallets={(pallets) => {
+          setPallets(pallets);
+          setMostrarGenerador(false);
+        }}
+      />
+    );
+  }
+
+  return (
+    <div>
+      <Button
+        style={{ float: 'right' }}
+        onClick={() => setMostrarGenerador(true)}
+      >
+        Generar de nuevo
+      </Button>
+      <p>Hay {pallets.length} pallets</p>
+      <Pallets pallets={pallets} />
+    </div>
+  );
+}
+
+type PalletsGeneratorImplProps = {
+  orden: IOrdenCompra;
+  setPallets: (pallets: IPalletConsolidado[]) => void;
+};
+function PalletsGeneratorImpl({
+  orden,
+  setPallets,
+}: PalletsGeneratorImplProps) {
   const [generando, setGenerando] = useState(false);
   const [errorGenerando, setErrorGenerando] = useState('');
-  const [pallets, setPallets] = useState<IPallet[]>([]);
+  // const [pallets, setPallets] = useState<IPallet[]>([]);
   const aprobadas = orden.lineas.filter(
     (linea) => linea.estado === EstadoLinea.Aprobada
   );
@@ -77,14 +137,14 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
   function generarPallets() {
     setGenerando(true);
     axios
-      .post<IOrdenCompra>(
+      .post<IPalletConsolidado[]>(
         `${process.env['NX_SERVER_URL']}/api/ordenes/${orden.id}/gen-pallets`,
         {
           protoID: 1,
         }
       )
       .then((response) => {
-        setPallets(response.data.pallets);
+        setPallets(response.data);
         setGenerando(false);
       })
       .catch((error) => {
@@ -108,7 +168,7 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
         <b>{ordenadas.length}</b> locales, <b>{numProductos}</b> unidades.
       </p>
       {generando && <Spin />}
-      {!generando && pallets && <PalletsTable pallets={pallets} />}
+
       {!generando && (
         <span>
           <Button

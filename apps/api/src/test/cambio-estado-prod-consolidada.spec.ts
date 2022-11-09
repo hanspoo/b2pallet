@@ -25,7 +25,7 @@ describe('cambia estado de producto en consolidada', () => {
     const res = await request(app)
       .post('/api/ordenes/cambiar-estado-consolidada/1')
       .send({
-        productoID: 1,
+        productos: [1],
         estado: EstadoLinea.Aprobada,
         mensaje: 'test is cool',
       });
@@ -36,27 +36,27 @@ describe('cambia estado de producto en consolidada', () => {
     const res = await request(app)
       .post('/api/ordenes/cambiar-estado-consolidada/1')
       .send({
-        producto: undefined,
+        productos: undefined,
         mensaje: 'test is cool',
       });
     expect(res.statusCode).toEqual(400);
-    expect(res.text).toBe('Debe entregar el producto');
+    expect(res.text).toBe('Debe entregar los productos');
   });
   it('debe dar 400 con producto inválido', async () => {
     const res = await request(app)
       .post('/api/ordenes/cambiar-estado-consolidada/1')
       .send({
-        productoID: -1,
+        productos: [-1],
         mensaje: 'test is cool',
       });
     expect(res.statusCode).toEqual(400);
-    expect(res.text).toBe('Producto -1 no encontrado');
+    expect(res.text).toBe('Hay productos inválidos');
   });
   it('debe dar 400 sin estado', async () => {
     const res = await request(app)
       .post('/api/ordenes/cambiar-estado-consolidada/1')
       .send({
-        productoID: 1,
+        productos: [1],
         estado: undefined,
       });
     expect(res.statusCode).toEqual(400);
@@ -66,7 +66,7 @@ describe('cambia estado de producto en consolidada', () => {
     const res = await request(app)
       .post('/api/ordenes/cambiar-estado-consolidada/1')
       .send({
-        productoID: 1,
+        productos: [1],
         estado: 'abcde',
       });
     expect(res.statusCode).toEqual(400);

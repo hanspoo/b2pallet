@@ -42,7 +42,7 @@ describe('cambio estado en consolidada', () => {
       .build();
     const servicio = new CambioEstadoProdConsolidada(
       orden,
-      producto,
+      [producto],
       EstadoLinea.Aprobada
     );
     await servicio.ejecutar();
@@ -69,7 +69,7 @@ describe('cambio estado en consolidada', () => {
       .build();
     const servicio = new CambioEstadoProdConsolidada(
       orden,
-      p1,
+      [p1],
       EstadoLinea.Aprobada
     );
     await servicio.ejecutar();
