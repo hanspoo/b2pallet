@@ -46,16 +46,16 @@ export async function consolidaPallets(
 	pallet.id as palletId,
 	local.nombre as nombreLocal
 from
-	public.linea_detalle linea_detalle
-inner join public.caja caja on
+	linea_detalle
+inner join caja on
 	linea_detalle.id = caja."lineaId"
-inner join public.pallet pallet on
+inner join pallet on
 	caja."palletId" = pallet.id
-inner join public.local local on
+inner join local on
 	pallet."localId" = local.id
-inner join public.producto producto on
+inner join producto on
 	linea_detalle."productoId" = producto.id
-inner join public.box box on
+inner join box on
 	producto."boxId" = box.id
 where
 	pallet."ordenCompraId" = ${ordenId}

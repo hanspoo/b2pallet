@@ -1,3 +1,4 @@
+import { IPalletConsolidado } from '@flash-ws/api-interfaces';
 import {
   Box,
   dataSource,
@@ -36,7 +37,7 @@ describe('generación de pallets', () => {
       .send({ protoID: 1 })
       .set('Content-Type', 'application/json');
     expect(res.status).toBe(200);
-    const o = <OrdenCompra>res.body;
-    expect(o.pallets.length).toBe(1);
+    const o = <IPalletConsolidado[]>res.body;
+    expect(o.length).toBe(1);
   });
 });
