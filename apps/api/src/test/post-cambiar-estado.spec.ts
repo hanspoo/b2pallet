@@ -7,6 +7,7 @@ import { app } from '../app';
 
 beforeAll(async () => {
   await inicializarCencosud();
+  await dataSource.getRepository(OrdenCompra).clear();
 });
 // ('una orden con dos líneas, sólo debe devolver la modificada');
 
@@ -18,7 +19,7 @@ describe('POST /api/ordenes/cambiar-estado/1', function () {
     expect(response.status).toEqual(404);
   });
   it('si insertamos la orden debe dar 200', async function () {
-    const orden = await crearOrdenHelper(5000);
+    const orden = await crearOrdenHelper(1);
     const response = await request(app)
       .post('/api/ordenes/cambiar-estado/1')
       .send({ ids: [1], estado: 'Rechazada' });

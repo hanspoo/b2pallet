@@ -1,3 +1,4 @@
+import { EstadoLinea } from '@flash-ws/api-interfaces';
 import {
   OrdenCompra,
   dataSource,
@@ -6,6 +7,7 @@ import {
   Producto,
   Local,
   LineaDetalle,
+  Caja,
 } from '@flash-ws/dao';
 import * as crypto from 'node:crypto';
 
@@ -18,9 +20,9 @@ export async function crearOrdenHelper(numLineas = 1): Promise<OrdenCompra> {
 
   const box = new Box();
 
-  box.largo = 490;
-  box.ancho = 400;
-  box.alto = 110;
+  box.largo = 49;
+  box.ancho = 40;
+  box.alto = 11;
 
   const p = new Producto();
 
@@ -52,6 +54,10 @@ export async function crearOrdenHelper(numLineas = 1): Promise<OrdenCompra> {
     linea.cantidad = 1;
     linea.producto = producto;
     linea.local = local;
+    linea.estado = EstadoLinea.Aprobada;
+    const caja = new Caja();
+    caja.linea = linea;
+    linea.cajas = [caja];
     orden.lineas.push(linea);
   }
 

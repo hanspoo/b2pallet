@@ -11,6 +11,12 @@ import { Pallet } from './pallet.entity';
 
 @Entity()
 export class Local {
+  static from(id: number, nombre: string): Local {
+    const local = new Local();
+    local.id = id;
+    local.nombre = nombre;
+    return local;
+  }
   @PrimaryGeneratedColumn()
   id: number;
 

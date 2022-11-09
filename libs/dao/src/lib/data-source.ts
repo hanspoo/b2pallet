@@ -10,6 +10,8 @@ import { Producto } from './entity/producto.entity';
 import { Pedido } from './entity/pedido.entity';
 import { Box } from './entity/box.entity';
 import { Pallet } from './entity/pallet.entity';
+import { ProtoPallet } from './entity/proto-pallet.entity';
+import { Caja } from './entity/caja.entity';
 
 const testEnv = 'test';
 
@@ -24,16 +26,18 @@ const dataSource = new DataSource({
       ? '/tmp/db/' + crypto.randomBytes(12).toString('hex')
       : 'flash',
   entities: [
-    Pallet,
     User,
     Local,
     Cliente,
     UnidadNegocio,
     OrdenCompra,
+    Pallet,
     LineaDetalle,
     Producto,
     Pedido,
     Box,
+    Caja,
+    ProtoPallet,
   ],
   logging: false,
   synchronize: true,

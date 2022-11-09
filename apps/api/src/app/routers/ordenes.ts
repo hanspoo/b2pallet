@@ -1,7 +1,15 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
-import { dataSource, OrdenCompra, UnidadNegocio } from '@flash-ws/dao';
+import {
+  consolidaPallets,
+  dataSource,
+  OrdenCompra,
+  Pallet,
+  palletsCajas,
+  ProtoPallet,
+  UnidadNegocio,
+} from '@flash-ws/dao';
 import {
   ClienteService,
   Consolidado,
@@ -11,16 +19,20 @@ import {
   PrevalidacionService,
   ProductoService,
   ServicioCambioEstado,
-  ServicioCambioEstadoProdConsolidada,
+  CambioEstadoProdConsolidada,
 } from '@flash-ws/worker';
 import {
   BodyCambioEstadoProdConsolidada,
+  BodyGenPallets,
   CambiarEstadoBody,
   EstadoLinea,
+  IConsolidadoCajas,
+  IPalletConsolidado,
   OrdenesResponseInvalid,
 } from '@flash-ws/api-interfaces';
 
 import { SuperOrden } from '@flash-ws/dao';
+import { PalletRobot } from '@flash-ws/robot';
 
 const ordenes = express.Router();
 
@@ -125,8 +137,9 @@ ordenes.post(
       'loadConLineas: ' + (new Date().getTime() - d1.getTime()) / 1000
     );
     d1 = new Date();
+    console.log(req.body);
 
-    const { estado, productoID } = req.body;
+    const { estado, productoID, productos } = req.body;
     if (!productoID) return res.status(400).send(`Debe entregar el producto`);
     console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
     d1 = new Date();
@@ -149,15 +162,11 @@ ordenes.post(
     console.log(i++ + (new Date().getTime() - d1.getTime()) / 1000);
     d1 = new Date();
     const e = estado as EstadoLinea;
-    const servicio = new ServicioCambioEstadoProdConsolidada(
-      orden,
-      producto,
-      e
-    );
+    const servicio = new CambioEstadoProdConsolidada(orden, producto, e);
     const consolidada: Consolidado = await servicio.ejecutar();
 
     console.log(
-      'ServicioCambioEstadoProdConsolidada: ' +
+      'CambioEstadoProdConsolidada: ' +
         (new Date().getTime() - d1.getTime()) / 1000
     );
     // d1 = new Date();
@@ -179,6 +188,78 @@ ordenes.post(
     );
     d1 = new Date();
     return res.send(superOrden);
+  }
+);
+
+ordenes.post(
+  '/:id/gen-pallets',
+  async function (
+    req: Request<{ id: number }, null, BodyGenPallets>,
+    res: Response
+  ) {
+    //const orden = await OrdenService.loadConLineas(req.params.id);
+    const orden = await dataSource.getRepository(OrdenCompra).findOne({
+      where: { id: req.params.id },
+      relations: [
+        'lineas',
+        'lineas.cajas',
+        'lineas.cajas.linea',
+        'lineas.cajas.linea.producto',
+        'lineas.cajas.linea.producto.box',
+        'lineas.producto',
+      ],
+    });
+    if (!orden)
+      return res.status(400).send(`Orden ${req.params.id} no encontrada`);
+
+    // await agregarProductos(orden);
+
+    // OrdenCompra.expandirCajas(orden);
+    const protoID = req.body.protoID;
+
+    const robot = new PalletRobot(orden);
+    const proto = await dataSource
+      .getRepository(ProtoPallet)
+      .findOne({ where: { id: protoID }, relations: { box: true } });
+    orden.pallets = robot.generarPallets(proto);
+    // console.log(
+    //   'orden.pallets[0].ordenCompra.id',
+    //   orden.pallets[0].ordenCompra.id
+    // );
+    // console.log(
+    //   'orden.lineas[0].ordenCompra.id',
+    //   orden.lineas[0].ordenCompra.id
+    // );
+
+    const promesas = orden.pallets.map((pallet) =>
+      dataSource.getRepository(Pallet).save(pallet)
+    );
+    await Promise.all(promesas);
+
+    orden.lineas.forEach((linea) =>
+      linea.cajas.forEach((caja) => (caja.linea = undefined))
+    );
+
+    const result = JSON.parse(JSON.stringify(orden, getCircularReplacer()));
+
+    return res.send(result);
+  }
+);
+ordenes.get(
+  '/:id/pallets-cajas',
+  async function (req: Request<{ id: number }, null, null>, res: Response) {
+    const cajas: IConsolidadoCajas[] = await palletsCajas(req.params.id);
+
+    return res.send(cajas);
+  }
+);
+
+ordenes.get(
+  '/:id/pallets-cons',
+  async function (req: Request<{ id: number }, null, null>, res: Response) {
+    const pallets = await consolidaPallets(req.params.id);
+
+    return res.send(pallets as unknown as IPalletConsolidado[]);
   }
 );
 
@@ -247,3 +328,16 @@ ordenes.delete('/:id', async function (req: Request, res: Response) {
 });
 
 export { ordenes };
+
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === 'object' && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};

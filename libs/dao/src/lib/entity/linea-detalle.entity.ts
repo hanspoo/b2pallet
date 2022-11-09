@@ -1,8 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { OrdenCompra } from './orden-compra.entity';
 import { Local } from './local.entity';
 import { Producto } from './producto.entity';
 import { EstadoLinea } from '@flash-ws/api-interfaces';
+import { Caja } from './caja.entity';
 
 @Entity()
 export class LineaDetalle {
@@ -34,4 +41,10 @@ export class LineaDetalle {
 
   @Column('varchar')
   estado: EstadoLinea = EstadoLinea.Nada;
+
+  @OneToMany(() => Caja, (caja) => caja.linea, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  cajas: Caja[];
 }

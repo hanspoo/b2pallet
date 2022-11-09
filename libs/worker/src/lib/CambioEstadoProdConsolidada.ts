@@ -2,7 +2,7 @@ import { Consolidado } from './consoli/Consolidado';
 import { dataSource, LineaDetalle, OrdenCompra, Producto } from '@flash-ws/dao';
 import { EstadoLinea } from '@flash-ws/api-interfaces';
 
-export class ServicioCambioEstadoProdConsolidada {
+export class CambioEstadoProdConsolidada {
   async ejecutar() {
     const target = this.orden.lineas.filter((linea) =>
       linea.productoId

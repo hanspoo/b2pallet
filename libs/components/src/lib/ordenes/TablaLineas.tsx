@@ -229,7 +229,7 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
         className="lineas"
         dataSource={data}
         columns={columns as any}
-        pagination={{ defaultPageSize: 100 }}
+        pagination={{ defaultPageSize: 500 }}
       />
     </div>
   );

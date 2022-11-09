@@ -11,6 +11,9 @@ export * from './lib/entity/cliente.entity';
 export * from './lib/entity/user.entity';
 export * from './lib/entity/orden-compra.entity';
 export * from './lib/entity/pedido.entity';
+export * from './lib/entity/caja.entity';
+export * from './lib/entity/pallet.entity';
+export * from './lib/entity/proto-pallet.entity';
 
 export * from './lib/entity/producto.entity';
 export * from './lib/entity/box.entity';

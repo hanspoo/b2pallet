@@ -13,4 +13,8 @@ export * from './lib/model/ipedido.entity';
 export * from './lib/model/iproducto.entity';
 export * from './lib/model/iunidad-negocio.entity';
 export * from './lib/model/iuser.entity';
+export * from './lib/model/ipallet.entity';
 export * from './lib/model/ISuperOrden';
+export * from './lib/IConsolidadoCajas';
+export * from './lib/IPalletConsolidado';
+export * from './lib/BodyGenPallets';

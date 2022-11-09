@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { Request, Response } from 'express';
+
 import { Message } from '@flash-ws/api-interfaces';
 import { users } from './routers/users';
 import { productos } from './routers/productos';

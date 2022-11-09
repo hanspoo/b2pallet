@@ -12,7 +12,7 @@ import {
   UnidadNegocio,
 } from '@flash-ws/dao';
 import { ClienteService } from '../lib/ClienteService';
-import { ServicioCambioEstadoProdConsolidada } from '../lib/ServicioCambioEstadoProdConsolidada';
+import { CambioEstadoProdConsolidada } from '../lib/CambioEstadoProdConsolidada';
 
 let sisa: UnidadNegocio;
 
@@ -40,7 +40,7 @@ describe('cambio estado en consolidada', () => {
           .build()
       )
       .build();
-    const servicio = new ServicioCambioEstadoProdConsolidada(
+    const servicio = new CambioEstadoProdConsolidada(
       orden,
       producto,
       EstadoLinea.Aprobada
@@ -59,7 +59,7 @@ describe('cambio estado en consolidada', () => {
         new LineaBuilder().conEstado(EstadoLinea.Nada).conProducto(p2).build()
       )
       .build();
-    const servicio = new ServicioCambioEstadoProdConsolidada(
+    const servicio = new CambioEstadoProdConsolidada(
       orden,
       p1,
       EstadoLinea.Aprobada

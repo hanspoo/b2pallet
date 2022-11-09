@@ -12,6 +12,11 @@
       "factory": "./src/generators/my-generator/generator",
       "schema": "./src/generators/my-generator/schema.json",
       "description": "my-generator generator"
+    },
+    "antd-table": {
+      "factory": "./src/generators/antd-table/generator",
+      "schema": "./src/generators/antd-table/schema.json",
+      "description": "antd-table generator"
     }
   }
 }

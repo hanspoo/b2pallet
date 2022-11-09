@@ -20,7 +20,7 @@ export function comparaVigencia(a: IProducto, b: IProducto) {
 }
 
 export function fmtMedida(n: number) {
-  return n / 10;
+  return n;
 }
 
 export function volumen(box: IBox) {
@@ -51,3 +51,6 @@ export const coloresFondo: Record<string, string> = {
   Pendiente: '#7eb0d5',
   Multiple: '#ffb55a',
 };
+
+const volumenProtoPallet = 100 * 120 * 170;
+export { volumenProtoPallet };

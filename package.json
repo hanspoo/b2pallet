@@ -5,7 +5,8 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "test": "nx run-many --target=test --all"
+    "test": "nx run-many --target=test --all",
+    "test:integ": "jest --group=integ --runInBand"
   },
   "private": true,
   "dependencies": {

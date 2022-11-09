@@ -1,10 +1,10 @@
 // Antes de comenzar las pruebas el cliente y sus unidades de negocio están creadas
 
+import { dataSource } from '../lib/data-source';
 import { Cliente } from '../lib/entity/cliente.entity';
 import { Local } from '../lib/entity/local.entity';
 import { inicializarCencosud } from '../lib/inicializarCencosud';
 import { UnidadNegocio } from '../lib/entity/unidad-negocio.entity';
-import { dataSource } from '../lib/data-source';
 
 let cliente: Cliente;
 

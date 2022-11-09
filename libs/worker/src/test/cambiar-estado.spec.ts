@@ -11,20 +11,17 @@ import { crearOrdenHelper } from '@flash-ws/test-utils';
 import { ServicioCambioEstado } from '../lib/ServicioCambioEstado';
 
 let cliente: Cliente;
-export let sisa: UnidadNegocio;
-export let producto: Producto;
+let sisa: UnidadNegocio;
 
 beforeAll(async () => {
   cliente = await inicializarCencosud();
-  sisa = cliente.unidades.find((u) => (u.nombre = 'Sisa'));
-  await crearOrdenHelper();
+  sisa = await cliente.unidades.find((u) => (u.nombre = 'Sisa'));
 });
 beforeEach(async () => {
   await dataSource.getRepository(OrdenCompra).clear();
 });
-
 describe('cambiar estado lineas', () => {
-  it('por defecto las líneas estan en estado Nada', () => {
+  it.skip('por defecto las líneas estan en estado Nada', () => {
     const orden: OrdenCompra = {
       id: 15,
       unidad: sisa,

@@ -81,9 +81,9 @@ export class ProductoService {
 
       const box = new Box();
 
-      box.largo = largo * 10;
-      box.ancho = ancho * 10;
-      box.alto = alto * 10;
+      box.largo = largo;
+      box.ancho = ancho;
+      box.alto = alto;
 
       p.box = box;
 

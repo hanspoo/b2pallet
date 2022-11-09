@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 
 import {
+  Caja,
   dataSource,
   LineaDetalle,
   Local,
@@ -12,7 +13,6 @@ import { ClienteService } from './ClienteService';
 import { fieldMap, firstSheetAsJSON } from './b2butils';
 import { LocalesService } from './LocalesService';
 import { COL_NUM_ORDEN, Linea } from './types';
-import { In } from 'typeorm';
 
 type RespuestaCrear = {
   ordenes: Array<OrdenCompra>;
@@ -141,6 +141,12 @@ export class OrdenService {
     const cantidad = row[fieldMap['cantidad']];
 
     l.cantidad = cantidad;
+    l.cajas = [];
+    for (let i = 0; i < l.cantidad; i++) {
+      const caja = new Caja();
+      caja.linea = l;
+      l.cajas.push(caja);
+    }
     /**
      * Si viene un local que no está registrado, se debe agregar.
      */
@@ -158,4 +164,17 @@ export class OrdenService {
   async findProducto(codCenco: string): Promise<Producto> {
     return dataSource.getRepository(Producto).findOneBy({ codCenco });
   }
+}
+
+export async function agregarProductos(orden: OrdenCompra) {
+  const productos = await dataSource
+    .getRepository(Producto)
+    .find({ relations: { box: true } });
+  orden.lineas.forEach((linea) => {
+    if (linea.producto) return;
+    const prod = productos.find((p) => p.id === linea.productoId);
+    if (!prod)
+      throw Error(`Producto ${linea.productoId} no encontrado en línea`);
+    linea.producto = prod;
+  });
 }

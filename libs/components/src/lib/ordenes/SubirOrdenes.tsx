@@ -11,7 +11,7 @@ const SubirOrdenes = () => {
     action: `${process.env['NX_SERVER_URL']}/api/ordenes/masivo`,
 
     onChange(info: any) {
-
+      // eslint-disable-next-line no-empty
       if (info.file.status !== 'uploading') {
       }
 

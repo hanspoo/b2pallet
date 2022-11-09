@@ -1,4 +1,5 @@
 import { ILineaDetalle } from './ilinea-detalle.entity';
+import { IPallet } from './ipallet.entity';
 import { IPedido } from './ipedido.entity';
 import { IUnidadNegocio } from './iunidad-negocio.entity';
 
@@ -9,5 +10,6 @@ export interface IOrdenCompra {
   entrega: string;
   unidad: IUnidadNegocio;
   lineas: ILineaDetalle[];
+  pallets: IPallet[];
   pedido?: IPedido;
 }

@@ -3,9 +3,12 @@ import {
   ILineaDetalle,
   ILocal,
   IOrdenCompra,
+  IPallet,
 } from '@flash-ws/api-interfaces';
 
-import { Button, Table } from 'antd';
+import { Button, Spin, Table } from 'antd';
+import axios from 'axios';
+import { useState } from 'react';
 import styles from './pallets-generator.module.css';
 import { useLocal } from './useLocal';
 
@@ -22,6 +25,9 @@ type LocalEntry = {
 type PorLocal = Array<LocalEntry>;
 
 export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
+  const [generando, setGenerando] = useState(false);
+  const [errorGenerando, setErrorGenerando] = useState('');
+  const [pallets, setPallets] = useState<IPallet[]>([]);
   const aprobadas = orden.lineas.filter(
     (linea) => linea.estado === EstadoLinea.Aprobada
   );
@@ -68,6 +74,27 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
     },
   ];
 
+  function generarPallets() {
+    setGenerando(true);
+    axios
+      .post<IOrdenCompra>(
+        `${process.env['NX_SERVER_URL']}/api/ordenes/${orden.id}/gen-pallets`,
+        {
+          protoID: 1,
+        }
+      )
+      .then((response) => {
+        setPallets(response.data.pallets);
+        setGenerando(false);
+      })
+      .catch((error) => {
+        setErrorGenerando(error.message);
+        setGenerando(false);
+      });
+  }
+
+  if (errorGenerando) return <p>{errorGenerando}</p>;
+
   const numProductos = aprobadas.reduce((acc, iter) => {
     return acc + iter.cantidad;
   }, 0);
@@ -80,16 +107,36 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
       <p>
         <b>{ordenadas.length}</b> locales, <b>{numProductos}</b> unidades.
       </p>
-      <Button type="primary" style={{ marginBottom: '1em' }}>
-        Comenzar
-      </Button>
-      <Table
-        dataSource={ordenadas}
-        columns={columns}
-        pagination={{ pageSize: 10000 }}
-      />
+      {generando && <Spin />}
+      {!generando && pallets && <PalletsTable pallets={pallets} />}
+      {!generando && (
+        <span>
+          <Button
+            type="primary"
+            style={{ marginBottom: '1em' }}
+            onClick={generarPallets}
+          >
+            Comenzar
+          </Button>
+          <Table
+            dataSource={ordenadas}
+            columns={columns}
+            pagination={{ pageSize: 10000 }}
+          />
+        </span>
+      )}
     </div>
   );
 }
 
 export default PalletsGenerator;
+
+function PalletsTable({ pallets }: { pallets: Array<IPallet> }) {
+  return (
+    <>
+      {pallets.map((p) => (
+        <li>{p.cajas.length}</li>
+      ))}
+    </>
+  );
+}

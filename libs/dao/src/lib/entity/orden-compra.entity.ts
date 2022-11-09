@@ -10,6 +10,7 @@ import { LineaDetalle } from './linea-detalle.entity';
 import { Pallet } from './pallet.entity';
 import { UnidadNegocio } from './unidad-negocio.entity';
 import { Pedido } from './pedido.entity';
+import { Caja } from './caja.entity';
 
 @Entity()
 @Unique(['numero', 'unidad'])
@@ -43,4 +44,16 @@ export class OrdenCompra {
 
   @ManyToOne(() => Pedido, (pedido) => pedido.ordenes, { nullable: true })
   pedido?: Pedido;
+
+  static expandirCajas(orden: OrdenCompra) {
+    orden.lineas.forEach((linea) => {
+      if (!linea.cajas) linea.cajas = [];
+      if (linea.cajas.length === linea.cantidad) return;
+      for (let index = 0; index < linea.cantidad; index++) {
+        const caja = new Caja();
+        caja.linea = linea;
+        linea.cajas.push(caja);
+      }
+    });
+  }
 }
