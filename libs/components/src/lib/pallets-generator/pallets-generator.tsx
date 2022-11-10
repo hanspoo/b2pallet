@@ -28,13 +28,13 @@ type LocalEntry = {
 
 type PorLocal = Array<LocalEntry>;
 enum VistaPallets {
-  TABLA = 'TABLA',
   ICONO = 'ICONO',
+  TABLA = 'TABLA',
   ARBOL = 'ARBOL',
 }
 export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
   const [vistaPallets, setVistaPallets] = useState<VistaPallets>(
-    VistaPallets.TABLA
+    VistaPallets.ICONO
   );
   const [loading, setLoading] = useState(true);
   const [mostrarGenerador, setMostrarGenerador] = useState(false);

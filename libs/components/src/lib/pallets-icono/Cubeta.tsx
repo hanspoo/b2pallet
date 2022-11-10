@@ -6,7 +6,7 @@ export type CubetaProps = {
 
 export function Cubeta({ pallet: { peso, porcUso, numcajas } }: CubetaProps) {
   const opacity = peso / 50000;
-  const backgroundColor = `rgba(0,150,120,${opacity})`;
+  const backgroundColor = `rgba(9,56,100,${opacity})`;
 
   return (
     <div
