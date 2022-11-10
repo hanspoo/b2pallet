@@ -1,7 +1,8 @@
 export interface IPalletConsolidado {
-  numcajas: string;
-  vol: string;
-  peso: string;
+  numcajas: number;
+  vol: number;
+  peso: number;
   palletid: number;
   nombrelocal: string;
+  porcUso: number;
 }

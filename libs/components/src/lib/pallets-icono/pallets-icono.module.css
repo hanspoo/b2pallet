@@ -1,3 +1,18 @@
+.pallet-box {
+  flex-direction: column;
+  display: flex;
+  justify-content: flex-end;
+  height: 100px;
+  width: 75px;
+  border: solid 1px #ccc;
+  cursor: pointer;
+}
+
+.pallet-box:hover {
+  color: #fff;
+  border: solid 2px #999;
+}
+
 .anticons-list {
   margin: 10px 0;
   overflow: hidden;

@@ -1,5 +1,5 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { palletsData } from './pallets-data';
+import { palletsData } from '../pallets-data';
 import { Pallets } from './pallets';
 
 export default {

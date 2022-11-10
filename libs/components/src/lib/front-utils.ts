@@ -51,6 +51,3 @@ export const coloresFondo: Record<string, string> = {
   Pendiente: '#7eb0d5',
   Multiple: '#ffb55a',
 };
-
-const volumenProtoPallet = 100 * 120 * 170;
-export { volumenProtoPallet };

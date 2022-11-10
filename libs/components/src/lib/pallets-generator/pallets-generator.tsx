@@ -6,6 +6,7 @@ import {
   IPallet,
   IPalletConsolidado,
 } from '@flash-ws/api-interfaces';
+import { capitalize } from '@flash-ws/shared';
 
 import { Button, Radio, Select, Spin, Table } from 'antd';
 import axios from 'axios';
@@ -73,13 +74,15 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
 
   return (
     <div>
-      <SelectorVistaPallets vista={vistaPallets} setVista={setVistaPallets} />
-      <Button
-        style={{ float: 'right' }}
-        onClick={() => setMostrarGenerador(true)}
-      >
-        Generar de nuevo
-      </Button>
+      <div style={{ marginBottom: '1em' }}>
+        <SelectorVistaPallets vista={vistaPallets} setVista={setVistaPallets} />
+        <Button
+          style={{ float: 'right' }}
+          onClick={() => setMostrarGenerador(true)}
+        >
+          Generar de nuevo
+        </Button>
+      </div>
       <p>Hay {pallets.length} pallets</p>
       {vistaPallets === VistaPallets.TABLA && <Pallets pallets={pallets} />}
       {vistaPallets === VistaPallets.ICONO && (
@@ -211,7 +214,7 @@ function SelectorVistaPallets({ vista, setVista }: SelectorVistaPalletsProps) {
   return (
     <Radio.Group value={vista} onChange={(e) => setVista(e.target.value)}>
       {Object.keys(VistaPallets).map((v) => (
-        <Radio.Button value={v}>{v}</Radio.Button>
+        <Radio.Button value={v}>{capitalize(v)}</Radio.Button>
       ))}
     </Radio.Group>
   );

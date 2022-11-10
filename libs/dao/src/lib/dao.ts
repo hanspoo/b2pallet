@@ -1,6 +1,17 @@
 import { dataSource } from './data-source';
 import { ConsolidadoCajas } from './ConsolidadoCajas';
-import { PalletConsolidado } from './PalletConsolidado';
+import { IPalletConsolidado } from '@flash-ws/api-interfaces';
+
+interface Resultado {
+  numcajas: string;
+  vol: string;
+  peso: string;
+  protolargo: number;
+  protoancho: number;
+  protoalto: number;
+  palletid: number;
+  nombrelocal: string;
+}
 
 export function dao(): string {
   return 'dao';
@@ -37,32 +48,56 @@ WHERE
 
 export async function consolidaPallets(
   ordenId: number
-): Promise<PalletConsolidado[]> {
+): Promise<IPalletConsolidado[]> {
   const sql = `
-  select
-	count(*) as numCajas,
-	sum(box.largo * box.ancho * box.alto) as vol,
-	sum(producto.peso) as peso,
-	pallet.id as palletId,
-	local.nombre as nombreLocal
-from
-	linea_detalle
-inner join caja on
-	linea_detalle.id = caja."lineaId"
-inner join pallet on
-	caja."palletId" = pallet.id
-inner join local on
-	pallet."localId" = local.id
-inner join producto on
-	linea_detalle."productoId" = producto.id
-inner join box on
-	producto."boxId" = box.id
-where
-	pallet."ordenCompraId" = ${ordenId}
-group by
-	palletid,
-	nombreLocal  
+  SELECT
+  count(*) AS numCajas,
+  sum(box.largo*box.ancho*box.alto) AS vol,
+  sum(producto.peso) AS peso,
+  box_A."largo" AS protoLargo,
+  box_A."ancho" AS protoAncho,
+  box_A."alto" AS protoAlto,
+  pallet."id" AS palletId,
+  local."nombre" AS nombreLocal
+FROM
+  "linea_detalle" linea_detalle INNER JOIN "caja" caja ON linea_detalle."id" = caja."lineaId"
+  INNER JOIN "pallet" pallet ON caja."palletId" = pallet."id"
+  INNER JOIN "local" local ON pallet."localId" = local."id"
+  INNER JOIN  box box_A ON pallet."boxId" = box_A."id"
+  INNER JOIN "producto" producto ON linea_detalle."productoId" = producto."id"
+  INNER JOIN "box" box ON producto."boxId" = box."id"
+WHERE
+  pallet."ordenCompraId" = ${ordenId}
+GROUP BY
+  palletid,
+  nombreLocal,
+  protoLargo,
+  protoAncho,
+  protoAlto
   `;
   const queryRunner = await dataSource.createQueryRunner();
-  return await queryRunner.manager.query(sql);
+  const rows: Array<Resultado> = await queryRunner.manager.query(sql);
+  return rows.map(
+    ({
+      numcajas,
+      vol,
+      peso,
+      palletid,
+      nombrelocal,
+      protolargo,
+      protoancho,
+      protoalto,
+    }) => {
+      const volPallet = protolargo * protoancho * protoalto;
+      const c: IPalletConsolidado = {
+        numcajas: parseInt(numcajas),
+        vol: parseInt(vol),
+        peso: parseInt(peso),
+        palletid,
+        nombrelocal,
+        porcUso: (parseFloat(vol) * 100) / volPallet,
+      };
+      return c;
+    }
+  );
 }

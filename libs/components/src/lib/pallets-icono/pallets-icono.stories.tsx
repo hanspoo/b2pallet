@@ -1,6 +1,6 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { palletsData } from '../pallets-data';
 import { PalletsIcono } from './pallets-icono';
-import { palletsData } from './pallets-data';
 
 export default {
   component: PalletsIcono,

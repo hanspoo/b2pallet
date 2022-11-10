@@ -1,9 +1,5 @@
-import {
-  IConsolidadoCajas,
-  IPalletConsolidado,
-} from '@flash-ws/api-interfaces';
+import { IPalletConsolidado } from '@flash-ws/api-interfaces';
 import { Table } from 'antd';
-import { volumenProtoPallet } from '../front-utils';
 
 /* eslint-disable-next-line */
 export interface PalletsProps {
@@ -33,7 +29,7 @@ export function Pallets({ pallets }: PalletsProps) {
       align: 'right' as any,
       width: '80px',
       sorter: (a: IPalletConsolidado, b: IPalletConsolidado) =>
-        a.numcajas.localeCompare(b.numcajas),
+        a.numcajas - b.numcajas,
     },
     {
       title: 'Vol',
@@ -42,8 +38,7 @@ export function Pallets({ pallets }: PalletsProps) {
       width: '100px',
       render: (vol: string) =>
         parseFloat(vol).toLocaleString(undefined, { minimumFractionDigits: 2 }),
-      sorter: (a: IPalletConsolidado, b: IPalletConsolidado) =>
-        parseInt(a.vol) - parseInt(b.vol),
+      sorter: (a: IPalletConsolidado, b: IPalletConsolidado) => a.vol - b.vol,
     },
     {
       title: 'Peso',
@@ -52,25 +47,23 @@ export function Pallets({ pallets }: PalletsProps) {
       width: '100px',
       render: (vol: string) => parseFloat(vol).toLocaleString(),
 
-      sorter: (a: IPalletConsolidado, b: IPalletConsolidado) =>
-        a.peso.localeCompare(b.peso),
+      sorter: (a: IPalletConsolidado, b: IPalletConsolidado) => a.peso - b.peso,
     },
     {
       title: '%Uso',
       dataIndex: 'vol',
       width: '100px',
-      render: (vol: string) => {
-        const v = (parseFloat(vol) * 100) / volumenProtoPallet;
+      render: (vol: string, a: IPalletConsolidado) => {
         return (
           <div
-            title={`${v.toFixed(0)}%`}
+            title={`${a.porcUso.toFixed(0)}%`}
             style={{ width: 100, border: 'solid 1px #ccc' }}
           >
             <div
               style={{
                 height: '14px',
                 backgroundColor: '#1890ff',
-                width: v.toFixed(0) + 'px',
+                width: a.porcUso.toFixed(0) + 'px',
               }}
             />
           </div>
