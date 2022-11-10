@@ -214,6 +214,7 @@ ordenes.post(
     req: Request<{ id: number }, null, BodyGenPallets>,
     res: Response
   ) {
+    console.log('1');
     //const orden = await OrdenService.loadConLineas(req.params.id);
     const orden = await dataSource.getRepository(OrdenCompra).findOne({
       where: { id: req.params.id },
@@ -224,9 +225,9 @@ ordenes.post(
         'lineas.cajas.linea.producto',
         'lineas.cajas.linea.producto.box',
         'lineas.producto',
-        'pallets',
       ],
     });
+    console.log('2');
     if (!orden)
       return res.status(400).send(`Orden ${req.params.id} no encontrada`);
 
@@ -236,9 +237,19 @@ ordenes.post(
     const protoID = req.body.protoID;
 
     const repoPallets = dataSource.getRepository(Pallet);
+    console.log('3');
 
-    await repoPallets.remove(orden.pallets);
+    async function borrarPalletsActuales() {
+      const orden = await dataSource.getRepository(OrdenCompra).findOne({
+        where: { id: req.params.id },
+        relations: ['pallets'],
+      });
 
+      await repoPallets.remove(orden.pallets);
+    }
+    await borrarPalletsActuales();
+
+    console.log('4');
     const robot = new PalletRobot(orden);
     const proto = await dataSource
       .getRepository(ProtoPallet)

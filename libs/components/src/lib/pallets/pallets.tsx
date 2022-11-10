@@ -4,7 +4,6 @@ import {
 } from '@flash-ws/api-interfaces';
 import { Table } from 'antd';
 import { volumenProtoPallet } from '../front-utils';
-import ProgressBar from '../grafico-avance/ProgressBar';
 
 /* eslint-disable-next-line */
 export interface PalletsProps {
@@ -14,7 +13,7 @@ export interface PalletsProps {
 export function Pallets({ pallets }: PalletsProps) {
   const cols = [
     {
-      title: 'palletid',
+      title: 'id',
       dataIndex: 'palletid',
       align: 'right' as any,
       width: '1em',
@@ -22,14 +21,14 @@ export function Pallets({ pallets }: PalletsProps) {
         a.palletid - b.palletid,
     },
     {
-      title: 'nombrelocal',
+      title: 'Local',
       dataIndex: 'nombrelocal',
       width: '200px',
       sorter: (a: IPalletConsolidado, b: IPalletConsolidado) =>
         a.nombrelocal.localeCompare(b.nombrelocal),
     },
     {
-      title: 'numcajas',
+      title: '#Cajas',
       dataIndex: 'numcajas',
       align: 'right' as any,
       width: '80px',
@@ -37,7 +36,7 @@ export function Pallets({ pallets }: PalletsProps) {
         a.numcajas.localeCompare(b.numcajas),
     },
     {
-      title: 'vol',
+      title: 'Vol',
       dataIndex: 'vol',
       align: 'right' as any,
       width: '100px',
@@ -47,7 +46,7 @@ export function Pallets({ pallets }: PalletsProps) {
         parseInt(a.vol) - parseInt(b.vol),
     },
     {
-      title: 'peso',
+      title: 'Peso',
       dataIndex: 'peso',
       align: 'right' as any,
       width: '100px',
@@ -88,18 +87,3 @@ export function Pallets({ pallets }: PalletsProps) {
 }
 
 export default Pallets;
-
-function volCajas(cajas: IConsolidadoCajas[]): number {
-  return cajas.reduce((acc, caja) => {
-    const x = parseFloat(caja.largo);
-    const y = parseFloat(caja.ancho);
-    const z = parseFloat(caja.alto);
-
-    acc += x * y * z;
-    return acc;
-  }, 0.0);
-}
-
-function numberWithCommas(x: number) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}

@@ -7,9 +7,10 @@ import {
   IPalletConsolidado,
 } from '@flash-ws/api-interfaces';
 
-import { Button, Spin, Table } from 'antd';
+import { Button, Radio, Select, Spin, Table } from 'antd';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import PalletsIcono from '../pallets-icono/pallets-icono';
 import Pallets from '../pallets/pallets';
 import styles from './pallets-generator.module.css';
 import { useLocal } from './useLocal';
@@ -25,8 +26,15 @@ type LocalEntry = {
 };
 
 type PorLocal = Array<LocalEntry>;
-
+enum VistaPallets {
+  TABLA = 'TABLA',
+  ICONO = 'ICONO',
+  ARBOL = 'ARBOL',
+}
 export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
+  const [vistaPallets, setVistaPallets] = useState<VistaPallets>(
+    VistaPallets.TABLA
+  );
   const [loading, setLoading] = useState(true);
   const [mostrarGenerador, setMostrarGenerador] = useState(false);
   const [error, setError] = useState('');
@@ -65,6 +73,7 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
 
   return (
     <div>
+      <SelectorVistaPallets vista={vistaPallets} setVista={setVistaPallets} />
       <Button
         style={{ float: 'right' }}
         onClick={() => setMostrarGenerador(true)}
@@ -72,7 +81,10 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
         Generar de nuevo
       </Button>
       <p>Hay {pallets.length} pallets</p>
-      <Pallets pallets={pallets} />
+      {vistaPallets === VistaPallets.TABLA && <Pallets pallets={pallets} />}
+      {vistaPallets === VistaPallets.ICONO && (
+        <PalletsIcono pallets={pallets} />
+      )}
     </div>
   );
 }
@@ -191,12 +203,16 @@ function PalletsGeneratorImpl({
 
 export default PalletsGenerator;
 
-function PalletsTable({ pallets }: { pallets: Array<IPallet> }) {
+type SelectorVistaPalletsProps = {
+  vista: VistaPallets;
+  setVista: (vista: VistaPallets) => void;
+};
+function SelectorVistaPallets({ vista, setVista }: SelectorVistaPalletsProps) {
   return (
-    <>
-      {pallets.map((p) => (
-        <li>{p.cajas.length}</li>
+    <Radio.Group value={vista} onChange={(e) => setVista(e.target.value)}>
+      {Object.keys(VistaPallets).map((v) => (
+        <Radio.Button value={v}>{v}</Radio.Button>
       ))}
-    </>
+    </Radio.Group>
   );
 }
