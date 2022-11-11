@@ -8,8 +8,7 @@ import {
 import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-import { IProductos } from '@flash-ws/components';
-import Ordenes from '../../../../libs/components/src/lib/ordenes/ordenes';
+import { IProductos, Ordenes } from '@flash-ws/components';
 
 const { Header, Sider, Content } = Layout;
 

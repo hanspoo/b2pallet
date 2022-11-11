@@ -83,7 +83,7 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
           Generar de nuevo
         </Button>
       </div>
-      <p>Hay {pallets.length} pallets</p>
+
       {vistaPallets === VistaPallets.TABLA && <Pallets pallets={pallets} />}
       {vistaPallets === VistaPallets.ICONO && (
         <PalletsIcono pallets={pallets} />

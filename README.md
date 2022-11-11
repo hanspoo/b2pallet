@@ -37,3 +37,26 @@ To scale, encapsulate the routes for each table in a route component for each ta
 ## TODO
 
 I've not covered tests here.
+
+## Init database
+
+Create the database and user with the script: data-utils/pg-create.sh, that must be called like this:
+
+```
+pg-create.sh flash flash flash
+```
+
+Then, start the project and the orm to create the tables.
+
+```
+nx serve api
+```
+
+Running the tests will not work because in tests environments it uses sqlite, and we want the
+dev env, that uses postgresql.
+
+Finally this create the first client with its bussines units:
+
+```
+psql -h localhost -U flash < data-utils/crea-cliente.sql
+```

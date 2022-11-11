@@ -5,3 +5,22 @@ export function shared(): string {
 export function capitalize(s: string) {
   return s[0].toUpperCase() + s.substring(1).toLowerCase();
 }
+
+export function fixNombreLocal(desde: string): any {
+  return capAll(
+    desde
+      .trim()
+      .replace(/^N?\d+/, '')
+      .replace(/-/g, ' ')
+  );
+}
+
+function capAll(s: string): string {
+  const words = s.trim().toLowerCase().split(/\s+/);
+
+  for (let i = 0; i < words.length; i++) {
+    words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+  }
+
+  return words.join(' ');
+}

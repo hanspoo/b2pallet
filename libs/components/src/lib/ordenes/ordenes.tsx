@@ -3,13 +3,14 @@ import { Button, Typography } from 'antd';
 import {
   IOrdenCompra,
   IPedido,
+  IProducto,
   IUnidadNegocio,
 } from '@flash-ws/api-interfaces';
 import { useSelector } from 'react-redux';
 import { Spin, Table } from 'antd';
 
 import styles from './ordenes.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Search from 'antd/lib/input/Search';
 import { UploadOrden } from '../upload-orden/upload-orden';
@@ -18,15 +19,6 @@ import { formatNumber } from '../front-utils';
 import { useQueryClient } from '@tanstack/react-query';
 
 const { Title } = Typography;
-
-// const columns = [
-//   {
-//     title: 'Id',
-//     dataIndex: 'id',
-//     sorter: (a: IOrdenCompra, b: IOrdenCompra) => {
-//       return a.id - b.id;
-//     },
-//   },
 
 /* eslint-disable-next-line */
 export interface OrdenesProps {}
@@ -38,6 +30,30 @@ enum Vista {
 }
 
 export function Ordenes(props: OrdenesProps) {
+  const [search, setSearch] = useState<RegExp>();
+  const [data, setData] = useState<Array<IProducto>>();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const productos = queryClient.getQueryData<Array<IProducto>>([
+      'productos',
+    ]) as any;
+    setData(productos);
+    setLoading(false);
+  }, [queryClient]);
+
+  if (loading) return <Spin />;
+  if (error) return <p>{error}</p>;
+
+  if (!data) return <p>Internal error</p>;
+  if (data.length === 0) return <p>Debe cargar los productos primero</p>;
+
+  return <OrdenesImpl />;
+}
+export function OrdenesImpl(props: OrdenesProps) {
   const [vista, setVista] = useState(Vista.Listado);
   const [orden, setOrden] = useState(Vista.Listado);
 

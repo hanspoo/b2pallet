@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { Local, UnidadNegocio, dataSource } from '@flash-ws/dao';
 import { ClienteService } from './ClienteService';
 import { firstSheetAsJSON } from './b2butils';
+import { fixNombreLocal } from '@flash-ws/shared';
 
 const fieldMap = {
   codLocal: 'Cód. Local Destino',
@@ -65,7 +66,7 @@ export class LocalesService {
         const local = new Local();
 
         local.codigo = tupla[0];
-        local.nombre = tupla[1];
+        local.nombre = fixNombreLocal(tupla[1]);
         // local.unidad = this.unidadNegocio;
 
         nuevosIds.add(local.codigo);

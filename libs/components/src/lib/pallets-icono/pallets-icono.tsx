@@ -33,8 +33,16 @@ export function PalletsIcono({ pallets }: PalletsIconoProps) {
     : pallets;
   return (
     <div>
-      <Row gutter={[16, 16]}>
-        <Col span="24" style={{ textAlign: 'right', marginBottom: '1em' }}>
+      <Row
+        gutter={[16, 16]}
+        style={{ marginBottom: '2em', backgroundColor: '#eee', padding: '4px' }}
+      >
+        <Col span="12">
+          <span style={{ position: 'absolute', bottom: '5px' }}>
+            Hay {pallets.length} pallets
+          </span>
+        </Col>
+        <Col span="12" style={{ textAlign: 'right' }}>
           <label>Ordenar por </label>
           <Radio.Group
             value={ordenarPor}
