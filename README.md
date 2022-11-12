@@ -60,3 +60,9 @@ Finally this create the first client with its bussines units:
 ```
 psql -h localhost -U flash < data-utils/crea-cliente.sql
 ```
+
+## UUID
+
+En postgresql ejecutar:
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

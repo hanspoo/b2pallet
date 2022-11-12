@@ -4,7 +4,7 @@ import { OrdenService } from './OrdenService';
 
 export class ServicioCambioEstado {
   orden: OrdenCompra;
-  async loadOrden(id: number) {
+  async loadOrden(id: string) {
     this.orden = await OrdenService.loadConLineas(id);
     if (!this.orden) throw Error(`Orden ${id} no encontrada`);
   }

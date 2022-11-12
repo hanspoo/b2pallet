@@ -51,7 +51,7 @@ ordenes.get('/', async function (req: Request, res: Response) {
 });
 
 ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
-  const id = req.params.id as unknown as number;
+  const id = req.params.id;
   if (!id) throw Error('No viene el id, cancelando petición REST');
   const results = await dataSource.getRepository(OrdenCompra).find({
     where: { id },
@@ -66,34 +66,42 @@ ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
   return res.send(c.lineas);
 });
 
-ordenes.get('/:id/pallets', async function (req: Request, res: Response) {
-  const id = req.params.id as unknown as number;
-  if (!id) throw Error('No viene el id, cancelando petición REST');
-  const results = await dataSource.getRepository(OrdenCompra).find({
-    where: { id },
-    relations: { pallets: true },
-  });
+type RequestWithId = {
+  id: string;
+};
+ordenes.get(
+  '/:id/pallets',
+  async function (req: Request<RequestWithId>, res: Response) {
+    const id = req.params.id;
+    if (!id) throw Error('No viene el id, cancelando petición REST');
+    const results = await dataSource.getRepository(OrdenCompra).find({
+      where: { id },
+      relations: { pallets: true },
+    });
 
-  const orden = results[0];
-  if (!orden) throw Error(`orden id ${id} no encontrada`);
+    const orden = results[0];
+    if (!orden) throw Error(`orden id ${id} no encontrada`);
 
-  return res.send(orden);
-});
+    return res.send(orden);
+  }
+);
 
-ordenes.get('/:id', async function (req: Request, res: Response) {
-  const id = req.params.id as unknown as number;
-  const results = await dataSource.getRepository(OrdenCompra).find({
-    where: { id },
-    relations: { lineas: true },
-  });
-  const orden = results[0] as SuperOrden;
-  const c = new Consolidado(orden.lineas);
-  await c.calcular();
-  orden.lineasConsolidadas = (await ordenarPorNombreProducto(
-    c.lineas
-  )) as Array<LineaConsolidada>;
-  return res.send(orden);
-});
+ordenes.get(
+  '/:id',
+  async function (req: Request<RequestWithId>, res: Response) {
+    const results = await dataSource.getRepository(OrdenCompra).find({
+      where: { id: req.params.id },
+      relations: { lineas: true },
+    });
+    const orden = results[0] as SuperOrden;
+    const c = new Consolidado(orden.lineas);
+    await c.calcular();
+    orden.lineasConsolidadas = (await ordenarPorNombreProducto(
+      c.lineas
+    )) as Array<LineaConsolidada>;
+    return res.send(orden);
+  }
+);
 ordenes.post('/', async function (req: Request, res: Response) {
   const user = await dataSource.getRepository(OrdenCompra).create(req.body);
   const results = await dataSource.getRepository(OrdenCompra).save(user);
@@ -109,7 +117,7 @@ ordenes.post('/borrar', async function (req: Request, res: Response) {
 ordenes.post(
   '/cambiar-estado/:id',
   async function (
-    req: Request<{ id: number }, null, CambiarEstadoBody>,
+    req: Request<{ id: string }, null, CambiarEstadoBody>,
     res: Response
   ) {
     try {
@@ -138,7 +146,7 @@ ordenes.post(
 ordenes.post(
   '/cambiar-estado-consolidada/:id',
   async function (
-    req: Request<{ id: number }, null, BodyCambioEstadoProdConsolidada>,
+    req: Request<{ id: string }, null, BodyCambioEstadoProdConsolidada>,
     res: Response
   ) {
     // let i = 0;
@@ -211,7 +219,7 @@ ordenes.post(
 ordenes.post(
   '/:id/gen-pallets',
   async function (
-    req: Request<{ id: number }, null, BodyGenPallets>,
+    req: Request<{ id: string }, null, BodyGenPallets>,
     res: Response
   ) {
     console.log('1');
@@ -281,7 +289,7 @@ ordenes.post(
 );
 ordenes.get(
   '/:id/pallets-cajas',
-  async function (req: Request<{ id: number }, null, null>, res: Response) {
+  async function (req: Request<{ id: string }, null, null>, res: Response) {
     const cajas: IConsolidadoCajas[] = await palletsCajas(req.params.id);
 
     return res.send(cajas);
@@ -290,7 +298,7 @@ ordenes.get(
 
 ordenes.get(
   '/:id/pallets-cons',
-  async function (req: Request<{ id: number }, null, null>, res: Response) {
+  async function (req: Request<{ id: string }, null, null>, res: Response) {
     const pallets = await consolidaPallets(req.params.id);
 
     return res.send(pallets as unknown as IPalletConsolidado[]);
@@ -347,7 +355,7 @@ ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
 
 ordenes.put('/:id', async function (req: Request, res: Response) {
   const user = await dataSource.getRepository(OrdenCompra).findOneBy({
-    id: req.params.id as unknown as number,
+    id: req.params.id,
   });
   dataSource.getRepository(OrdenCompra).merge(user, req.body);
   const results = await dataSource.getRepository(OrdenCompra).save(user);

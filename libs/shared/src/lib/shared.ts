@@ -6,7 +6,8 @@ export function capitalize(s: string) {
   return s[0].toUpperCase() + s.substring(1).toLowerCase();
 }
 
-export function fixNombreLocal(desde: string): any {
+export function fixNombreLocal(desde: string): string {
+  if (!desde) return '';
   return capAll(
     desde
       .trim()

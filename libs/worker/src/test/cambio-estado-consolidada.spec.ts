@@ -84,7 +84,7 @@ describe('cambio estado en consolidada', () => {
 
 class OrdenBuiler {
   orden: OrdenCompra = {
-    id: 17,
+    id: '17',
     numero: '5575426472',
     emision: '15-09-2022',
     entrega: '22-09-2022',

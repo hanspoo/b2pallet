@@ -2,8 +2,9 @@ import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { IPalletConsolidado } from '@flash-ws/api-interfaces';
 import { capitalize } from '@flash-ws/shared';
 
-import { Row, Col, Radio } from 'antd';
+import { Row, Col, Radio, Modal } from 'antd';
 import { useState } from 'react';
+import { DetallePallet } from '../detalle-pallet/detalle-pallet';
 import { Cubeta } from './Cubeta';
 
 export interface PalletsIconoProps {
@@ -21,11 +22,15 @@ enum Orden {
 }
 
 export function PalletsIcono({ pallets }: PalletsIconoProps) {
+  const [pallet, setPallet] = useState<IPalletConsolidado>();
   const [ordenarPor, setOrdenarPor] = useState<CriteriosOrden>();
   const [orden, setOrden] = useState<Orden>(Orden.ASC);
 
   const handleChange = (value: string) => {
     setOrdenarPor(value as CriteriosOrden);
+  };
+  const mostrarPallet = (pallet: IPalletConsolidado) => {
+    setPallet(pallet);
   };
 
   const palletsOrdenados = ordenarPor
@@ -33,6 +38,18 @@ export function PalletsIcono({ pallets }: PalletsIconoProps) {
     : pallets;
   return (
     <div>
+      {pallet && (
+        <Modal
+          title={`Pallet id ${pallet.palletid}`}
+          open={!!pallet}
+          width={1000}
+          onOk={() => setPallet(undefined)}
+          onCancel={() => setPallet(undefined)}
+        >
+          <DetallePallet pallet={pallet} />
+        </Modal>
+      )}
+
       <Row
         gutter={[16, 16]}
         style={{ marginBottom: '2em', backgroundColor: '#eee', padding: '4px' }}
@@ -65,6 +82,7 @@ export function PalletsIcono({ pallets }: PalletsIconoProps) {
       <Row gutter={[16, 16]}>
         {palletsOrdenados.map((p) => (
           <Col
+            onClick={() => mostrarPallet(p)}
             span="3"
             style={{
               display: 'flex',
@@ -72,8 +90,18 @@ export function PalletsIcono({ pallets }: PalletsIconoProps) {
               alignItems: 'center',
             }}
           >
+            <div
+              style={{
+                position: 'absolute',
+                top: '40px',
+                color: '#666',
+                cursor: 'pointer',
+              }}
+            >
+              {p.porcUso.toFixed(1)}%
+            </div>
             <Cubeta pallet={p} />
-            <div>{p.nombrelocal.toLowerCase()}</div>
+            <div style={{ textAlign: 'center' }}>{p.nombrelocal}</div>
           </Col>
         ))}
       </Row>

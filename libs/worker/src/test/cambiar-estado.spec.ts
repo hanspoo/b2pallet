@@ -23,7 +23,7 @@ beforeEach(async () => {
 describe('cambiar estado lineas', () => {
   it.skip('por defecto las líneas estan en estado Nada', () => {
     const orden: OrdenCompra = {
-      id: 15,
+      id: '15',
       unidad: sisa,
       numero: '5575426472',
       emision: '15-09-2022',

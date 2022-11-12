@@ -1,14 +1,15 @@
 import { EstadoLinea } from '@flash-ws/api-interfaces';
-import { inicializarCencosud } from '@flash-ws/dao';
+import { inicializarCencosud, OrdenCompra } from '@flash-ws/dao';
 import { crearOrdenHelper } from '@flash-ws/test-utils';
 
 // import { crearProducto, crerOrdenLocal } from '@flash-ws/worker';
 import request = require('supertest');
 import { app } from '../app';
 
+let orden: OrdenCompra;
 beforeAll(async () => {
   await inicializarCencosud();
-  await crearOrdenHelper();
+  orden = await crearOrdenHelper();
 });
 describe('cambia estado de producto en consolidada', () => {
   it('debe dar 400 con orden inválida', async () => {
@@ -23,7 +24,7 @@ describe('cambia estado de producto en consolidada', () => {
   });
   it('debe dar 200 con orden valida', async () => {
     const res = await request(app)
-      .post('/api/ordenes/cambiar-estado-consolidada/1')
+      .post('/api/ordenes/cambiar-estado-consolidada/' + orden.id)
       .send({
         productos: [1],
         estado: EstadoLinea.Aprobada,
@@ -34,7 +35,7 @@ describe('cambia estado de producto en consolidada', () => {
   });
   it('debe dar 400 cuando no va producto', async () => {
     const res = await request(app)
-      .post('/api/ordenes/cambiar-estado-consolidada/1')
+      .post('/api/ordenes/cambiar-estado-consolidada/' + orden.id)
       .send({
         productos: undefined,
         mensaje: 'test is cool',
@@ -44,7 +45,7 @@ describe('cambia estado de producto en consolidada', () => {
   });
   it('debe dar 400 con producto inválido', async () => {
     const res = await request(app)
-      .post('/api/ordenes/cambiar-estado-consolidada/1')
+      .post('/api/ordenes/cambiar-estado-consolidada/' + orden.id)
       .send({
         productos: [-1],
         mensaje: 'test is cool',
@@ -54,7 +55,7 @@ describe('cambia estado de producto en consolidada', () => {
   });
   it('debe dar 400 sin estado', async () => {
     const res = await request(app)
-      .post('/api/ordenes/cambiar-estado-consolidada/1')
+      .post('/api/ordenes/cambiar-estado-consolidada/' + orden.id)
       .send({
         productos: [1],
         estado: undefined,
@@ -64,7 +65,7 @@ describe('cambia estado de producto en consolidada', () => {
   });
   it('debe dar 400 con estado inválido', async () => {
     const res = await request(app)
-      .post('/api/ordenes/cambiar-estado-consolidada/1')
+      .post('/api/ordenes/cambiar-estado-consolidada/' + orden.id)
       .send({
         productos: [1],
         estado: 'abcde',

@@ -17,4 +17,5 @@ export * from './lib/model/ipallet.entity';
 export * from './lib/model/ISuperOrden';
 export * from './lib/IConsolidadoCajas';
 export * from './lib/IPalletConsolidado';
+export * from './lib/caja-consolidada';
 export * from './lib/BodyGenPallets';

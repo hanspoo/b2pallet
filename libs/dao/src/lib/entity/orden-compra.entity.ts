@@ -15,8 +15,8 @@ import { Caja } from './caja.entity';
 @Entity()
 @Unique(['numero', 'unidad'])
 export class OrdenCompra {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   numero: string;

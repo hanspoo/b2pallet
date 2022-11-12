@@ -12,7 +12,7 @@ files.get('/', async function (req: Request, res: Response) {
 
 files.get('/:id', async function (req: Request, res: Response) {
   const results = await dataSource.getRepository(OrdenCompra).findOneBy({
-    id: req.params.id as unknown as number,
+    id: req.params.id,
   });
   return res.send(results);
 });
@@ -31,7 +31,7 @@ files.post('/upload', upload.single('file'), async function (req: any, res) {
 
 files.put('/:id', async function (req: Request, res: Response) {
   const user = await dataSource.getRepository(OrdenCompra).findOneBy({
-    id: req.params.id as unknown as number,
+    id: req.params.id,
   });
   dataSource.getRepository(OrdenCompra).merge(user, req.body);
   const results = await dataSource.getRepository(OrdenCompra).save(user);

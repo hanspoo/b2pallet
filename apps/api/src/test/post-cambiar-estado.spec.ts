@@ -21,7 +21,7 @@ describe('POST /api/ordenes/cambiar-estado/1', function () {
   it('si insertamos la orden debe dar 200', async function () {
     const orden = await crearOrdenHelper(1);
     const response = await request(app)
-      .post('/api/ordenes/cambiar-estado/1')
+      .post('/api/ordenes/cambiar-estado/' + orden.id)
       .send({ ids: [1], estado: 'Rechazada' });
 
     expect(response.status).toEqual(200);

@@ -1,3 +1,4 @@
+export * from './lib/detalle-pallet/detalle-pallet';
 export * from './lib/pallets-icono/pallets-icono';
 export * from './lib/pallets-data';
 export * from './lib/pallets-generator/pallets-generator';

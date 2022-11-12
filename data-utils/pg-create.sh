@@ -27,5 +27,6 @@ createdb $DB
 
 psql -c "alter user $USER encrypted password '$PASS'"
 psql -c "grant all on database $DB to $USER"
+psql -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"'
 
 

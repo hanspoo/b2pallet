@@ -8,6 +8,7 @@ import { ordenes } from './routers/ordenes';
 import { files } from './routers/files';
 import { locales } from './routers/locales';
 import { unidades } from './routers/unidades';
+import { pallets } from './routers/pallets';
 
 // create and setup express app
 const app = express();
@@ -32,5 +33,6 @@ app.use('/api/productos', productos);
 app.use('/api/ordenes', ordenes);
 app.use('/api/unidades', unidades);
 app.use('/api/locales', locales);
+app.use('/api/pallets', pallets);
 
 export { app };

@@ -25,7 +25,7 @@ export class OrdenService {
   static save(orden: OrdenCompra) {
     return dataSource.getRepository(OrdenCompra).save(orden);
   }
-  static loadConLineas(id: number): Promise<OrdenCompra> {
+  static loadConLineas(id: string): Promise<OrdenCompra> {
     return dataSource
       .getRepository(OrdenCompra)
       .findOne({ where: { id }, relations: { lineas: true, unidad: true } });
