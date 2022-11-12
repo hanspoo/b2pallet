@@ -3,6 +3,7 @@ import { ICajaConsolidada, IPalletConsolidado } from '@flash-ws/api-interfaces';
 import { fixNombreLocal } from '@flash-ws/shared';
 
 export interface Resultado {
+  palletId: number;
   numcajas: string;
   vol: string;
   peso: string;
@@ -57,10 +58,11 @@ GROUP BY
     }) => {
       const volPallet = protolargo * protoancho * protoalto;
       const c: IPalletConsolidado = {
+        palletid,
         numcajas: parseInt(numcajas),
         vol: parseInt(vol),
         peso: parseInt(peso),
-        palletid,
+
         nombrelocal: fixNombreLocal(nombrelocal),
         porcUso: (parseFloat(vol) * 100) / volPallet,
       };
@@ -69,6 +71,15 @@ GROUP BY
   );
 }
 
+interface CajaPura {
+  peso: string;
+  largo: string;
+  ancho: string;
+  alto: string;
+  producto: string;
+  codigo: string;
+  codcenco: string;
+}
 export async function cajasPallet(
   palletId: number
 ): Promise<ICajaConsolidada[]> {
@@ -77,19 +88,32 @@ export async function cajasPallet(
      box."largo" AS largo,
      box."ancho" AS ancho,
      box."alto" AS alto,
+     producto."peso" AS peso,
      producto."nombre" AS producto,
      producto."codigo" AS codigo,
      producto."codCenco" AS codCenco
 FROM
-     "public"."pallet" pallet INNER JOIN "public"."caja" caja ON pallet."id" = caja."palletId"
-     INNER JOIN "public"."linea_detalle" linea_detalle ON caja."lineaId" = linea_detalle."id"
-     INNER JOIN "public"."producto" producto ON linea_detalle."productoId" = producto."id"
-     INNER JOIN "public"."box" box ON producto."boxId" = box."id"
+     pallet INNER JOIN caja ON pallet."id" = caja."palletId"
+     INNER JOIN linea_detalle ON caja."lineaId" = linea_detalle."id"
+     INNER JOIN producto ON linea_detalle."productoId" = producto."id"
+     INNER JOIN box ON producto."boxId" = box."id"
 WHERE
      pallet.id = ${palletId}
   `;
 
   const queryRunner = await dataSource.createQueryRunner();
-  const rows: Array<ICajaConsolidada> = await queryRunner.manager.query(sql);
-  return rows;
+  const rows: Array<CajaPura> = await queryRunner.manager.query(sql);
+
+  const array: Array<ICajaConsolidada> = rows.map(
+    ({ peso, largo, ancho, alto, producto, codigo, codcenco }) => ({
+      largo: parseFloat(largo),
+      ancho: parseFloat(ancho),
+      alto: parseFloat(alto),
+      peso: parseFloat(peso),
+      producto,
+      codigo,
+      codcenco,
+    })
+  );
+  return array;
 }

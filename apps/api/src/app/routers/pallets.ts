@@ -12,6 +12,13 @@ pallets.get('/', async function (req: Request, res: Response) {
 pallets.get(
   '/:id',
   async function (req: Request<{ id: number }>, res: Response) {
+    if (!req.params.id)
+      return res.status(400).send('No viene el id de pallet: ' + req.params.id);
+    const pallet = await dataSource
+      .getRepository(Pallet)
+      .findOne({ where: { id: req.params.id } });
+    if (!pallet)
+      return res.status(404).send(`Pallet ${req.params.id} no encontrado`);
     const results = await cajasPallet(req.params.id);
     return res.send(results);
   }

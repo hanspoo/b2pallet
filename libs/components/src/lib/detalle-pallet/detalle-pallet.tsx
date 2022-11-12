@@ -1,5 +1,6 @@
 import { IPalletConsolidado } from '@flash-ws/api-interfaces';
 import { Col, Descriptions, Row } from 'antd';
+import { ContainerCajasPallets } from '../lista-cajas-pallet/ContainerCajasPallets';
 import styles from './detalle-pallet.module.css';
 
 /* eslint-disable-next-line */
@@ -10,26 +11,36 @@ export interface DetallePalletProps {
 export function DetallePallet({ pallet }: DetallePalletProps) {
   const { numcajas, vol, peso, palletid, nombrelocal, porcUso } = pallet;
   return (
-    <Row>
-      <Col span="4" style={{ display: 'flex', alignItems: 'center' }}>
-        <Icono pallet={pallet} />
-      </Col>
-      <Col span="12">
-        <Descriptions column={1} bordered size="small">
-          <Descriptions.Item label="Local">{nombrelocal}</Descriptions.Item>
-          <Descriptions.Item label="% Uso">
-            {porcUso.toFixed(1)}%
-          </Descriptions.Item>
-          <Descriptions.Item label="Número cajas">{numcajas}</Descriptions.Item>
-          <Descriptions.Item label="Volumen usado">
-            {(vol / 10000).toFixed(0)} cm<sup>3</sup>
-          </Descriptions.Item>
-          <Descriptions.Item label="Peso">
-            {(peso / 1000).toFixed(2)} kgs
-          </Descriptions.Item>
-        </Descriptions>
-      </Col>
-    </Row>
+    <div>
+      <Row>
+        <Col span="4" style={{ display: 'flex', alignItems: 'center' }}>
+          <Icono pallet={pallet} />
+        </Col>
+        <Col span="12">
+          <Descriptions column={1} bordered size="small">
+            <Descriptions.Item label="Local">
+              <b>{nombrelocal}</b>
+            </Descriptions.Item>
+            <Descriptions.Item label="% Uso">
+              {porcUso.toFixed(1)}%
+            </Descriptions.Item>
+            <Descriptions.Item label="Número cajas">
+              {numcajas}
+            </Descriptions.Item>
+            <Descriptions.Item label="Volumen usado">
+              {(vol / 10000).toFixed(0)} cm<sup>3</sup>
+            </Descriptions.Item>
+            <Descriptions.Item label="Peso">
+              {(peso / 1000).toFixed(2)} kgs
+            </Descriptions.Item>
+          </Descriptions>
+        </Col>
+      </Row>
+
+      <div style={{ margin: '1em 0' }}>
+        <ContainerCajasPallets pallet={pallet} />
+      </div>
+    </div>
   );
 }
 export function Icono({

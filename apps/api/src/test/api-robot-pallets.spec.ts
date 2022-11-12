@@ -1,4 +1,4 @@
-import { IPalletConsolidado } from '@flash-ws/api-interfaces';
+import { ICajaConsolidada, IPalletConsolidado } from '@flash-ws/api-interfaces';
 import {
   Box,
   dataSource,
@@ -39,5 +39,9 @@ describe('generación de pallets', () => {
     expect(res.status).toBe(200);
     const o = <IPalletConsolidado[]>res.body;
     expect(o.length).toBe(1);
+  });
+  it('pallet no existe debe dar 404', async () => {
+    const res = await request(app).get(`/api/pallets/123456789`);
+    expect(res.status).toBe(404);
   });
 });
