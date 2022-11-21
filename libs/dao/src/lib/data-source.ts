@@ -41,6 +41,8 @@ const dataSource = new DataSource({
   ],
   logging: false,
   synchronize: true,
+
+  extra: { max: 10, connectionTimeoutMillis: 1000 },
 });
 
 export { dataSource };

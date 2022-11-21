@@ -2,6 +2,7 @@ import * as fs from 'fs';
 
 import {
   Caja,
+  CajaPura,
   dataSource,
   LineaDetalle,
   Local,
@@ -13,13 +14,13 @@ import { ClienteService } from './ClienteService';
 import { fieldMap, firstSheetAsJSON } from './b2butils';
 import { LocalesService } from './LocalesService';
 import { COL_NUM_ORDEN, Linea } from './types';
+import { ICajaConsolidada } from '@flash-ws/api-interfaces';
+import { ifDebug } from '@flash-ws/shared';
 
 type RespuestaCrear = {
   ordenes: Array<OrdenCompra>;
   status: Array<string>;
 };
-
-const repo = dataSource.getRepository(OrdenCompra);
 
 export class OrdenService {
   static save(orden: OrdenCompra) {
@@ -35,6 +36,7 @@ export class OrdenService {
     throw new Error('Method not implemented.');
   }
   static findAll(): Promise<Array<OrdenCompra>> {
+    const repo = dataSource.getRepository(OrdenCompra);
     return repo.find({ relations: { lineas: true, unidad: true } });
   }
 
@@ -44,6 +46,7 @@ export class OrdenService {
   constructor(public unidadNegocio: UnidadNegocio) {}
 
   async crearOrden(path: string): Promise<RespuestaCrear> {
+    const repo = dataSource.getRepository(OrdenCompra);
     if (!fs.existsSync(path)) {
       throw Error('Archivo no existe');
     }
@@ -108,6 +111,7 @@ export class OrdenService {
     const promesas = Object.values(ordenGroup).map(async (loteLineas) => {
       const orden = await this.ordenFromJSON(loteLineas);
       orden.unidad = this.unidadNegocio;
+      ifDebug(`Salvando orden ${orden.numero}`);
 
       return repo.save(orden);
     });

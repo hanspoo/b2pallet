@@ -1,3 +1,4 @@
+import { getConnectionManager, ConnectionManager, Connection } from 'typeorm';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
@@ -8,6 +9,7 @@ import {
   Pallet,
   palletsCajas,
   ProtoPallet,
+  ServicioPallets,
   UnidadNegocio,
 } from '@flash-ws/dao';
 import {
@@ -37,6 +39,9 @@ import { PalletRobot } from '@flash-ws/robot';
 const ordenes = express.Router();
 
 ordenes.get('/', async function (req: Request, res: Response) {
+  const c = getConnectionManager();
+  console.log('hay ' + c.connections.length + ' conexiones');
+
   const ordenes = await OrdenService.findAll();
   const conConsolidada = ordenes.map(async (o) => {
     const orden = o as unknown as SuperOrden;
@@ -223,8 +228,9 @@ ordenes.post(
     res: Response
   ) {
     console.log('1');
-    //const orden = await OrdenService.loadConLineas(req.params.id);
-    const orden = await dataSource.getRepository(OrdenCompra).findOne({
+    const repo = dataSource.getRepository(OrdenCompra);
+    console.log('1.1');
+    const ordenes = await repo.find({
       where: { id: req.params.id },
       relations: [
         'lineas',
@@ -236,24 +242,30 @@ ordenes.post(
       ],
     });
     console.log('2');
-    if (!orden)
+    if (ordenes.length !== 1)
       return res.status(400).send(`Orden ${req.params.id} no encontrada`);
 
-    // await agregarProductos(orden);
+    const orden = ordenes[0];
+    const { protoID, nextHU } = req.body;
 
-    // OrdenCompra.expandirCajas(orden);
-    const protoID = req.body.protoID;
+    let hu = nextHU;
+    if (!hu) {
+      const s = new ServicioPallets();
+      hu = await s.ultimaHU();
+      hu++;
+    }
 
     const repoPallets = dataSource.getRepository(Pallet);
     console.log('3');
 
     async function borrarPalletsActuales() {
-      const orden = await dataSource.getRepository(OrdenCompra).findOne({
-        where: { id: req.params.id },
-        relations: ['pallets'],
+      console.log('3.1');
+      const pallets = await repoPallets.find({
+        where: { ordenCompraId: orden.id },
       });
+      console.log('3.2');
 
-      await repoPallets.remove(orden.pallets);
+      await repoPallets.remove(pallets);
     }
     await borrarPalletsActuales();
 
@@ -262,28 +274,16 @@ ordenes.post(
     const proto = await dataSource
       .getRepository(ProtoPallet)
       .findOne({ where: { id: protoID }, relations: { box: true } });
-    orden.pallets = robot.generarPallets(proto);
-    // console.log(
-    //   'orden.pallets[0].ordenCompra.id',
-    //   orden.pallets[0].ordenCompra.id
-    // );
-    // console.log(
-    //   'orden.lineas[0].ordenCompra.id',
-    //   orden.lineas[0].ordenCompra.id
-    // );
+    console.log('4');
+    orden.pallets = await robot.generarPallets(proto);
+    orden.pallets.forEach((pallet) => (pallet.hu = hu++));
+    console.log('hay orden.pallets:' + orden.pallets.length);
 
-    const promesas = orden.pallets.map((pallet) =>
-      dataSource.getRepository(Pallet).save(pallet)
-    );
-    await Promise.all(promesas);
-
-    // orden.lineas.forEach((linea) =>
-    //   linea.cajas.forEach((caja) => (caja.linea = undefined))
-    // );
-
-    // const result = JSON.parse(JSON.stringify(orden, getCircularReplacer()));
+    await dataSource.getRepository(Pallet).save(orden.pallets);
 
     const pallets = await consolidaPallets(req.params.id);
+    console.log('7');
+
     return res.send(pallets as unknown as IPalletConsolidado[]);
   }
 );
@@ -346,6 +346,7 @@ ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
   try {
     const service = new OrdenService(unidad);
     const { ordenes } = await service.crearOrden(req.file.path);
+
     res.send({ msg: `Se crearon/actualizaron ${ordenes.length} orden(es)` });
   } catch (error) {
     // console.log('atrapando error al 2 ', JSON.stringify(error));

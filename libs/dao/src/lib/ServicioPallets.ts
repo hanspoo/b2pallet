@@ -1,11 +1,14 @@
 import { dataSource } from './data-source';
 import { ICajaConsolidada, IPalletConsolidado } from '@flash-ws/api-interfaces';
-import { fixNombreLocal } from '@flash-ws/shared';
+import { fixNombreLocal, ifDebug } from '@flash-ws/shared';
+import { CajaPura } from './CajaPura';
+import { ServicioCajas } from './ServicioCajas';
 
 export interface Resultado {
   palletId: number;
   numcajas: string;
   vol: string;
+  hu: number;
   peso: string;
   protolargo: number;
   protoancho: number;
@@ -26,6 +29,7 @@ export async function consolidaPallets(
   box_A."ancho" AS protoAncho,
   box_A."alto" AS protoAlto,
   pallet."id" AS palletId,
+  pallet.hu AS hu,
   local."nombre" AS nombreLocal
 FROM
   "linea_detalle" linea_detalle INNER JOIN "caja" caja ON linea_detalle."id" = caja."lineaId"
@@ -40,11 +44,14 @@ GROUP BY
   palletid,
   nombreLocal,
   protoLargo,
+  hu,
   protoAncho,
   protoAlto
   `;
-  const queryRunner = await dataSource.createQueryRunner();
+  const queryRunner = dataSource.createQueryRunner();
+  console.log(`consolida pallets\n ${sql}`);
   const rows: Array<Resultado> = await queryRunner.manager.query(sql);
+  queryRunner.release();
   return rows.map(
     ({
       numcajas,
@@ -55,14 +62,15 @@ GROUP BY
       protolargo,
       protoancho,
       protoalto,
+      hu,
     }) => {
       const volPallet = protolargo * protoancho * protoalto;
       const c: IPalletConsolidado = {
         palletid,
+        hu,
         numcajas: parseInt(numcajas),
         vol: parseInt(vol),
         peso: parseInt(peso),
-
         nombrelocal: fixNombreLocal(nombrelocal),
         porcUso: (parseFloat(vol) * 100) / volPallet,
       };
@@ -71,49 +79,19 @@ GROUP BY
   );
 }
 
-interface CajaPura {
-  peso: string;
-  largo: string;
-  ancho: string;
-  alto: string;
-  producto: string;
-  codigo: string;
-  codcenco: string;
-}
 export async function cajasPallet(
   palletId: number
 ): Promise<ICajaConsolidada[]> {
-  const sql = `
-  SELECT
-     box."largo" AS largo,
-     box."ancho" AS ancho,
-     box."alto" AS alto,
-     producto."peso" AS peso,
-     producto."nombre" AS producto,
-     producto."codigo" AS codigo,
-     producto."codCenco" AS codCenco
-FROM
-     pallet INNER JOIN caja ON pallet."id" = caja."palletId"
-     INNER JOIN linea_detalle ON caja."lineaId" = linea_detalle."id"
-     INNER JOIN producto ON linea_detalle."productoId" = producto."id"
-     INNER JOIN box ON producto."boxId" = box."id"
-WHERE
-     pallet.id = ${palletId}
-  `;
+  return ServicioCajas.cajasPallet(palletId);
+}
 
-  const queryRunner = await dataSource.createQueryRunner();
-  const rows: Array<CajaPura> = await queryRunner.manager.query(sql);
+export class ServicioPallets {
+  async ultimaHU(): Promise<number> {
+    const queryRunner = dataSource.createQueryRunner();
+    const sql = 'select max(hu) as maxhu from pallet';
+    const res = await queryRunner.manager.query(sql);
+    await queryRunner.release();
 
-  const array: Array<ICajaConsolidada> = rows.map(
-    ({ peso, largo, ancho, alto, producto, codigo, codcenco }) => ({
-      largo: parseFloat(largo),
-      ancho: parseFloat(ancho),
-      alto: parseFloat(alto),
-      peso: parseFloat(peso),
-      producto,
-      codigo,
-      codcenco,
-    })
-  );
-  return array;
+    return Promise.resolve(res[0].maxhu || 0);
+  }
 }

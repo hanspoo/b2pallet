@@ -13,4 +13,6 @@ values
 insert into
   unidad_negocio
 values
-  (2, 'Sisa', 1)
+  (2, 'Sisa', 1);
+
+  

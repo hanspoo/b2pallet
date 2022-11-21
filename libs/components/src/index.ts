@@ -1,3 +1,4 @@
+export * from './lib/pallet-barcode/pallet-barcode';
 export * from './lib/lista-cajas-pallet/lista-cajas-pallet';
 export * from './lib/detalle-pallet/detalle-pallet';
 export * from './lib/pallets-icono/pallets-icono';

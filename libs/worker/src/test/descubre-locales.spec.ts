@@ -1,3 +1,6 @@
+/**
+ * @group integ
+ */
 import {
   Cliente,
   inicializarCencosud,

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { Local, UnidadNegocio, dataSource } from '@flash-ws/dao';
 import { ClienteService } from './ClienteService';
 import { firstSheetAsJSON } from './b2butils';
-import { fixNombreLocal } from '@flash-ws/shared';
+import { fixNombreLocal, ifDebug } from '@flash-ws/shared';
 
 const fieldMap = {
   codLocal: 'Cód. Local Destino',
@@ -83,6 +83,7 @@ export class LocalesService {
 
     nuevos.map((nuevo) => {
       // return repoLocal.save(nuevo);
+      ifDebug(`Agregando local ${nuevo.nombre}`);
       this.unidadNegocio.locales.push(nuevo);
       // console.log(`creando local ${nuevo.nombre}`);
     });

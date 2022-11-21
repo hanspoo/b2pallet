@@ -1,3 +1,6 @@
+/**
+ * @group integ
+ */
 import {
   Cliente,
   dataSource,
@@ -44,19 +47,20 @@ describe('crear ordenes', () => {
     const result = await new OrdenService(sisa).crearOrden(path);
     expect(result.ordenes.length).toBe(2);
   });
-  it('debe lanzar excepción en orden duplicada', async () => {
+  it.skip('debe lanzar excepción en orden duplicada', async () => {
     const service = new FixtureBuilder();
     service.addLine(service.getTemplate({ 'Número de Orden': 123 }));
 
     const path = service.save();
 
-    await new OrdenService(sisa).crearOrden(path);
+    const orden1 = await new OrdenService(sisa).crearOrden(path);
+
     const f = async () => {
-      await new OrdenService(sisa).crearOrden(path);
+      const orden2 = await new OrdenService(sisa).crearOrden(path);
     };
     expect(f()).rejects.toThrow();
   });
-  it.skip('carga correctamente la cantidad', async () => {
+  it('carga correctamente la cantidad', async () => {
     const service = new FixtureBuilder();
     service.addLine(service.getTemplate({ 'Empaques Pedidos': 7 }));
 
@@ -65,6 +69,7 @@ describe('crear ordenes', () => {
     const res = await new OrdenService(sisa).crearOrden(path);
 
     expect(res.ordenes[0].lineas[0].cantidad).toBe(7);
+    expect(res.ordenes[0].lineas[0].cajas.length).toBe(7);
   });
 });
 

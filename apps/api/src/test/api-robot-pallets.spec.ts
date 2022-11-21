@@ -1,4 +1,8 @@
-import { ICajaConsolidada, IPalletConsolidado } from '@flash-ws/api-interfaces';
+import {
+  BodyGenPallets,
+  ICajaConsolidada,
+  IPalletConsolidado,
+} from '@flash-ws/api-interfaces';
 import {
   Box,
   dataSource,
@@ -39,6 +43,17 @@ describe('generación de pallets', () => {
     expect(res.status).toBe(200);
     const o = <IPalletConsolidado[]>res.body;
     expect(o.length).toBe(1);
+  });
+  it('asigna desde la hu entregada', async () => {
+    const body: BodyGenPallets = { protoID: 1, nextHU: 10000 };
+    const res = await request(app)
+      .post(`/api/ordenes/${orden.id}/gen-pallets`)
+      .send(body)
+      .set('Content-Type', 'application/json');
+    expect(res.status).toBe(200);
+    const o = <IPalletConsolidado[]>res.body;
+    expect(o.length).toBe(1);
+    expect(o[0].hu).toBe(10000);
   });
   it('pallet no existe debe dar 404', async () => {
     const res = await request(app).get(`/api/pallets/123456789`);

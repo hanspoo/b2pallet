@@ -15,18 +15,24 @@ import { OrdenCompra } from './orden-compra.entity';
 @Entity()
 export class Pallet {
   static volumenUsado(pallet: Pallet) {
-    return pallet.cajas.reduce((acc, iter) => {
-      return acc + iter.linea.producto.box.volumen;
+    return pallet.cajas.reduce((acc, caja) => {
+      return acc + caja.volumen();
     }, 0);
   }
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ unique: true })
+  hu?: number;
 
   @ManyToOne(() => OrdenCompra, (orden) => orden.pallets, {
     nullable: false,
     onDelete: 'CASCADE',
   })
   ordenCompra: OrdenCompra;
+
+  @Column()
+  ordenCompraId?: string;
 
   @OneToOne(() => Box, { cascade: ['insert'], onDelete: 'CASCADE' })
   @JoinColumn()

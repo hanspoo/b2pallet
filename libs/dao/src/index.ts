@@ -14,11 +14,13 @@ export * from './lib/entity/pedido.entity';
 export * from './lib/entity/caja.entity';
 export * from './lib/entity/pallet.entity';
 export * from './lib/entity/proto-pallet.entity';
+export * from './lib/CajaPura';
 
 export * from './lib/entity/producto.entity';
 export * from './lib/entity/box.entity';
 export * from './lib/inicializarCencosud';
 export * from './lib/ServicioPallets';
+export * from './lib/ServicioCajas';
 
 // Genera imports
 // find ./lib/entity/ -type f |perl -ane 'print qq#export * from "$F[0]"\n#' |sed s/\.ts//

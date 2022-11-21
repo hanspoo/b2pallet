@@ -37,7 +37,7 @@ export async function crearOrdenHelper(numLineas = 1): Promise<OrdenCompra> {
 
   const orden = new OrdenCompra();
   orden.unidad = sisa;
-  orden.numero = '5575426472';
+  orden.numero = crypto.randomInt(100000000) + '';
   orden.emision = '15-09-2022';
   orden.entrega = '22-09-2022';
 

@@ -1,4 +1,6 @@
 export interface ICajaConsolidada {
+  localId: number;
+  id: number;
   largo: number;
   peso: number;
   ancho: number;
@@ -6,4 +8,5 @@ export interface ICajaConsolidada {
   producto: string;
   codigo: string;
   codcenco: string;
+  lineaid: string;
 }

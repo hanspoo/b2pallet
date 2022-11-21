@@ -1,4 +1,4 @@
-import { EstadoLinea } from '@flash-ws/api-interfaces';
+import { EstadoLinea, ICajaConsolidada } from '@flash-ws/api-interfaces';
 import {
   Box,
   Caja,
@@ -6,10 +6,13 @@ import {
   OrdenCompra,
   Pallet,
   ProtoPallet,
+  ServicioCajas,
 } from '@flash-ws/dao';
+import { ifDebug } from '@flash-ws/shared';
 
 export class PalletRobot {
-  generarPallets(proto: ProtoPallet): Pallet[] {
+  async generarPallets(proto: ProtoPallet): Promise<Pallet[]> {
+    ifDebug('Generando pallets para orden ' + this.orden.id);
     const porLocal: Record<number, LineaDetalle[]> = this.orden.lineas
       .filter((linea) => linea.estado === EstadoLinea.Aprobada)
       .reduce((acc: Record<number, LineaDetalle[]>, iter: LineaDetalle) => {
@@ -25,9 +28,20 @@ export class PalletRobot {
         return acc;
       }, {});
 
+    ifDebug(
+      `Hay ${Object.keys(porLocal).length} locales con productos aprobados`
+    );
+
+    // const cajas = await ServicioCajas.cajasOrden(this.orden.id);
+    // if (cajas.length === 0) throw Error('No hay cajas en la orden');
+
     const res: Pallet[] = Object.keys(porLocal).reduce(
-      (acc: Pallet[], iter) => {
-        const pallets = this.generarPalletsPorLocal(parseInt(iter), proto);
+      (acc: Pallet[], iter: any) => {
+        const pallets = this.generarPalletsPorLocal(
+          parseInt(iter),
+          proto,
+          porLocal[iter]
+        );
         acc = [...acc, ...pallets];
         return acc;
       },
@@ -36,28 +50,34 @@ export class PalletRobot {
 
     return res;
   }
-  generarPalletsPorLocal(idLocal: number, proto: ProtoPallet): Pallet[] {
+  generarPalletsPorLocal(
+    idLocal: number,
+    proto: ProtoPallet,
+    lineas: Array<LineaDetalle>
+  ): Pallet[] {
     const pallets: Pallet[] = [];
-    const cajas: Caja[] = this.orden.lineas
-      .filter((linea) => linea.localId === idLocal)
-      .reduce((acc: Caja[], iter: LineaDetalle) => {
-        acc = [...acc, ...iter.cajas];
-        return acc;
-      }, []);
+    const cajas = lineas.reduce((acc: Array<Caja>, iter: LineaDetalle) => {
+      return acc.concat(iter.cajas);
+    }, []);
 
     for (let i = 0; i < cajas.length; i++) {
       const caja = cajas[i];
       if (pallets.length === 0) {
-        pallets.push(this.crearPallet(proto, idLocal));
+        const p = this.crearPallet(proto, idLocal);
+        ifDebug(
+          `Agregando primer pallet local ${idLocal}, volumen: ${p.box.volumen}`
+        );
+        pallets.push(p);
       }
       let pallet = pallets[pallets.length - 1];
       if (!agregar(pallet, caja)) {
         pallet = this.crearPallet(proto, idLocal);
+        ifDebug(
+          `No había espacio, agregando pallet vol, ${pallet.box.volumen}`
+        );
         pallets.push(pallet);
         if (!agregar(pallet, caja)) {
-          throw Error(
-            `No se pudo agregar caja ${caja.linea.producto.nombre} en pallet`
-          );
+          throw Error(`No se pudo agregar caja ${caja.id} en pallet`);
         }
       }
     }
@@ -86,10 +106,18 @@ function cabeCajaEnPallet(pallet: Pallet, caja: Caja) {
   const volUsado = Pallet.volumenUsado(pallet);
   const cabe = volUsado + caja.volumen() <= pallet.box.volumen;
   if (!cabe)
-    console.log(
+    ifDebug(
       `No cabe la caja ${volUsado} + ${caja.volumen()} <= ${
         pallet.box.volumen
       };`
     );
   return cabe;
 }
+// function volumen(caja: ICajaConsolidada) {
+//   return caja.largo * caja.ancho * caja.alto;
+// }
+// function cajaFromConsolidada(caja: ICajaConsolidada): Caja {
+//   const c = new Caja();
+//   c.id = caja.id;
+//   return c;
+// }

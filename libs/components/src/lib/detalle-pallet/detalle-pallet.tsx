@@ -9,7 +9,7 @@ export interface DetallePalletProps {
 }
 
 export function DetallePallet({ pallet }: DetallePalletProps) {
-  const { numcajas, vol, peso, palletid, nombrelocal, porcUso } = pallet;
+  const { numcajas, vol, peso, palletid, nombrelocal, porcUso, hu } = pallet;
   return (
     <div>
       <Row>
@@ -18,6 +18,9 @@ export function DetallePallet({ pallet }: DetallePalletProps) {
         </Col>
         <Col span="12">
           <Descriptions column={1} bordered size="small">
+            <Descriptions.Item label="HU">
+              <b>{hu}</b>
+            </Descriptions.Item>
             <Descriptions.Item label="Local">
               <b>{nombrelocal}</b>
             </Descriptions.Item>

@@ -8,7 +8,7 @@ import {
 } from '@flash-ws/api-interfaces';
 import { capitalize } from '@flash-ws/shared';
 
-import { Button, Radio, Select, Spin, Table } from 'antd';
+import { Button, Form, Input, Radio, Select, Spin, Table } from 'antd';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import PalletsIcono from '../pallets-icono/pallets-icono';
@@ -100,6 +100,7 @@ function PalletsGeneratorImpl({
   orden,
   setPallets,
 }: PalletsGeneratorImplProps) {
+  const [nextHU, setNextHU] = useState('');
   const [generando, setGenerando] = useState(false);
   const [errorGenerando, setErrorGenerando] = useState('');
   // const [pallets, setPallets] = useState<IPallet[]>([]);
@@ -186,13 +187,24 @@ function PalletsGeneratorImpl({
 
       {!generando && (
         <span>
-          <Button
-            type="primary"
-            style={{ marginBottom: '1em' }}
-            onClick={generarPallets}
-          >
-            Comenzar
-          </Button>
+          <Form layout="vertical">
+            <Form.Item label="Próxima HU" name="tipoHU">
+              <Radio.Group>
+                <Radio value="horizontal">Automática</Radio>
+                <br />
+                <Radio value="vertical">Especificar</Radio>
+                <Input placeholder="HU" />
+              </Radio.Group>
+            </Form.Item>
+
+            <Button
+              type="primary"
+              style={{ marginBottom: '1em' }}
+              onClick={generarPallets}
+            >
+              Comenzar
+            </Button>
+          </Form>
           <Table
             dataSource={ordenadas}
             columns={columns}
