@@ -23,7 +23,6 @@
   height: 160px;
 }
 
-
 .site-layout .site-layout-background {
   background: #fff;
 }
@@ -32,7 +31,6 @@
 section.ant-layout:nth-child(1) {
   height: 100vh;
 }
-
 
 .fadeOut {
   opacity: 0;
@@ -63,21 +61,17 @@ dd {
   padding: 2px 4px;
 }
 
-
 .caja {
   margin-right: 3px;
-  height:14px;
-  width:14px;
+  height: 14px;
+  width: 14px;
   background-color: orange;
   border: solid 1px #666;
 }
 
-
 tr.disabled-row td {
   color: #ccc;
-
 }
-
 
 /* table tbody tr > td:nth-child(2) {
   width: 1em !important
@@ -89,3 +83,7 @@ table tbody tr > td:nth-child(3) {
 /* table.lineas tbody tr > td:nth-child(1) {
   width: 14px
 } */
+
+.ant-layout {
+  background-color: white !important;
+}

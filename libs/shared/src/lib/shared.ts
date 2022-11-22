@@ -29,3 +29,17 @@ function capAll(s: string): string {
 export function ifDebug(s: string): void {
   if (process.env['DEBUG']) console.log(s);
 }
+
+export enum Distribuir {
+  HORIZONTAL = 'HORIZONTAL',
+  VERTICAL = 'VERTICAL',
+}
+export enum Ordenar {
+  PESO = 'PESO',
+  VOLUMEN = 'VOLUMEN',
+}
+
+export enum TipoHU {
+  AUTOMATICA = 'AUTOMATICA',
+  MANUAL = 'MANUAL',
+}

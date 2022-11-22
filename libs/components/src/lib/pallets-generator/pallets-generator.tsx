@@ -1,32 +1,35 @@
 import {
-  EstadoLinea,
   ILineaDetalle,
   ILocal,
   IOrdenCompra,
-  IPallet,
   IPalletConsolidado,
 } from '@flash-ws/api-interfaces';
-import { capitalize } from '@flash-ws/shared';
+import { capitalize, Distribuir, Ordenar, TipoHU } from '@flash-ws/shared';
 
-import { Button, Form, Input, Radio, Select, Spin, Table } from 'antd';
+import { Button, Radio, Spin } from 'antd';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import PalletsIcono from '../pallets-icono/pallets-icono';
 import Pallets from '../pallets/pallets';
-import styles from './pallets-generator.module.css';
-import { useLocal } from './useLocal';
+import { PalletsGeneratorImpl } from './PalletsGeneratorImpl';
 
 /* eslint-disable-next-line */
 export interface PalletsGeneratorProps {
   orden: IOrdenCompra;
 }
 
-type LocalEntry = {
+export interface OpcionesGenPallets {
+  distribuir: Distribuir;
+  ordenar: Ordenar;
+  tipoHU: TipoHU;
+  huComenzar: number;
+}
+export type LocalEntry = {
   local: ILocal;
   lineas: ILineaDetalle[];
 };
 
-type PorLocal = Array<LocalEntry>;
+export type PorLocal = Array<LocalEntry>;
 enum VistaPallets {
   ICONO = 'ICONO',
   TABLA = 'TABLA',
@@ -65,7 +68,7 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
       <PalletsGeneratorImpl
         orden={orden}
         setPallets={(pallets) => {
-          setPallets(pallets);
+          setPallets(pallets || []);
           setMostrarGenerador(false);
         }}
       />
@@ -92,130 +95,10 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
   );
 }
 
-type PalletsGeneratorImplProps = {
+export type PalletsGeneratorImplProps = {
   orden: IOrdenCompra;
   setPallets: (pallets: IPalletConsolidado[]) => void;
 };
-function PalletsGeneratorImpl({
-  orden,
-  setPallets,
-}: PalletsGeneratorImplProps) {
-  const [nextHU, setNextHU] = useState('');
-  const [generando, setGenerando] = useState(false);
-  const [errorGenerando, setErrorGenerando] = useState('');
-  // const [pallets, setPallets] = useState<IPallet[]>([]);
-  const aprobadas = orden.lineas.filter(
-    (linea) => linea.estado === EstadoLinea.Aprobada
-  );
-  const [loading, lineas] = useLocal(aprobadas);
-  if (loading) return <p>Cargando...</p>;
-  if (!lineas) return <p>Error..</p>;
-
-  const INIT: PorLocal = [];
-  const porLocal: PorLocal = lineas.reduce((acc, iter) => {
-    const ele = acc.find((rec) => rec.local.id === iter.localId);
-    if (ele) {
-      ele.lineas.push(iter);
-    } else {
-      acc.push({ local: iter.local, lineas: [iter] });
-    }
-    return acc;
-  }, INIT);
-  const ordenadas = porLocal.sort((a, b) =>
-    a.local.nombre.toLowerCase().localeCompare(b.local.nombre.toLowerCase())
-  );
-
-  const columns = [
-    {
-      title: 'Local',
-      dataIndex: 'local',
-      key: 'nombre',
-
-      render: (local: ILocal) => local.nombre,
-      sorter: (a: LocalEntry, b: LocalEntry) => {
-        return a.local.nombre
-          .toLocaleLowerCase()
-          .localeCompare(b.local.nombre.toLocaleLowerCase());
-      },
-    },
-    {
-      title: 'Productos',
-      dataIndex: 'lineas',
-      align: 'right' as any,
-      width: '5em',
-      render: (lineas: Array<ILineaDetalle>) => lineas.length,
-      sorter: (a: LocalEntry, b: LocalEntry) => {
-        return a.lineas.length - b.lineas.length;
-      },
-    },
-  ];
-
-  function generarPallets() {
-    setGenerando(true);
-    axios
-      .post<IPalletConsolidado[]>(
-        `${process.env['NX_SERVER_URL']}/api/ordenes/${orden.id}/gen-pallets`,
-        {
-          protoID: 1,
-        }
-      )
-      .then((response) => {
-        setPallets(response.data);
-        setGenerando(false);
-      })
-      .catch((error) => {
-        setErrorGenerando(error.message);
-        setGenerando(false);
-      });
-  }
-
-  if (errorGenerando) return <p>{errorGenerando}</p>;
-
-  const numProductos = aprobadas.reduce((acc, iter) => {
-    return acc + iter.cantidad;
-  }, 0);
-  return (
-    <div className={styles['container']}>
-      <p>
-        Se generará la distribución en pallets por local para todos los
-        productos aprobados.
-      </p>
-      <p>
-        <b>{ordenadas.length}</b> locales, <b>{numProductos}</b> unidades.
-      </p>
-      {generando && <Spin />}
-
-      {!generando && (
-        <span>
-          <Form layout="vertical">
-            <Form.Item label="Próxima HU" name="tipoHU">
-              <Radio.Group>
-                <Radio value="horizontal">Automática</Radio>
-                <br />
-                <Radio value="vertical">Especificar</Radio>
-                <Input placeholder="HU" />
-              </Radio.Group>
-            </Form.Item>
-
-            <Button
-              type="primary"
-              style={{ marginBottom: '1em' }}
-              onClick={generarPallets}
-            >
-              Comenzar
-            </Button>
-          </Form>
-          <Table
-            dataSource={ordenadas}
-            columns={columns}
-            pagination={{ pageSize: 10000 }}
-          />
-        </span>
-      )}
-    </div>
-  );
-}
-
 export default PalletsGenerator;
 
 type SelectorVistaPalletsProps = {

@@ -2,7 +2,7 @@ import { MailOutlined } from '@ant-design/icons';
 import { IOrdenCompra, ISuperOrden } from '@flash-ws/api-interfaces';
 import { actualizarOrdenes } from '@flash-ws/reductor';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Descriptions, Menu, Spin } from 'antd';
+import { Descriptions, Menu, Spin } from 'antd';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import GraficoAvance from '../grafico-avance/grafico-avance';
@@ -32,7 +32,6 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
   const [loading, setLoading] = useState(false);
   const [recargar, setRecargar] = useState<boolean>();
   const [error, setError] = useState('');
-  const queryClient = useQueryClient();
 
   const orden = ordenes.find((orden) => orden.id === id);
 
@@ -66,16 +65,6 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
   // if (error) return <p>Error: {error}</p>;
 
   if (!orden) return <p>Internal error</p>;
-
-  const items = [
-    { label: 'item 1', key: 'item-1' }, // remember to pass the key prop
-    { label: 'item 2', key: 'item-2' }, // which is required
-    {
-      label: 'sub menu',
-      key: 'submenu',
-      children: [{ label: 'item 3', key: 'submenu-item-1' }],
-    },
-  ];
 
   return (
     <>
@@ -120,7 +109,7 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         <TablaLineas
           // lineas={orden.lineas}
           orden={orden}
-          recargar={(orden: IOrdenCompra) => {
+          recargar={() => {
             dispatch(actualizarOrdenes());
 
             // setOrden(orden);

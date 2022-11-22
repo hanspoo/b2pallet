@@ -56,7 +56,7 @@ export function PalletsIcono({ pallets }: PalletsIconoProps) {
       >
         <Col span="12">
           <span style={{ position: 'absolute', bottom: '5px' }}>
-            Hay {pallets.length} pallets
+            Hay {pallets.length === 1 ? 'pallet' : 'pallets'}
           </span>
         </Col>
         <Col span="12" style={{ textAlign: 'right' }}>
@@ -66,7 +66,7 @@ export function PalletsIcono({ pallets }: PalletsIconoProps) {
             onChange={(e) => handleChange(e.target.value)}
           >
             {Object.keys(CriteriosOrden).map((v) => (
-              <Radio.Button value={v}>
+              <Radio.Button value={v} key={v}>
                 {capitalize(v.replace('_', ' '))}
               </Radio.Button>
             ))}
@@ -100,7 +100,7 @@ export function PalletsIcono({ pallets }: PalletsIconoProps) {
             >
               {p.porcUso.toFixed(1)}%
             </div>
-            <Cubeta pallet={p} />
+            <Cubeta pallet={p} key={p.palletid} />
             <div style={{ textAlign: 'center' }}>{p.nombrelocal}</div>
           </Col>
         ))}
