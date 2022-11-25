@@ -1,3 +1,4 @@
+export * from './lib/api-interfaces';
 export * from './lib/Message';
 export * from './lib/CambiarEstadoBody';
 export * from './lib/EstadoLinea';
@@ -19,3 +20,4 @@ export * from './lib/IConsolidadoCajas';
 export * from './lib/IPalletConsolidado';
 export * from './lib/caja-consolidada';
 export * from './lib/BodyGenPallets';
+export * from './lib/IOrdenConsolidada';

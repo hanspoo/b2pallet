@@ -46,4 +46,9 @@ export class Pallet {
 
   @OneToMany(() => Caja, (caja) => caja.pallet, { onDelete: 'SET NULL' })
   cajas: Caja[];
+
+  volumen() {
+    if (!this.box) throw Error(`La caja ${this.id} no tiene línea de detalle`);
+    return this.box.volumen;
+  }
 }

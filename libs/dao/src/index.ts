@@ -21,6 +21,7 @@ export * from './lib/entity/box.entity';
 export * from './lib/inicializarCencosud';
 export * from './lib/ServicioPallets';
 export * from './lib/ServicioCajas';
+export * from './lib/ServicioOrdenes';
 
 // Genera imports
 // find ./lib/entity/ -type f |perl -ane 'print qq#export * from "$F[0]"\n#' |sed s/\.ts//

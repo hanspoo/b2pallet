@@ -1,10 +1,13 @@
 import {
+  Distribuir,
   ILineaDetalle,
   ILocal,
   IOrdenCompra,
   IPalletConsolidado,
+  Ordenar,
+  TipoHU,
 } from '@flash-ws/api-interfaces';
-import { capitalize, Distribuir, Ordenar, TipoHU } from '@flash-ws/shared';
+import { capitalize } from '@flash-ws/shared';
 
 import { Button, Radio, Spin } from 'antd';
 import axios from 'axios';

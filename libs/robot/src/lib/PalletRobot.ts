@@ -1,4 +1,4 @@
-import { EstadoLinea, ICajaConsolidada } from '@flash-ws/api-interfaces';
+import { Distribuir, EstadoLinea, Ordenar } from '@flash-ws/api-interfaces';
 import {
   Box,
   Caja,
@@ -6,13 +6,21 @@ import {
   OrdenCompra,
   Pallet,
   ProtoPallet,
-  ServicioCajas,
 } from '@flash-ws/dao';
 import { ifDebug } from '@flash-ws/shared';
 
+export type PalletRobotConfig = {
+  ordenar?: Ordenar;
+  distribuir?: Distribuir;
+};
+
 export class PalletRobot {
+  constructor(public orden: OrdenCompra, public config?: PalletRobotConfig) {}
+
   async generarPallets(proto: ProtoPallet): Promise<Pallet[]> {
     ifDebug('Generando pallets para orden ' + this.orden.id);
+    if (this.orden.lineas.length === 0) throw Error('No hay líneas de detalle');
+
     const porLocal: Record<number, LineaDetalle[]> = this.orden.lineas
       .filter((linea) => linea.estado === EstadoLinea.Aprobada)
       .reduce((acc: Record<number, LineaDetalle[]>, iter: LineaDetalle) => {
@@ -55,36 +63,61 @@ export class PalletRobot {
     proto: ProtoPallet,
     lineas: Array<LineaDetalle>
   ): Pallet[] {
-    const pallets: Pallet[] = [];
+    // const pallets: Pallet[] = [];
     const cajas = lineas.reduce((acc: Array<Caja>, iter: LineaDetalle) => {
       return acc.concat(iter.cajas);
     }, []);
 
-    for (let i = 0; i < cajas.length; i++) {
+    if (cajas.length === 0) throw Error('No hay cajas para local ' + idLocal);
+    const ordenar = this.config?.ordenar || Ordenar.PESO;
+
+    const ordenadas =
+      ordenar === Ordenar.PESO ? ordenarPeso(cajas) : ordenarVolumen(cajas);
+
+    const volTotal: number = ordenadas.reduce((acc, iter) => {
+      return acc + iter.volumen();
+    }, 0);
+
+    const numPallets = volTotal / proto.volumen;
+    console.log(`se esperan ${numPallets} pallets`);
+
+    const pallets: Pallet[] = [];
+    for (let index = 0; index < numPallets; index++) {
+      pallets.push(this.crearPallet(proto, idLocal));
+    }
+
+    let palletActual = 0;
+
+    const distribuir = this.config?.distribuir || Distribuir.VERTICAL;
+    if (distribuir === Distribuir.HORIZONTAL) {
+      ordenadas.forEach((caja) => {
+        pallets[palletActual++ % pallets.length].cajas.push(caja);
+      });
+      return pallets;
+    }
+
+    for (let i = 0; i < ordenadas.length; i++) {
       const caja = cajas[i];
-      if (pallets.length === 0) {
-        const p = this.crearPallet(proto, idLocal);
-        ifDebug(
-          `Agregando primer pallet local ${idLocal}, volumen: ${p.box.volumen}`
-        );
-        pallets.push(p);
-      }
-      let pallet = pallets[pallets.length - 1];
+      let pallet = pallets[palletActual];
       if (!agregar(pallet, caja)) {
-        pallet = this.crearPallet(proto, idLocal);
+        palletActual++;
+        pallet = pallets[palletActual];
         ifDebug(
           `No había espacio, agregando pallet vol, ${pallet.box.volumen}`
         );
-        pallets.push(pallet);
+        // pallets.push(pallet);
         if (!agregar(pallet, caja)) {
-          throw Error(`No se pudo agregar caja ${caja.id} en pallet`);
+          throw Error(
+            `No se pudo agregar caja ${
+              caja.id
+            } en pallet nuevo, vol caja: ${caja.volumen()}, vol pallet: ${pallet.volumen()}`
+          );
         }
       }
     }
 
     return pallets;
   }
-  constructor(public orden: OrdenCompra) {}
   crearPallet(proto: ProtoPallet, idLocal: number): Pallet {
     const p = new Pallet();
     p.box = Box.clone(proto.box);
@@ -112,6 +145,21 @@ function cabeCajaEnPallet(pallet: Pallet, caja: Caja) {
       };`
     );
   return cabe;
+}
+
+function ordenarPeso(cajas: Caja[]): Caja[] {
+  return cajas.sort((a, b) => {
+    return b.linea.producto.peso - a.linea.producto.peso;
+  });
+}
+
+function ordenarVolumen(cajas: Caja[]): Caja[] {
+  return cajas.sort((a, b) => {
+    console.log(
+      `Comparand volumen: ${b.linea.producto.box.volumen} - ${a.linea.producto.box.volumen}`
+    );
+    return b.linea.producto.box.volumen - a.linea.producto.box.volumen;
+  });
 }
 // function volumen(caja: ICajaConsolidada) {
 //   return caja.largo * caja.ancho * caja.alto;

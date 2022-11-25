@@ -31,5 +31,7 @@ WHERE
     pallet."ordenCompraId" = '${id} '   
     `;
   const queryRunner = await dataSource.createQueryRunner();
-  return await queryRunner.manager.query(sql);
+  const filas = await queryRunner.manager.query(sql);
+  queryRunner.release();
+  return filas;
 }

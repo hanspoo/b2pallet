@@ -2,7 +2,6 @@ import {
   EstadoLinea,
   ILineaDetalle,
   ILocal,
-  IPallet,
   IPalletConsolidado,
 } from '@flash-ws/api-interfaces';
 import { Button, Spin, Table } from 'antd';

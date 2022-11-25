@@ -9,6 +9,13 @@ import {
 
 @Entity()
 export class Box {
+  constructor(params?: { largo: number; ancho: number; alto: number }) {
+    if (params) {
+      this.largo = params.largo;
+      this.ancho = params.ancho;
+      this.alto = params.alto;
+    }
+  }
   static clone(box: Box): Box {
     if (!box) throw Error(`No viene box para clonar`);
     const b = new Box();
@@ -58,6 +65,6 @@ export class Box {
   }
 
   get volumen(): number {
-    return this.largo * this.ancho * this.alto;
+    return (this.largo * this.ancho * this.alto) / 1000;
   }
 }

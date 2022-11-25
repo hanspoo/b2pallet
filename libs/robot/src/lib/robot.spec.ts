@@ -11,7 +11,6 @@ import {
   Pallet,
   Box,
   ProtoPallet,
-  Local,
 } from '@flash-ws/dao';
 import { crearOrdenHelper } from '@flash-ws/test-utils';
 
@@ -39,10 +38,10 @@ proto2.box = box2;
 
 describe('proto pallet', () => {
   it('volumen proto pallet 1x1x1=1000000', async () => {
-    expect(proto1.volumen).toBe(1000000);
+    expect(proto1.volumen).toBe(1000);
   });
   it('volumen proto pallet 2x2x2=8000000', async () => {
-    expect(proto2.volumen).toBe(8000000);
+    expect(proto2.volumen).toBe(8000);
   });
 });
 describe('elegir sólo aprobadas', () => {

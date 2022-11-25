@@ -1,4 +1,3 @@
-import { getConnectionManager, ConnectionManager, Connection } from 'typeorm';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
@@ -9,6 +8,7 @@ import {
   Pallet,
   palletsCajas,
   ProtoPallet,
+  ServicioOrdenes,
   ServicioPallets,
   UnidadNegocio,
 } from '@flash-ws/dao';
@@ -34,14 +34,16 @@ import {
 } from '@flash-ws/api-interfaces';
 
 import { SuperOrden } from '@flash-ws/dao';
-import { PalletRobot } from '@flash-ws/robot';
+import { PalletRobot, PalletRobotConfig } from '@flash-ws/robot';
+import { ifDebug } from '@flash-ws/shared';
 
 const ordenes = express.Router();
 
+ordenes.get('/consolidadas', async function (req: Request, res: Response) {
+  const ordenes = await ServicioOrdenes.ordenes();
+  res.json(ordenes);
+});
 ordenes.get('/', async function (req: Request, res: Response) {
-  const c = getConnectionManager();
-  console.log('hay ' + c.connections.length + ' conexiones');
-
   const ordenes = await OrdenService.findAll();
   const conConsolidada = ordenes.map(async (o) => {
     const orden = o as unknown as SuperOrden;
@@ -227,9 +229,9 @@ ordenes.post(
     req: Request<{ id: string }, null, BodyGenPallets>,
     res: Response
   ) {
-    console.log('1');
+    ifDebug('1');
     const repo = dataSource.getRepository(OrdenCompra);
-    console.log('1.1');
+    ifDebug('1.1');
     const ordenes = await repo.find({
       where: { id: req.params.id },
       relations: [
@@ -241,12 +243,12 @@ ordenes.post(
         'lineas.producto',
       ],
     });
-    console.log('2');
+    ifDebug('2');
     if (ordenes.length !== 1)
       return res.status(400).send(`Orden ${req.params.id} no encontrada`);
 
     const orden = ordenes[0];
-    const { protoID, nextHU } = req.body;
+    const { protoID, nextHU, ordenar, distribuir } = req.body;
 
     let hu = nextHU;
     if (!hu) {
@@ -256,33 +258,37 @@ ordenes.post(
     }
 
     const repoPallets = dataSource.getRepository(Pallet);
-    console.log('3');
+    ifDebug('3');
 
     async function borrarPalletsActuales() {
-      console.log('3.1');
+      ifDebug('3.1');
       const pallets = await repoPallets.find({
         where: { ordenCompraId: orden.id },
       });
-      console.log('3.2');
+      ifDebug('3.2');
 
       await repoPallets.remove(pallets);
     }
     await borrarPalletsActuales();
 
-    console.log('4');
-    const robot = new PalletRobot(orden);
+    ifDebug('4');
+
+    const robotConfig: PalletRobotConfig = { ordenar, distribuir };
+    const robot = new PalletRobot(orden, robotConfig);
     const proto = await dataSource
       .getRepository(ProtoPallet)
       .findOne({ where: { id: protoID }, relations: { box: true } });
-    console.log('4');
+    ifDebug('4');
     orden.pallets = await robot.generarPallets(proto);
     orden.pallets.forEach((pallet) => (pallet.hu = hu++));
-    console.log('hay orden.pallets:' + orden.pallets.length);
+    ifDebug('hay orden.pallets:' + orden.pallets.length);
+
+    ifDebug(orden.pallets[0].cajas + '');
 
     await dataSource.getRepository(Pallet).save(orden.pallets);
 
     const pallets = await consolidaPallets(req.params.id);
-    console.log('7');
+    ifDebug('7');
 
     return res.send(pallets as unknown as IPalletConsolidado[]);
   }

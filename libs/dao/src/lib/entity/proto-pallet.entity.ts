@@ -9,6 +9,10 @@ import { Box } from './box.entity';
 
 @Entity()
 export class ProtoPallet {
+  constructor(box?: Box) {
+    if (box) this.box = box;
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 

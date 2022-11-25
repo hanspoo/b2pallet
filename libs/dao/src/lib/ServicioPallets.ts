@@ -1,7 +1,6 @@
 import { dataSource } from './data-source';
 import { ICajaConsolidada, IPalletConsolidado } from '@flash-ws/api-interfaces';
 import { fixNombreLocal, ifDebug } from '@flash-ws/shared';
-import { CajaPura } from './CajaPura';
 import { ServicioCajas } from './ServicioCajas';
 
 export interface Resultado {
@@ -47,9 +46,12 @@ GROUP BY
   hu,
   protoAncho,
   protoAlto
+ORDER BY
+  palletid  
   `;
   const queryRunner = dataSource.createQueryRunner();
-  console.log(`consolida pallets\n ${sql}`);
+
+  ifDebug(sql);
   const rows: Array<Resultado> = await queryRunner.manager.query(sql);
   queryRunner.release();
   return rows.map(
