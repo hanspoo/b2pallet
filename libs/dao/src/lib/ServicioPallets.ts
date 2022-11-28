@@ -22,7 +22,7 @@ export async function consolidaPallets(
   const sql = `
   SELECT
   count(*) AS numCajas,
-  sum(box.largo*box.ancho*box.alto) AS vol,
+  sum((box.largo*box.ancho*box.alto)/1000) AS vol,
   sum(producto.peso) AS peso,
   box_A."largo" AS protoLargo,
   box_A."ancho" AS protoAncho,
@@ -66,7 +66,7 @@ ORDER BY
       protoalto,
       hu,
     }) => {
-      const volPallet = protolargo * protoancho * protoalto;
+      const volPallet = (protolargo * protoancho * protoalto) / 1000;
       const c: IPalletConsolidado = {
         palletid,
         hu,
@@ -79,6 +79,29 @@ ORDER BY
       return c;
     }
   );
+}
+export async function ultimaHUCliente(clienteId: number): Promise<number> {
+  const sql = `
+  select
+	max(hu) as hu
+from
+	"public"."local" local
+inner join "public"."pallet" pallet on
+	local."id" = pallet."localId"
+inner join "public"."unidad_negocio" unidad_negocio on
+	local."unidadId" = unidad_negocio."id"
+inner join "public"."cliente" cliente on
+	unidad_negocio."clienteId" = cliente."id"
+where
+	cliente.id = ${clienteId}
+  `;
+  const queryRunner = dataSource.createQueryRunner();
+
+  ifDebug(sql);
+  const rows: Array<{ hu }> = await queryRunner.manager.query(sql);
+  queryRunner.release();
+  if (rows.length === 0) return 0;
+  return rows[0].hu;
 }
 
 export async function cajasPallet(

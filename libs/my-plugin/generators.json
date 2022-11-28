@@ -17,6 +17,11 @@
       "factory": "./src/generators/antd-table/generator",
       "schema": "./src/generators/antd-table/schema.json",
       "description": "antd-table generator"
+    },
+    "interfaces": {
+      "factory": "./src/generators/interfaces/generator",
+      "schema": "./src/generators/interfaces/schema.json",
+      "description": "Generate interfaces from entities"
     }
   }
 }

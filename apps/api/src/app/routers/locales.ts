@@ -8,6 +8,7 @@ const locales = express.Router();
 locales.get('/', async function (req: Request, res: Response) {
   const locales = await dataSource.getRepository(Local).find({});
   res.json(locales);
+  
 });
 
 locales.get('/:id', async function (req: Request, res: Response) {

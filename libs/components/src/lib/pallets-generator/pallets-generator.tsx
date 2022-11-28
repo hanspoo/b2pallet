@@ -25,7 +25,7 @@ export interface OpcionesGenPallets {
   distribuir: Distribuir;
   ordenar: Ordenar;
   tipoHU: TipoHU;
-  huComenzar: number;
+  nextHU: number;
 }
 export type LocalEntry = {
   local: ILocal;

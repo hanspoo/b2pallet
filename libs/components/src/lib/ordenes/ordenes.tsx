@@ -1,4 +1,4 @@
-import { Button, Typography } from 'antd';
+import { Button, Input, Typography } from 'antd';
 
 import {
   IOrdenCompra,
@@ -12,11 +12,12 @@ import { Spin, Table } from 'antd';
 import styles from './ordenes.module.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Search from 'antd/lib/input/Search';
+
 import { UploadOrden } from '../upload-orden/upload-orden';
 import { DetalleOrden } from './DetalleOrden';
 import { formatNumber } from '../front-utils';
 import { useQueryClient } from '@tanstack/react-query';
+import OrdenesConsolidadas from '../ordenes-consolidadas/ordenes-consolidadas';
 
 const { Title } = Typography;
 
@@ -55,9 +56,9 @@ export function Ordenes(props: OrdenesProps) {
 }
 export function OrdenesImpl(props: OrdenesProps) {
   const [vista, setVista] = useState(Vista.Listado);
-  const [orden, setOrden] = useState(Vista.Listado);
+  const [orden, setOrden] = useState<string>();
 
-  function vistaDetalle(id: number) {
+  function vistaDetalle(id: string) {
     setOrden(id);
     setVista(Vista.Detalle);
   }
@@ -70,10 +71,10 @@ export function OrdenesImpl(props: OrdenesProps) {
         <Button onClick={() => setVista(Vista.Listado)}>Listado</Button>
       </div>
       {vista === Vista.Listado && (
-        <ListadoOrdenes vistaDetalle={vistaDetalle} />
+        <OrdenesConsolidadas vistaDetalle={vistaDetalle} />
       )}
       {vista === Vista.Subir && <UploadOrden />}
-      {vista === Vista.Detalle && <DetalleOrden id={orden} />}
+      {vista === Vista.Detalle && orden && <DetalleOrden id={orden} />}
     </div>
   );
 }
@@ -171,7 +172,7 @@ function ListadoOrdenes(props: ListadoProps) {
       render: (unidad: IUnidadNegocio) => unidad.nombre,
     },
     {
-      title: '#IProductos',
+      title: '#Productos',
       dataIndex: 'unidad',
       align: 'right' as const,
       render: (unidad: IUnidadNegocio, orden: IOrdenCompra) => {
@@ -215,7 +216,7 @@ function ListadoOrdenes(props: ListadoProps) {
           ? 'hay 1 orden'
           : `hay ${filtradas.length} ordenes`}
       </p>
-      <Search
+      <Input.Search
         style={{ marginBottom: '0.5em' }}
         placeholder="buscar..."
         onKeyUp={onSearch}

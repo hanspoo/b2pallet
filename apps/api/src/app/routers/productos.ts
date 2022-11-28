@@ -6,7 +6,9 @@ import { ProductoService } from '@flash-ws/worker';
 
 const productos = express.Router();
 productos.get('/', async function (req: Request, res: Response) {
-  const productos = await new ProductoService().findAll();
+  const productos = await dataSource
+    .getRepository(Producto)
+    .find({ relations: ['box'] });
   res.json(productos);
 });
 

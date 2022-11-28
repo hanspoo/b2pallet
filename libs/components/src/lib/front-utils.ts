@@ -25,7 +25,7 @@ export function fmtMedida(n: number) {
 
 export function volumen(box: IBox) {
   const { largo, ancho, alto } = box;
-  return largo * ancho * alto;
+  return (largo * ancho * alto) / 1000;
 }
 
 export const estados: Record<string, any> = {

@@ -8,7 +8,7 @@ import {
 import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-import { IProductos, Ordenes } from '@flash-ws/components';
+import { Productos, SeccionOrdenes } from '@flash-ws/components';
 
 const { Header, Sider, Content } = Layout;
 
@@ -22,7 +22,7 @@ enum Modo {
 }
 
 const App = () => {
-  const [modo, setModo] = useState(Modo.PRODUCTOS);
+  const [modo, setModo] = useState(Modo.ORDENES);
   const [collapsed, setCollapsed] = useState(false);
 
   function onChangeMenu(args: any) {
@@ -38,17 +38,17 @@ const App = () => {
           onClick={onChangeMenu}
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={[Modo.PRODUCTOS + '']}
+          defaultSelectedKeys={[Modo.ORDENES + '']}
           items={[
-            {
-              key: Modo.PRODUCTOS,
-              icon: <UploadOutlined />,
-              label: 'IProductos',
-            },
             {
               key: Modo.ORDENES,
               icon: <UserOutlined />,
               label: 'Órdenes',
+            },
+            {
+              key: Modo.PRODUCTOS,
+              icon: <UploadOutlined />,
+              label: 'Productos',
             },
             {
               key: Modo.PEDIDOS,
@@ -96,8 +96,8 @@ const App = () => {
             minHeight: 280,
           }}
         >
-          {modo === Modo.PRODUCTOS && <IProductos />}
-          {modo === Modo.ORDENES && <Ordenes />}
+          {modo === Modo.PRODUCTOS && <Productos />}
+          {modo === Modo.ORDENES && <SeccionOrdenes />}
           {modo === Modo.PREFS && <p>Preferencias</p>}
         </Content>
       </Layout>

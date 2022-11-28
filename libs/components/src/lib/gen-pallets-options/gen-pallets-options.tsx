@@ -1,19 +1,40 @@
-import { useState } from 'react';
-import { Form, Input, Button, Radio } from 'antd';
+import { useEffect, useState } from 'react';
+import { Form, Input, Button, Radio, Spin } from 'antd';
 import styles from './gen-pallets-options.module.css';
 
 import { OpcionesGenPallets } from '../pallets-generator/pallets-generator';
 import { TipoHU, Distribuir, Ordenar } from '@flash-ws/api-interfaces';
 import { capitalize } from '@flash-ws/shared';
+import axios from 'axios';
+
+const ID_CLIENTE = 1;
 
 const GenPalletsOptions = ({
   genPallets,
 }: {
   genPallets: (options: OpcionesGenPallets) => void;
 }) => {
+  const [nextHU, setNextHU] = useState<number>();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [usarHUManual, setHUManual] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get<{ hu: number }>(
+        `${process.env['NX_SERVER_URL']}/api/clientes/${ID_CLIENTE}/ultima-hu`
+      )
+      .then((response) => {
+        setNextHU(response.data.hu + 1);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
   const onValuesChange = ({ tipoHU }: { tipoHU: TipoHU }) => {
-    setHUManual(tipoHU === TipoHU.MANUAL);
+    if (tipoHU) setHUManual(tipoHU === TipoHU.MANUAL);
   };
 
   const onFinish = (values: OpcionesGenPallets) => {
@@ -23,6 +44,8 @@ const GenPalletsOptions = ({
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
+  if (loading) return <Spin size="small" />;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className={styles['container']}>
@@ -31,6 +54,7 @@ const GenPalletsOptions = ({
         onFinishFailed={onFinishFailed}
         layout="vertical"
         initialValues={{
+          nextHU,
           distribuir: Distribuir.HORIZONTAL,
           ordenar: Ordenar.PESO,
           tipoHU: TipoHU.AUTOMATICA,
@@ -87,7 +111,7 @@ const GenPalletsOptions = ({
         </Form.Item>
         <Form.Item
           label="HU Comenzar"
-          name="huComenzar"
+          name="nextHU"
           rules={[
             {
               required: usarHUManual,

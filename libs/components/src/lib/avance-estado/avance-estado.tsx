@@ -39,6 +39,7 @@ export function AvanceEstadoConsolidada({
         const e = iter.estado as EstadoLinea;
         return (
           <Col
+            key={e}
             span={4}
             onClick={() => onChange(e)}
             style={{

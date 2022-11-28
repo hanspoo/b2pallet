@@ -12,6 +12,7 @@ import { Box } from './entity/box.entity';
 import { Pallet } from './entity/pallet.entity';
 import { ProtoPallet } from './entity/proto-pallet.entity';
 import { Caja } from './entity/caja.entity';
+import { Archivo } from './entity/archivo.entity';
 
 const testEnv = 'test';
 
@@ -26,6 +27,7 @@ const dataSource = new DataSource({
       ? '/tmp/db/' + crypto.randomBytes(12).toString('hex')
       : 'flash',
   entities: [
+    Archivo,
     User,
     Local,
     Cliente,
@@ -42,7 +44,7 @@ const dataSource = new DataSource({
   logging: false,
   synchronize: true,
 
-  extra: { max: 10, connectionTimeoutMillis: 1000 },
+  extra: { max: 10, connectionTimeoutMillis: 2000 },
 });
 
 export { dataSource };

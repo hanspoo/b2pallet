@@ -2,6 +2,7 @@ import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
 import {
+  Archivo,
   consolidaPallets,
   dataSource,
   OrdenCompra,
@@ -31,6 +32,7 @@ import {
   IConsolidadoCajas,
   IPalletConsolidado,
   OrdenesResponseInvalid,
+  SubirOrdenBody,
 } from '@flash-ws/api-interfaces';
 
 import { SuperOrden } from '@flash-ws/dao';
@@ -44,17 +46,18 @@ ordenes.get('/consolidadas', async function (req: Request, res: Response) {
   res.json(ordenes);
 });
 ordenes.get('/', async function (req: Request, res: Response) {
-  const ordenes = await OrdenService.findAll();
-  const conConsolidada = ordenes.map(async (o) => {
-    const orden = o as unknown as SuperOrden;
-    const c = new Consolidado(o.lineas);
-    await c.calcular();
-    orden.lineasConsolidadas = (await ordenarPorNombreProducto(
-      c.lineas
-    )) as Array<LineaConsolidada>;
-    return orden;
-  });
-  res.json(await Promise.all(conConsolidada));
+  // const ordenes = await OrdenService.findAll();
+  // const conConsolidada = ordenes.map(async (o) => {
+  //   const orden = o as unknown as SuperOrden;
+  //   const c = new Consolidado(o.lineas);
+  //   await c.calcular();
+  //   orden.lineasConsolidadas = (await ordenarPorNombreProducto(
+  //     c.lineas
+  //   )) as Array<LineaConsolidada>;
+  //   return orden;
+  // });
+  // res.json(await Promise.all(conConsolidada));
+  return [];
 });
 
 ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
@@ -283,7 +286,7 @@ ordenes.post(
     orden.pallets.forEach((pallet) => (pallet.hu = hu++));
     ifDebug('hay orden.pallets:' + orden.pallets.length);
 
-    ifDebug(orden.pallets[0].cajas + '');
+    // ifDebug(orden.pallets[0].cajas + '');
 
     await dataSource.getRepository(Pallet).save(orden.pallets);
 
@@ -311,6 +314,62 @@ ordenes.get(
   }
 );
 
+ordenes.post(
+  '/subir',
+  async function (
+    req: Request<null, null, SubirOrdenBody, null>,
+    res: Response<any>
+  ) {
+    const { idUnidad, idArchivo } = req.body;
+
+    if (!idUnidad) throw Error('No viene la unidad de negocio');
+    if (!idArchivo) throw Error('No viene el id del archivo');
+
+    const unidad = await dataSource.getRepository(UnidadNegocio).findOne({
+      where: { id: idUnidad },
+      relations: { cliente: true, ordenes: true },
+    });
+
+    if (!unidad) throw Error(`No existe la unidad id ${idUnidad}`);
+
+    unidad.cliente = await ClienteService.findById(unidad.cliente.id);
+    const archivo = await dataSource
+      .getRepository(Archivo)
+      .findOne({ where: { id: idArchivo } });
+    if (!archivo) throw Error(`Archivo id ${idArchivo} no encontrado`);
+
+    try {
+      const { error, ordenesDuplicadas, productosNoEncontrados } =
+        await new PrevalidacionService(unidad).validarExcel(archivo.path);
+
+      if (error) {
+        const err: OrdenesResponseInvalid = {
+          msg: `Hay información inválida`,
+          ordenesDuplicadas,
+          productosNoEncontrados,
+        };
+        res.status(400).send(err);
+        return;
+      }
+    } catch (error) {
+      console.log('atrapando error 1', JSON.stringify(error));
+      res.status(400).send(error);
+      return;
+    }
+
+    // console.log(3);
+
+    try {
+      const service = new OrdenService(unidad);
+      const { ordenes } = await service.crearOrden(archivo.path);
+
+      res.send(ordenes.map((o) => o.id));
+    } catch (error) {
+      // console.log('atrapando error al 2 ', JSON.stringify(error));
+      res.status(400).send(error);
+    }
+  }
+);
 ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
   // console.log(1);
   const idUnidad = req.body['unidad'];

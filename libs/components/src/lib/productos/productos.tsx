@@ -7,7 +7,7 @@ import { Spin, Table } from 'antd';
 
 import styles from './productos.module.css';
 import { useEffect, useState } from 'react';
-import { SubirIProductos } from './SubirProductos';
+import { SubirProductos } from './SubirProductos';
 import { Producto3d } from './Producto3d';
 import Search from 'antd/lib/input/Search';
 import {
@@ -110,7 +110,7 @@ const columns = [
 /* eslint-disable-next-line */
 export interface ProductosProps {}
 
-export function IProductos(props: ProductosProps) {
+export function Productos(props: ProductosProps) {
   const [search, setSearch] = useState<RegExp>();
   const [data, setData] = useState<Array<IProducto>>();
   const [loading, setLoading] = useState(true);
@@ -148,9 +148,9 @@ export function IProductos(props: ProductosProps) {
   return (
     <div className={styles['container']}>
       <div style={{ float: 'right', position: 'relative', top: '+48px' }}>
-        <SubirIProductos />
+        <SubirProductos />
       </div>
-      <Title level={2}>IProductos</Title>
+      <Title level={2}>Productos</Title>
       <p>Hay {productos.length} productos</p>
       <Search
         style={{ marginBottom: '0.5em' }}
@@ -169,4 +169,4 @@ export function IProductos(props: ProductosProps) {
   );
 }
 
-export default IProductos;
+export default Productos;

@@ -14,6 +14,7 @@ export * from './lib/entity/pedido.entity';
 export * from './lib/entity/caja.entity';
 export * from './lib/entity/pallet.entity';
 export * from './lib/entity/proto-pallet.entity';
+export * from './lib/entity/archivo.entity';
 export * from './lib/CajaPura';
 
 export * from './lib/entity/producto.entity';

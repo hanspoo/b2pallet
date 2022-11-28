@@ -5,6 +5,7 @@ export * from './lib/EstadoLinea';
 export * from './lib/BodyCambioEstadoProdConsolidada';
 export * from './lib/OrdenesResponseInvalid';
 
+export * from './lib/model/iarchivo.entity';
 export * from './lib/model/ibox.entity';
 export * from './lib/model/icliente.entity';
 export * from './lib/model/ilinea-detalle.entity';
@@ -21,3 +22,4 @@ export * from './lib/IPalletConsolidado';
 export * from './lib/caja-consolidada';
 export * from './lib/BodyGenPallets';
 export * from './lib/IOrdenConsolidada';
+export * from './lib/SubirOrdenBody';

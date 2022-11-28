@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Select, Spin } from 'antd';
-import { IUnidadNegocio } from '@flash-ws/api-interfaces';
+import {
+  IArchivo,
+  IOrdenCompra,
+  IUnidadNegocio,
+  SubirOrdenBody,
+} from '@flash-ws/api-interfaces';
 import { OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
 import { MostrarErrores } from './MostrarErrores';
+import { AntUploader } from '../ant-uploader/ant-uploader';
+import { actualizarOrden } from '@flash-ws/reductor';
+import { useDispatch } from 'react-redux';
+
+import Title from 'antd/lib/typography/Title';
 
 const { Option } = Select;
-type UploadResponse = {
-  msg: string;
-};
 
 const UploadOrden = () => {
   const [unidades, setunidades] = React.useState<IUnidadNegocio[]>();
@@ -47,28 +54,31 @@ type UploadOrdenReallyArgs = {
 };
 
 const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
+  const dispatch = useDispatch();
+  const [archivo, setArchivo] = useState<IArchivo>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<OrdenesResponseInvalid>();
-  const [data, setData] = useState<UploadResponse>();
-  const [unidad, setUnidad] = useState<IUnidadNegocio>();
-  const [file, setFile] = React.useState('');
+  const [ordenes, setOrdenes] = useState<number[]>();
+  const [unidad, setUnidad] = useState<number>();
 
   const handleSubmit = async (event: any) => {
-    if (!unidad) throw Error('No está definida la orden');
+    if (!unidad) throw Error('No está definida la unidad de negocio');
+    if (!archivo) throw Error('No está definido el archivo');
 
     setLoading(true);
     event.preventDefault();
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('unidad', unidad + '');
-    axios({
-      method: 'post',
-      url: `${process.env['NX_SERVER_URL']}/api/ordenes/masivo`,
-      data: formData,
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+    const params: SubirOrdenBody = {
+      idUnidad: unidad,
+      idArchivo: archivo.id,
+    };
+    axios
+      .post<IOrdenCompra>(
+        `${process.env['NX_SERVER_URL']}/api/ordenes/subir`,
+        params
+      )
       .then((response) => {
-        setData(response.data);
+        const ordenes = response.data as any as Array<number>;
+        setOrdenes(ordenes);
         setLoading(false);
       })
       .catch((error) => {
@@ -76,10 +86,6 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
         setError(errorPayload);
         setLoading(false);
       });
-  };
-
-  const handleFileSelect = (event: any) => {
-    setFile(event.target.files[0]);
   };
 
   if (loading) return <Spin />;
@@ -90,50 +96,52 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
       <>
         <p>{msg}</p>
         <MostrarErrores
-          title="IProductos no encontrados"
-          list={productosNoEncontrados}
+          title="Productos no encontrados"
+          list={productosNoEncontrados || []}
         />
         <MostrarErrores
           title="Ordenes de compra duplicadas"
-          list={ordenesDuplicadas}
+          list={ordenesDuplicadas || []}
         />
       </>
     );
   }
-  if (data) return <p>{data.msg}</p>;
+  if (ordenes) {
+    if (ordenes.length===1)
+    return <p>Se agregó una orden de compra</p>
+    return <p>Se agregaron {ordenes.length} ordenes de compra.</p>;
+  }
 
   return (
     <form onSubmit={handleSubmit}>
-      <div style={{ marginBottom: '0.5em' }}>
-        <label>IUnidadNegocio</label>
-        <div>
-          <Select
-            style={{ width: 240 }}
-            value={unidad}
-            onChange={setUnidad}
-            showSearch
-            placeholder="Seleccione la unidad de negocio"
-          >
-            {unidades.map((IUnidadNegocio) => (
-              <Option value={IUnidadNegocio.id}>{IUnidadNegocio.nombre}</Option>
-            ))}
-          </Select>
-        </div>
+      <Title level={3}>Subir ordenes de compra</Title>
+      <div style={{ marginBottom: '1.5em' }}>
+        <label style={{ display: 'block', marginBottom: '0.5em' }}>
+          Unidad de negocio
+        </label>
+
+        <Select
+          style={{ width: 240 }}
+          value={unidad}
+          onChange={setUnidad}
+          showSearch
+          placeholder="Seleccione la unidad de negocio"
+        >
+          {unidades.map((IUnidadNegocio) => (
+            <Option value={IUnidadNegocio.id}>{IUnidadNegocio.nombre}</Option>
+          ))}
+        </Select>
       </div>
 
-      <div style={{ marginBottom: '1em' }}>
-        <label>Planilla Excel</label>
+      <div style={{ marginBottom: '2em' }}>
+        <label style={{ display: 'block', marginBottom: '0.5em' }}>
+          Planilla excel del b2b
+        </label>
 
-        <div>
-          <input
-            className="ant input"
-            type="file"
-            onChange={handleFileSelect}
-          />
-        </div>
+        <AntUploader onFileSelected={setArchivo} />
       </div>
 
-      <Button type="primary" htmlType="submit" disabled={!(unidad && file)}>
+      <Button type="primary" htmlType="submit" disabled={!(unidad && archivo)}>
         Enviar
       </Button>
     </form>

@@ -82,6 +82,7 @@ export function PalletsIcono({ pallets }: PalletsIconoProps) {
       <Row gutter={[16, 16]}>
         {palletsOrdenados.map((p) => (
           <Col
+            key={p.palletid}
             onClick={() => mostrarPallet(p)}
             span="3"
             style={{

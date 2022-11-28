@@ -55,7 +55,12 @@ export const counterSlice = createSlice({
     },
     actualizarOrden: (state, action: PayloadAction<IOrdenCompra>) => {
       const orden = action.payload;
-      state.ordenes = state.ordenes.map((o) => (o.id === orden.id ? orden : o));
+      const existe = state.ordenes.find((o) => o.id === orden.id);
+      if (!existe) state.ordenes = state.ordenes.concat(orden);
+      else
+        state.ordenes = state.ordenes.map((o) =>
+          o.id === orden.id ? orden : o
+        );
     },
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,

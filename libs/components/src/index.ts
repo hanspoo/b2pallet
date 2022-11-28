@@ -1,3 +1,7 @@
+export * from './lib/archivo-component/archivo-component';
+export * from './lib/ant-uploader/ant-uploader';
+export { SeccionOrdenes } from './lib/ordenes/SeccionOrdenes';
+export * from './lib/ordenes-consolidadas/ordenes-consolidadas';
 export * from './lib/pallet-barcode/pallet-barcode';
 export * from './lib/lista-cajas-pallet/lista-cajas-pallet';
 export * from './lib/detalle-pallet/detalle-pallet';

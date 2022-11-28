@@ -55,7 +55,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
       'productos',
     ]) as Array<IProducto>;
     const INICIAL: Record<number, IProducto> = {};
-    const mapaIProductos: Record<number, IProducto> = productos.reduce(
+    const mapaProductos: Record<number, IProducto> = productos.reduce(
       (acc, iter) => {
         acc[iter.id] = iter;
         return acc;
@@ -65,7 +65,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
     const lcons = orden.lineasConsolidadas as Array<ILineaConsolidada>;
     const hidratados = lcons.map((linea) => ({
       ...linea,
-      producto: mapaIProductos[linea.productoId],
+      producto: mapaProductos[linea.productoId],
     }));
 
     setLineas(hidratados);
@@ -249,7 +249,9 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
           <span style={{ marginLeft: '1em' }}>
             <Select style={{ width: 120 }} onChange={handleChange} allowClear>
               {Object.keys(EstadoLinea).map((o) => (
-                <Option value={o}>{o}</Option>
+                <Option value={o} key={o}>
+                  {o}
+                </Option>
               ))}
             </Select>
             <Button

@@ -1,4 +1,5 @@
 import {
+  BodyGenPallets,
   EstadoLinea,
   ILineaDetalle,
   ILocal,
@@ -78,14 +79,18 @@ export function PalletsGeneratorImpl({
     },
   ];
 
-  function genPallets(opciones: OpcionesGenPallets) {
+  function genPallets({ distribuir, nextHU, ordenar }: OpcionesGenPallets) {
     setGeneracion(StateMachine.EJECUTANDO);
+    const args: BodyGenPallets = {
+      protoID: 1,
+      nextHU,
+      ordenar,
+      distribuir,
+    };
     axios
       .post<IPalletConsolidado[]>(
         `${process.env['NX_SERVER_URL']}/api/ordenes/${orden.id}/gen-pallets`,
-        {
-          protoID: 1,
-        }
+        args
       )
       .then((response) => {
         setLocalPallets(response.data);
@@ -117,7 +122,7 @@ export function PalletsGeneratorImpl({
   }, 0);
   return (
     <div className={styles['container']}>
-      <Title level={3}>Generar Pallets</Title>
+      <Title level={5}>Generar Pallets</Title>
       <p>
         Se generará la distribución en pallets por local para todos los
         productos aprobados en <b>{ordenadas.length}</b> locales,{' '}

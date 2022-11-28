@@ -1,9 +1,10 @@
-import { MailOutlined } from '@ant-design/icons';
 import { IOrdenCompra, ISuperOrden } from '@flash-ws/api-interfaces';
-import { actualizarOrdenes } from '@flash-ws/reductor';
-import { useQueryClient } from '@tanstack/react-query';
-import { Descriptions, Menu, Spin } from 'antd';
-import { useState } from 'react';
+import { actualizarOrden } from '@flash-ws/reductor';
+import { capitalize } from '@flash-ws/shared';
+import { Descriptions, Menu, Spin, Typography } from 'antd';
+import axios from 'axios';
+
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import GraficoAvance from '../grafico-avance/grafico-avance';
 import { SuperConsolidada } from '../new-consolidada/SuperConsolidada';
@@ -11,8 +12,9 @@ import PalletsGenerator from '../pallets-generator/pallets-generator';
 
 import TablaLineas from './TablaLineas';
 
+const { Title } = Typography;
 type PropsDetalleOrden = {
-  id: number;
+  id: string;
 };
 
 enum Vista {
@@ -23,53 +25,45 @@ enum Vista {
 
 export function DetalleOrden({ id }: PropsDetalleOrden) {
   const dispatch = useDispatch();
-  const ordenes: Array<IOrdenCompra> = useSelector(
-    (state: any) => state.counter.ordenes as Array<IOrdenCompra>
+  const orden: any = useSelector((state: any) =>
+    state.counter.ordenes.find((o: any) => o.id === id)
   );
-
   const [vista, setVista] = useState<Vista>(Vista.CONSOLIDADA);
   // const [orden, setOrden] = useState<IOrdenCompra>();
   const [loading, setLoading] = useState(false);
   const [recargar, setRecargar] = useState<boolean>();
   const [error, setError] = useState('');
 
-  const orden = ordenes.find((orden) => orden.id === id);
-
   // const [search, setSearch] = useState<RegExp>();
   // const [selected, setSelected] = useState<Array<number>>();
   // const [data, setData] = useState<Array<IOrdenCompra>>();
   // const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const list = queryClient.getQueryData<Array<IOrdenCompra>>([
-  //     'ordenes',
-  //   ]) as any;
-  //   setOrden(list.find((iter: IOrdenCompra) => iter.id === id));
-  //   setLoading(false);
-  // }, [id, queryClient]);
-
-  // useEffect(() => {
-  //   axios
-  //     .get<IOrdenCompra>(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
-  //     .then((response) => {
-  //       setOrden(response.data);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       setError(`Error: ${JSON.stringify(error)}`);
-  //       setLoading(false);
-  //     });
-  // }, [id]);
+  useEffect(() => {
+    if (!orden) {
+      setLoading(true);
+      axios
+        .get<IOrdenCompra>(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
+        .then((response) => {
+          dispatch(actualizarOrden(response.data));
+          setLoading(false);
+        })
+        .catch((error) => {
+          setError(`Error: ${JSON.stringify(error)}`);
+          setLoading(false);
+        });
+    }
+  }, [id]);
 
   if (loading) return <Spin />;
   // if (error) return <p>Error: {error}</p>;
 
-  if (!orden) return <p>Internal error</p>;
+  if (!orden) return <Spin />;
 
   return (
     <>
+      <Title level={4}>Detalle de Orden</Title>
       <Descriptions
-        title="IOrdenCompra"
         bordered
         column={2}
         style={{ marginBottom: '1em' }}
@@ -93,24 +87,19 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
         onSelect={(s: any) => {
           setVista(s.key);
         }}
-      >
-        {Object.keys(Vista).map((x) => {
+        items={Object.keys(Vista).map((x) => {
           const v = x as unknown as Vista;
-          return (
-            <Menu.Item key={v} icon={<MailOutlined />}>
-              {cap(v)}
-            </Menu.Item>
-          );
+          return { label: capitalize(v), key: v };
         })}
-      </Menu>
+      />
       {recargar && <p>Espere...</p>}
 
       {!recargar && vista === Vista.NORMAL && (
         <TablaLineas
           // lineas={orden.lineas}
           orden={orden}
-          recargar={() => {
-            dispatch(actualizarOrdenes());
+          recargar={(o) => {
+            dispatch(actualizarOrden(o));
 
             // setOrden(orden);
             // setRecargar(true);

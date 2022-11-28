@@ -31,7 +31,7 @@ export function DetallePallet({ pallet }: DetallePalletProps) {
               {numcajas}
             </Descriptions.Item>
             <Descriptions.Item label="Volumen usado">
-              {(vol / 10000).toFixed(0)} cm<sup>3</sup>
+              {(vol / 1000).toFixed(2)} m<sup>3</sup>
             </Descriptions.Item>
             <Descriptions.Item label="Peso">
               {(peso / 1000).toFixed(2)} kgs
@@ -54,6 +54,7 @@ export function Icono({
 
   return (
     <div
+      style={{ height: scale(100) }}
       className={styles['pallet-box']}
       title={`${(peso / 1000).toFixed(2)} kgs / ${porcUso.toFixed(
         2
@@ -61,10 +62,12 @@ export function Icono({
     >
       <div
         style={{
-          height: `${porcUso.toFixed(0)}px`,
+          height: scale(porcUso),
           backgroundColor,
         }}
       ></div>
     </div>
   );
 }
+
+const scale = (n: number) => n * 2.3;

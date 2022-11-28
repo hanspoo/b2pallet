@@ -28,9 +28,13 @@ async function inicializarProtoPallet() {
   const repo = dataSource.getRepository(ProtoPallet);
   const p = await repo.findOne({ where: { id: 1 } });
   if (!p) {
-    const proto = new ProtoPallet();
-    proto.box = Box.from({ largo: 100, ancho: 120, alto: 170 });
-    proto.nombre = 'Standard Pallet';
-    await repo.save(proto);
+    const p1 = new ProtoPallet();
+    p1.box = Box.from({ largo: 100, ancho: 120, alto: 170 });
+    p1.nombre = 'Standard Pallet';
+    await repo.save(p1);
+    const p2 = new ProtoPallet();
+    p2.box = Box.from({ largo: 100, ancho: 100, alto: 100 });
+    p2.nombre = 'Pallet 1m3';
+    await repo.save(p2);
   }
 }
