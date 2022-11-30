@@ -10,7 +10,6 @@ import {
 import { OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
 import { MostrarErrores } from './MostrarErrores';
 import { AntUploader } from '../ant-uploader/ant-uploader';
-import { actualizarOrden } from '@flash-ws/reductor';
 import { useDispatch } from 'react-redux';
 
 import Title from 'antd/lib/typography/Title';
@@ -53,10 +52,15 @@ type UploadOrdenReallyArgs = {
   unidades: IUnidadNegocio[];
 };
 
+const labelStyle = {
+  fontWeight: 'bold',
+  display: 'block',
+  marginBottom: '0.5em',
+};
 const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
-  const dispatch = useDispatch();
   const [archivo, setArchivo] = useState<IArchivo>();
   const [loading, setLoading] = useState(false);
+  const [limpiando, setLimpiando] = useState(false);
   const [error, setError] = useState<OrdenesResponseInvalid>();
   const [ordenes, setOrdenes] = useState<number[]>();
   const [unidad, setUnidad] = useState<number>();
@@ -88,6 +92,13 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
       });
   };
 
+  const limpiar = () => {
+    setArchivo(undefined);
+    setOrdenes(undefined);
+    setLimpiando(true);
+    setTimeout(() => setLimpiando(false), 1000);
+    setUnidad(undefined);
+  };
   if (loading) return <Spin />;
   if (error) {
     const { msg, ordenesDuplicadas, productosNoEncontrados } = error;
@@ -103,22 +114,35 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
           title="Ordenes de compra duplicadas"
           list={ordenesDuplicadas || []}
         />
+        <Button
+          onClick={() => {
+            limpiar();
+            setError(undefined);
+          }}
+        >
+          Continuar
+        </Button>
       </>
     );
   }
   if (ordenes) {
-    if (ordenes.length===1)
-    return <p>Se agregó una orden de compra</p>
-    return <p>Se agregaron {ordenes.length} ordenes de compra.</p>;
+    return (
+      <>
+        {ordenes.length === 1 ? (
+          <p>Se agregó una orden de compra</p>
+        ) : (
+          <p>Se agregaron {ordenes.length} ordenes de compra.</p>
+        )}
+        <Button onClick={limpiar}>Continuar</Button>
+      </>
+    );
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <Title level={3}>Subir ordenes de compra</Title>
       <div style={{ marginBottom: '1.5em' }}>
-        <label style={{ display: 'block', marginBottom: '0.5em' }}>
-          Unidad de negocio
-        </label>
+        <label style={labelStyle}>Unidad de negocio</label>
 
         <Select
           style={{ width: 240 }}
@@ -134,16 +158,20 @@ const UploadOrdenReally = ({ unidades }: UploadOrdenReallyArgs) => {
       </div>
 
       <div style={{ marginBottom: '2em' }}>
-        <label style={{ display: 'block', marginBottom: '0.5em' }}>
-          Planilla excel del b2b
-        </label>
+        <label style={labelStyle}>Planilla excel del b2b</label>
 
-        <AntUploader onFileSelected={setArchivo} />
+        {!limpiando && <AntUploader onFileSelected={setArchivo} />}
       </div>
 
-      <Button type="primary" htmlType="submit" disabled={!(unidad && archivo)}>
+      <Button
+        type="primary"
+        htmlType="submit"
+        disabled={!(unidad && archivo)}
+        style={{ marginRight: '0.25em' }}
+      >
         Enviar
       </Button>
+      <Button onClick={limpiar}>Cancelar</Button>
     </form>
   );
 };

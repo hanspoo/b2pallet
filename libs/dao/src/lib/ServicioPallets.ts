@@ -98,7 +98,7 @@ where
   const queryRunner = dataSource.createQueryRunner();
 
   ifDebug(sql);
-  const rows: Array<{ hu }> = await queryRunner.manager.query(sql);
+  const rows: Array<{ hu:number }> = await queryRunner.manager.query(sql);
   queryRunner.release();
   if (rows.length === 0) return 0;
   return rows[0].hu;

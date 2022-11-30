@@ -18,7 +18,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Button, message, Upload } from 'antd';
 import { IArchivo } from '@flash-ws/api-interfaces';
-import ArchivoComponent from '../archivo-component/archivo-component';
+import { ArchivoComponent } from '../archivo-component/archivo-component';
 
 const action = `${process.env['NX_SERVER_URL']}/api/archivos`;
 
@@ -34,9 +34,9 @@ const AntUploader: React.FC<{
         console.log(info.file, info.fileList);
       }
       if (info.file.status === 'done') {
-        console.log('info', info);
+        // console.log('info', info);
 
-        message.success(`${info.file.name} se ha subido correctamente`);
+        // message.success(`${info.file.name} se ha subido correctamente`);
         setArchivo(info.file.response);
         onFileSelected(info.file.response);
       } else if (info.file.status === 'error') {
@@ -49,7 +49,7 @@ const AntUploader: React.FC<{
 
   return (
     <Upload {...props}>
-      <Button icon={<UploadOutlined />}>Click to Upload</Button>
+      <Button icon={<UploadOutlined />}>Seleccione el archivo</Button>
     </Upload>
   );
 };

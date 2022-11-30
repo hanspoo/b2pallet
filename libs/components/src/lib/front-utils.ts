@@ -12,6 +12,12 @@ export function formatNumber(x: any) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
+export function formatKb(x: any) {
+  const kb = x / 1024;
+  const s = formatNumber(kb);
+  return `${s}kb`;
+}
+
 export function comparaVigencia(a: IProducto, b: IProducto) {
   const x = a.vigente ? 1 : 0;
   const y = b.vigente ? 1 : 0;

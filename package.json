@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
+    "start:api": "nx serve api",
     "build": "nx build",
     "test": "nx run-many --target=test --all",
     "test:integ": "jest --group=integ --runInBand"
@@ -35,6 +36,7 @@
     "pg": "^8.8.0",
     "piscina": "^3.2.0",
     "react": "18.2.0",
+    "react-barcode": "^1.4.6",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.2",
     "react-redux": "^8.0.4",

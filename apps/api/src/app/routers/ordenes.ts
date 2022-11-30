@@ -159,6 +159,41 @@ ordenes.post(
     req: Request<{ id: string }, null, BodyCambioEstadoProdConsolidada>,
     res: Response
   ) {
+    const idOrden = req.params.id;
+
+    const estado = req.body.estado;
+    const productos = req.body.productos;
+
+    if (!idOrden) return res.status(400).send(`Debe entregar la orden`);
+    if (!productos) return res.status(400).send(`Debe entregar los productos`);
+    if (productos.length === 0) return res.status(400).send(`No vienen productos`);
+    if (!estado) return res.status(400).send(`Debe entregar el estado`);
+
+    const queryRunner = dataSource.createQueryRunner();
+    await queryRunner.manager.query(`update linea_detalle set estado = '${estado}' where "ordenCompraId" = '${idOrden}' and "productoId" in (${productos.join(",")}) `);
+    queryRunner.release();
+    
+    const results = await dataSource.getRepository(OrdenCompra).find({
+      where: { id: idOrden },
+      relations: { lineas: true },
+    });
+    const orden = results[0] as SuperOrden;
+    const c = new Consolidado(orden.lineas);
+    await c.calcular();
+    orden.lineasConsolidadas = (await ordenarPorNombreProducto(
+      c.lineas
+    )) as Array<LineaConsolidada>;
+
+    return res.send(orden);
+
+  }
+);
+ordenes.post(
+  '/cambiar-estado-consolidada.bak/:id',
+  async function (
+    req: Request<{ id: string }, null, BodyCambioEstadoProdConsolidada>,
+    res: Response
+  ) {
     // let i = 0;
     // let // d1 = new Date();
     const orden = await OrdenService.loadConLineas(req.params.id);
@@ -352,8 +387,8 @@ ordenes.post(
         return;
       }
     } catch (error) {
-      console.log('atrapando error 1', JSON.stringify(error));
-      res.status(400).send(error);
+      console.log('atrapando error 1.1', JSON.stringify(error));
+      res.status(400).send({ msg: 'Error grave en el archivo' });
       return;
     }
 
@@ -401,7 +436,7 @@ ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
       return;
     }
   } catch (error) {
-    console.log('atrapando error 1', JSON.stringify(error));
+    console.log('atrapando error 1.2', JSON.stringify(error));
     res.status(400).send(error);
     return;
   }

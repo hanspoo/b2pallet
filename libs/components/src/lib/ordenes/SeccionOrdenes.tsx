@@ -1,4 +1,4 @@
-import { Typography, Button } from 'antd';
+import { Typography, Button, Spin } from 'antd';
 import { useState } from 'react';
 import OrdenesConsolidadas from '../ordenes-consolidadas/ordenes-consolidadas';
 import { UploadOrden } from '../upload-orden/upload-orden';
@@ -28,11 +28,23 @@ export function SeccionOrdenes() {
         <Button onClick={() => setVista(Vista.Subir)}>Subir planilla</Button>
         <Button onClick={() => setVista(Vista.Listado)}>Listado</Button>
       </div>
-      {vista === Vista.Listado && (
-        <OrdenesConsolidadas vistaDetalle={vistaDetalle} />
-      )}
+      {vista === Vista.Listado && <ConRecarga vistaDetalle={vistaDetalle} />}
       {vista === Vista.Subir && <UploadOrden />}
       {vista === Vista.Detalle && orden && <DetalleOrden id={orden} />}
     </>
+  );
+}
+
+function ConRecarga({ vistaDetalle }: { vistaDetalle: (id: string) => void }) {
+  const [recargando, setRecargando] = useState(false);
+  if (recargando) return <Spin />;
+  return (
+    <OrdenesConsolidadas
+      vistaDetalle={vistaDetalle}
+      recargar={() => {
+        setRecargando(true);
+        setTimeout(() => setRecargando(false), 2000);
+      }}
+    />
   );
 }

@@ -122,7 +122,9 @@ export function PalletsGeneratorImpl({
   }, 0);
   return (
     <div className={styles['container']}>
-      <Title level={5}>Generar Pallets</Title>
+      <Title style={{ marginTop: '1.5em' }} level={5}>
+        Generar Pallets
+      </Title>
       <p>
         Se generará la distribución en pallets por local para todos los
         productos aprobados en <b>{ordenadas.length}</b> locales,{' '}

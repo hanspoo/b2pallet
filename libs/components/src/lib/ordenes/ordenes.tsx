@@ -71,7 +71,10 @@ export function OrdenesImpl(props: OrdenesProps) {
         <Button onClick={() => setVista(Vista.Listado)}>Listado</Button>
       </div>
       {vista === Vista.Listado && (
-        <OrdenesConsolidadas vistaDetalle={vistaDetalle} />
+        <OrdenesConsolidadas
+          vistaDetalle={vistaDetalle}
+          recargar={() => console.log('clicked')}
+        />
       )}
       {vista === Vista.Subir && <UploadOrden />}
       {vista === Vista.Detalle && orden && <DetalleOrden id={orden} />}

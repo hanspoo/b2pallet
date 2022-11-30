@@ -4,10 +4,9 @@ import {
   FileExcelOutlined,
 } from '@ant-design/icons';
 import { IArchivo } from '@flash-ws/api-interfaces';
-import { List, Avatar } from 'antd';
+import { List } from 'antd';
 import React from 'react';
-import { formatNumber } from '../front-utils';
-import styles from './archivo-component.module.css';
+import { formatKb } from '../front-utils';
 
 /* eslint-disable-next-line */
 export interface ArchivoComponentProps {
@@ -32,12 +31,10 @@ export function ArchivoComponent({ archivo }: ArchivoComponentProps) {
               style: { fontSize: '36px' },
             })}
             title={archivo.originalname}
-            description={formatNumber(item.size)}
+            description={formatKb(item.size)}
           />
         </List.Item>
       )}
     />
   );
 }
-
-export default ArchivoComponent;

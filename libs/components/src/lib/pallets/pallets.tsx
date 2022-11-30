@@ -24,7 +24,7 @@ export function Pallets({ pallets }: PalletsProps) {
         a.nombrelocal.localeCompare(b.nombrelocal),
     },
     {
-      title: '#Cajas',
+      title: '#Productos',
       dataIndex: 'numcajas',
       align: 'right' as any,
       width: '80px',
@@ -36,8 +36,11 @@ export function Pallets({ pallets }: PalletsProps) {
       dataIndex: 'vol',
       align: 'right' as any,
       width: '100px',
-      render: (vol: string) =>
-        parseFloat(vol).toLocaleString(undefined, { minimumFractionDigits: 2 }),
+      render: (vol: number) => (
+        <span>
+          {(vol / 1000).toFixed(2)} m<sup>3</sup>
+        </span>
+      ),
       sorter: (a: IPalletConsolidado, b: IPalletConsolidado) => a.vol - b.vol,
     },
     {
@@ -45,7 +48,7 @@ export function Pallets({ pallets }: PalletsProps) {
       dataIndex: 'peso',
       align: 'right' as any,
       width: '100px',
-      render: (vol: string) => parseFloat(vol).toLocaleString(),
+      render: (peso: number) => <span>{(peso / 1000).toFixed(2)} kgs</span>,
 
       sorter: (a: IPalletConsolidado, b: IPalletConsolidado) => a.peso - b.peso,
     },
@@ -62,7 +65,7 @@ export function Pallets({ pallets }: PalletsProps) {
             <div
               style={{
                 height: '14px',
-                backgroundColor: '#1890ff',
+                backgroundColor: '#093864',
                 width: a.porcUso.toFixed(0) + 'px',
               }}
             />

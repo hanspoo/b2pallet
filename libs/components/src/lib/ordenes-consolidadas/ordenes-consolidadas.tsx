@@ -9,6 +9,7 @@ import styles from './ordenes-consolidadas.module.css';
 /* eslint-disable-next-line */
 export interface OrdenesConsolidadasProps {
   vistaDetalle: (id: string) => void;
+  recargar: () => void;
 }
 
 const { Search } = Input;
@@ -74,7 +75,7 @@ export function OrdenesConsolidadas(props: OrdenesConsolidadasProps) {
         a.numero.localeCompare(b.numero),
     },
     {
-      title: 'Emision',
+      title: 'Emisión',
       dataIndex: 'emision',
       sorter: (a: IOrdenConsolidada, b: IOrdenConsolidada) =>
         a.emision.localeCompare(b.emision),
@@ -107,16 +108,23 @@ export function OrdenesConsolidadas(props: OrdenesConsolidadasProps) {
       setSelected(selectedRowKeys);
     },
   };
-  function borrarSeleccionadas() {
-    setOrdenes(ordenes?.filter((o) => selected?.find((id) => id !== o.id)));
+  async function borrarSeleccionadas() {
+    if (!selected) return;
+    // setBorrando(true);
+    const promesas = selected.map((id) =>
+      axios.delete(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
+    );
+    await Promise.all(promesas);
 
-    selected?.forEach((id) => {
-      axios
-        .delete(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
-        .then((response) => console.log(`Orden ${id} eliminada`))
-        .catch((error) => console.log(error));
-    });
-    setTimeout(() => setBorradas(false), 5000);
+    // selected?.forEach((id) => {
+    //   axios
+    //     .delete(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
+    //     .then((response) => console.log(`Orden ${id} eliminada`))
+    //     .catch((error) => console.log(error));
+    // });
+    // setOrdenes(ordenes?.filter((o) => selected?.find((id) => id !== o.id)));
+    props.recargar();
+    // setTimeout(() => setBorradas(false), 5000);
   }
 
   if (loading) return <Spin />;
@@ -146,7 +154,7 @@ export function OrdenesConsolidadas(props: OrdenesConsolidadasProps) {
         pagination={{ defaultPageSize: 1000 }}
       />
       <Button onClick={borrarSeleccionadas} disabled={selected?.length === 0}>
-        Borrar Seleccionadas
+        Borrar seleccionadas
       </Button>
     </div>
   );

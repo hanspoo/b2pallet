@@ -1,6 +1,7 @@
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { IPalletConsolidado } from '@flash-ws/api-interfaces';
 import { capitalize } from '@flash-ws/shared';
+import Barcode from "react-barcode"
 
 import { Row, Col, Radio, Modal } from 'antd';
 import { useState } from 'react';

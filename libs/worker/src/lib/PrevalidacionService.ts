@@ -69,6 +69,7 @@ export class PrevalidacionService {
 
   // El mismo número de orden no debe existir en la unidad de negocio
   ordenesDuplicadas(lineas: Linea[]): string[] {
+    if (process.env.NX_ALLOW_DUPS) return [];
     const INITIAL: Record<string, Array<Linea>> = {};
     const ordenGroup = lineas.reduce((acc, iter) => {
       const numOrden = iter[COL_NUM_ORDEN];

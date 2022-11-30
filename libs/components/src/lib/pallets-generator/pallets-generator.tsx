@@ -80,7 +80,7 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
 
   return (
     <div>
-      <div style={{ marginBottom: '1em' }}>
+      <div style={{ marginBottom: '1.5em', marginTop: '1.5em' }}>
         <SelectorVistaPallets vista={vistaPallets} setVista={setVistaPallets} />
         <Button
           style={{ float: 'right' }}
@@ -90,6 +90,7 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
         </Button>
       </div>
 
+      {vistaPallets === VistaPallets.ARBOL && <p>Pendiente</p>}
       {vistaPallets === VistaPallets.TABLA && <Pallets pallets={pallets} />}
       {vistaPallets === VistaPallets.ICONO && (
         <PalletsIcono pallets={pallets} />
