@@ -48,10 +48,11 @@ describe('cambia estado de producto en consolidada', () => {
       .post('/api/ordenes/cambiar-estado-consolidada/' + orden.id)
       .send({
         productos: [-1],
+        estado: EstadoLinea.Aprobada,
         mensaje: 'test is cool',
       });
     expect(res.statusCode).toEqual(400);
-    expect(res.text).toBe('Hay productos inválidos');
+    expect(res.text).toBe('Productos inválidos: -1');
   });
   it('debe dar 400 sin estado', async () => {
     const res = await request(app)

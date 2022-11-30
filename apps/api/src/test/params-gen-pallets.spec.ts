@@ -14,7 +14,6 @@ import {
   ProtoPallet,
 } from '@flash-ws/dao';
 import { crearOrdenHelper } from '@flash-ws/test-utils';
-import { OrdenService } from '@flash-ws/worker';
 
 import supertest from 'supertest';
 import { app } from '../app';

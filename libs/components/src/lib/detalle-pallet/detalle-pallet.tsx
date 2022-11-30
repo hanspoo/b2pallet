@@ -1,10 +1,11 @@
 import { IPalletConsolidado } from '@flash-ws/api-interfaces';
-import { Col, Descriptions, Row, Typography } from 'antd';
-import Barcode from 'react-barcode';
+import { Col, Descriptions, Row } from 'antd';
+
 import { ContainerCajasPallets } from '../lista-cajas-pallet/ContainerCajasPallets';
 import styles from './detalle-pallet.module.css';
+import { EtiquetaPallet } from './EtiquetaPallet';
 
-const { Title } = Typography
+
 
 /* eslint-disable-next-line */
 export interface DetallePalletProps {
@@ -16,7 +17,7 @@ export function DetallePallet({ pallet }: DetallePalletProps) {
   return (
     <div>
       <div style={{ position: "absolute", right: '1em' }}>
-        <BarrasPallet pallet={pallet} />
+        <EtiquetaPallet pallet={pallet} />
       </div>
       <Row>
         <Col span="4" style={{ display: 'flex', alignItems: 'center' }}>
@@ -80,17 +81,3 @@ export function Icono({
 const scale = (n: number) => n * 2.3;
 
 
-function BarrasPallet({ pallet }: { pallet: IPalletConsolidado }) {
-
-  const value = "76531540" + String(pallet.hu).padStart(8, '0');
-  return <div style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>
-    <Barcode format="CODE128" value={value} height={64} />
-    <Title level={4} style={{ marginBottom: '0.25em' }}>CHILEAN TRADING LTDA</Title>
-
-    <div style={{ fontWeight: 'bold', fontSize: '1.2em', margin: 0 }}>{pallet.nombrelocal}</div>
-    <div style={{ fontWeight: 'bold', fontSize: '2.5em', margin: 0 }}>JS501</div>
-
-
-
-  </div>
-}

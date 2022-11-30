@@ -8,6 +8,7 @@ import {
   OrdenCompra,
   Pallet,
   palletsCajas,
+  Producto,
   ProtoPallet,
   ServicioOrdenes,
   ServicioPallets,
@@ -38,6 +39,7 @@ import {
 import { SuperOrden } from '@flash-ws/dao';
 import { PalletRobot, PalletRobotConfig } from '@flash-ws/robot';
 import { ifDebug } from '@flash-ws/shared';
+import { In } from 'typeorm';
 
 const ordenes = express.Router();
 
@@ -166,13 +168,28 @@ ordenes.post(
 
     if (!idOrden) return res.status(400).send(`Debe entregar la orden`);
     if (!productos) return res.status(400).send(`Debe entregar los productos`);
-    if (productos.length === 0) return res.status(400).send(`No vienen productos`);
+    if (productos.length === 0)
+      return res.status(400).send(`No vienen productos`);
     if (!estado) return res.status(400).send(`Debe entregar el estado`);
+    if (!EstadoLinea[estado])
+      return res.status(400).send(`Estado ${estado} inválido`);
+
+    const rows = await dataSource
+      .getRepository(Producto)
+      .find({ where: { id: In(productos) } });
+    if (rows.length === 0)
+      return res
+        .status(400)
+        .send(`Productos inválidos: ${productos.join(',')}`);
 
     const queryRunner = dataSource.createQueryRunner();
-    await queryRunner.manager.query(`update linea_detalle set estado = '${estado}' where "ordenCompraId" = '${idOrden}' and "productoId" in (${productos.join(",")}) `);
+    await queryRunner.manager.query(
+      `update linea_detalle set estado = '${estado}' where "ordenCompraId" = '${idOrden}' and "productoId" in (${productos.join(
+        ','
+      )}) `
+    );
     queryRunner.release();
-    
+
     const results = await dataSource.getRepository(OrdenCompra).find({
       where: { id: idOrden },
       relations: { lineas: true },
@@ -185,7 +202,6 @@ ordenes.post(
     )) as Array<LineaConsolidada>;
 
     return res.send(orden);
-
   }
 );
 ordenes.post(

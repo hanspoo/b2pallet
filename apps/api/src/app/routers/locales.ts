@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import multer = require('multer');
+
 
 import { dataSource, Local } from '@flash-ws/dao';
 

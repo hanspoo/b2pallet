@@ -13,7 +13,8 @@
     "./src/lib/upload-orden/MostrarErrores.tsx",
     "./src/lib/lineas-detalle/LineaParaReact.ts",
     "./src/lib/pallets-icono/Cubeta.tsx",
-    "./src/lib/pallets-generator/PalletsGeneratorImpl.tsx"
+    "./src/lib/pallets-generator/PalletsGeneratorImpl.tsx",
+    "./src/lib/detalle-pallet/EtiquetaPallet.tsx"
   ],
   "exclude": [
     "jest.config.ts",
