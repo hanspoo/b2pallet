@@ -8,6 +8,7 @@ import {
   Box,
   dataSource,
   inicializarCencosud,
+  obtainToken,
   OrdenCompra,
   Pallet,
   Producto,
@@ -60,8 +61,11 @@ const liviano = {
   box: grande,
 };
 
+let token: string;
+
 beforeAll(async () => {
   await inicializarCencosud();
+  token = await obtainToken();
   orden = await crearOrdenHelper(2);
   const box = new Box({
     largo: 100,
@@ -92,6 +96,7 @@ describe('parámetros generacion pallets', () => {
       };
       const response = await supertest(app)
         .post(`/api/ordenes/${orden.id}/gen-pallets`)
+        .set('Authorization', `Basic ${token}`)
         .send(params);
       expect(response.status).toEqual(200);
     });
@@ -104,6 +109,7 @@ describe('parámetros generacion pallets', () => {
       };
       const response = await supertest(app)
         .post(`/api/ordenes/${orden.id}/gen-pallets`)
+        .set('Authorization', `Basic ${token}`)
         .send(params);
 
       const pallets: IPalletConsolidado[] = response.body;
@@ -125,6 +131,7 @@ describe('parámetros generacion pallets', () => {
       };
       const response = await supertest(app)
         .post(`/api/ordenes/${orden.id}/gen-pallets`)
+        .set('Authorization', `Basic ${token}`)
         .send(params);
 
       const pallets: IPalletConsolidado[] = response.body;

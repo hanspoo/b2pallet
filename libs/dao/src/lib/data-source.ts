@@ -13,7 +13,11 @@ import { Pallet } from './entity/pallet.entity';
 import { ProtoPallet } from './entity/proto-pallet.entity';
 import { Caja } from './entity/caja.entity';
 import { Archivo } from './entity/archivo.entity';
+import { Empresa } from './entity/auth/empresa.entity';
+import { Token } from './entity/auth/token.entity';
+import { Usuario } from './entity/auth/usuario.entity';
 
+const LOGGING = !!process.env['DEBUG_DB'] || false;
 const testEnv = 'test';
 
 const dataSource = new DataSource({
@@ -40,8 +44,11 @@ const dataSource = new DataSource({
     Box,
     Caja,
     ProtoPallet,
+    Empresa,
+    Usuario,
+    Token,
   ],
-  logging: false,
+  logging: LOGGING,
   synchronize: true,
 
   extra: { max: 10, connectionTimeoutMillis: 3000 },

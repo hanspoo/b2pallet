@@ -4,6 +4,7 @@ import { Button, Spin, Table, Input } from 'antd';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { formatNumber } from '../front-utils';
+import { httpClient } from '../httpClient';
 import styles from './ordenes-consolidadas.module.css';
 
 /* eslint-disable-next-line */
@@ -23,7 +24,7 @@ export function OrdenesConsolidadas(props: OrdenesConsolidadasProps) {
   const [ordenes, setOrdenes] = useState<Array<IOrdenConsolidada>>();
 
   useEffect(() => {
-    axios
+    httpClient
       .get(`${process.env['NX_SERVER_URL']}/api/ordenes/consolidadas`)
       .then((res) => {
         setOrdenes(res.data);

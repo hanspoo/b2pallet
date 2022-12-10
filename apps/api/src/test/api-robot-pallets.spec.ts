@@ -7,6 +7,7 @@ import {
   Box,
   dataSource,
   inicializarCencosud,
+  obtainToken,
   OrdenCompra,
   Pallet,
   ProtoPallet,
@@ -20,9 +21,11 @@ const box1 = Box.from({ largo: 121.92, ancho: 101.6, alto: 170 });
 const proto1 = new ProtoPallet();
 proto1.box = box1;
 proto1.nombre = 'Pallet Estandard';
+let token: string;
 
 beforeAll(async () => {
   await inicializarCencosud();
+  token = await obtainToken();
   await dataSource.getRepository(ProtoPallet).clear();
   await dataSource.getRepository(ProtoPallet).save(proto1);
 });
@@ -38,6 +41,7 @@ describe('generación de pallets', () => {
   it('una orden una línea, un pallet, proto pallet valido', async () => {
     const res = await request(app)
       .post(`/api/ordenes/${orden.id}/gen-pallets`)
+      .set('Authorization', `Basic ${token}`)
       .send({ protoID: 1 })
       .set('Content-Type', 'application/json');
     expect(res.status).toBe(200);
@@ -48,6 +52,7 @@ describe('generación de pallets', () => {
     const body: BodyGenPallets = { protoID: 1, nextHU: 10000 };
     const res = await request(app)
       .post(`/api/ordenes/${orden.id}/gen-pallets`)
+      .set('Authorization', `Basic ${token}`)
       .send(body)
       .set('Content-Type', 'application/json');
     expect(res.status).toBe(200);

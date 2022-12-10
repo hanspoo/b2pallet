@@ -23,3 +23,5 @@ export * from './lib/caja-consolidada';
 export * from './lib/BodyGenPallets';
 export * from './lib/IOrdenConsolidada';
 export * from './lib/SubirOrdenBody';
+export * from './lib/LoginRequest';
+export * from './lib/SignupRequest';

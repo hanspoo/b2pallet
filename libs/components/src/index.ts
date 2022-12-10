@@ -1,3 +1,6 @@
+export * from './lib/auth/login-form/login-form';
+export * from './lib/auth/login-state/login-state';
+
 export * from './lib/archivo-component/archivo-component';
 export * from './lib/ant-uploader/ant-uploader';
 export { SeccionOrdenes } from './lib/ordenes/SeccionOrdenes';

@@ -5,10 +5,12 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu } from 'antd';
+import { Button, Layout, Menu } from 'antd';
 import React, { useState } from 'react';
-import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
-import { Productos, SeccionOrdenes } from '@flash-ws/components';
+
+import { LoginState, LoginForm, Productos, SeccionOrdenes } from '@flash-ws/components';
+import { useSelector } from 'react-redux';
+import { RootState } from '@flash-ws/reductor';
 
 const { Header, Sider, Content } = Layout;
 
@@ -22,15 +24,20 @@ enum Modo {
 }
 
 const App = () => {
+  const loggedIn = useSelector((state: RootState) => state.counter.loggedIn)
   const [modo, setModo] = useState(Modo.ORDENES);
   const [collapsed, setCollapsed] = useState(false);
+
+  if (!loggedIn)
+    return <LoginForm />
 
   function onChangeMenu(args: any) {
     setModo(args.key);
   }
 
   return (
-    <Layout id="container" role="container">
+    <Layout id="container" role="container" >
+      <LoginState />
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
 
@@ -91,7 +98,7 @@ const App = () => {
         <Content
           className="site-layout-background"
           style={{
-            margin: '24px 16px',
+
             padding: 24,
             minHeight: 280,
           }}
@@ -99,8 +106,12 @@ const App = () => {
           {modo === Modo.PRODUCTOS && <Productos />}
           {modo === Modo.ORDENES && <SeccionOrdenes />}
           {modo === Modo.PREFS && <p>Preferencias</p>}
+          <Button style={{ position: "absolute", left: '1em', bottom: '1em' }} type="link" onClick={() => {
+            localStorage.removeItem("access_token")
+          }}>Borrar access token</Button>
         </Content>
       </Layout>
+
     </Layout>
   );
 };

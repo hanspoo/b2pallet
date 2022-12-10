@@ -4,6 +4,9 @@ import { OrdenCompra } from './lib/entity/orden-compra.entity';
 export * from './lib/dao';
 export * from './lib/data-source';
 
+export * from './lib/entity/auth/token.entity';
+export * from './lib/entity/auth/empresa.entity';
+export * from './lib/entity/auth/usuario.entity';
 export * from './lib/entity/local.entity';
 export * from './lib/entity/linea-detalle.entity';
 export * from './lib/entity/unidad-negocio.entity';
@@ -23,6 +26,10 @@ export * from './lib/inicializarCencosud';
 export * from './lib/ServicioPallets';
 export * from './lib/ServicioCajas';
 export * from './lib/ServicioOrdenes';
+export * from './lib/auth/CredentialsService';
+export * from './lib/auth/LoginService';
+export * from './lib/auth/TokenService';
+export * from './lib/auth/SignupService';
 
 // Genera imports
 // find ./lib/entity/ -type f |perl -ane 'print qq#export * from "$F[0]"\n#' |sed s/\.ts//

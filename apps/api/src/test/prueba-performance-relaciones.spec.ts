@@ -1,11 +1,19 @@
 'debe devolver sólo las líneas de detalle modificadas';
-import { dataSource, inicializarCencosud, OrdenCompra } from '@flash-ws/dao';
+import {
+  dataSource,
+  inicializarCencosud,
+  obtainToken,
+  OrdenCompra,
+} from '@flash-ws/dao';
 import { crearOrdenHelper } from '@flash-ws/test-utils';
 import request = require('supertest');
 import { app } from '../app';
 
+let token: string;
+
 beforeAll(async () => {
   await inicializarCencosud();
+  token = await obtainToken();
 });
 // ('una orden con dos líneas, sólo debe devolver la modificada');
 
@@ -13,6 +21,7 @@ it.skip('Prueba de performance join en relaciones', async function () {
   const orden = await crearOrdenHelper(5000);
   const response = await request(app)
     .post('/api/ordenes/cambiar-estado/1')
+    .set('Authorization', `Basic ${token}`)
     .send({ ids: [1], estado: 'Rechazada' });
 
   await (async () => {

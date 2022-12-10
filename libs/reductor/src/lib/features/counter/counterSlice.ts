@@ -4,12 +4,16 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../../app/store';
 
 export interface CounterState {
+  token: string;
+  loggedIn: boolean;
   value: number;
   status: 'idle' | 'loading' | 'failed';
   ordenes: Array<IOrdenCompra>;
 }
 
 const initialState: CounterState = {
+  token: '',
+  loggedIn: false,
   value: 0,
   status: 'idle',
   ordenes: [],
@@ -50,6 +54,27 @@ export const counterSlice = createSlice({
     incrementByAmount: (state, action: PayloadAction<number>) => {
       state.value += action.payload;
     },
+    setLoggedIn: (state, action: PayloadAction<string>) => {
+      let i = 0;
+      console.log(i++);
+      if (!action.payload) {
+        console.log('setLoggedIn, error, no viene el token');
+        return;
+      }
+      console.log(i++);
+      state.loggedIn = true;
+      console.log(i++);
+      state.token = action.payload;
+      console.log(i++);
+      console.log('guardando access_token', action.payload);
+      console.log(i++);
+      localStorage.setItem('access_token', action.payload);
+      console.log(i++);
+    },
+    logout: (state) => {
+      state.loggedIn = false;
+      localStorage.removeItem('access_token');
+    },
     setOrdenes: (state, action: PayloadAction<Array<IOrdenCompra>>) => {
       state.ordenes = action.payload;
     },
@@ -79,6 +104,8 @@ export const {
   decrement,
   incrementByAmount,
   actualizarOrden,
+  setLoggedIn,
+  logout,
 } = counterSlice.actions;
 
 // The function below is called a selector and allows us to select a value from

@@ -1,4 +1,4 @@
-import { inicializarCencosud, OrdenCompra } from '@flash-ws/dao';
+import { inicializarCencosud, obtainToken, OrdenCompra } from '@flash-ws/dao';
 import { crearOrdenHelper } from '@flash-ws/test-utils';
 
 // import { crearProducto, crerOrdenLocal } from '@flash-ws/worker';
@@ -6,14 +6,17 @@ import request = require('supertest');
 import { app } from '../app';
 
 let orden: OrdenCompra;
+let token: string;
 
 beforeAll(async () => {
   await inicializarCencosud();
+  token = await obtainToken();
   orden = await crearOrdenHelper(3);
 });
 it.skip('prueba api res de cambio de estado de lineas', async () => {
   const response = await request(app)
     .post(`/api/ordenes/cambiar-estado/${orden.id}`)
+    .set('Authorization', `Basic ${token}`)
     .send({
       ids: [1, 2, 3],
       estado: 'Aprobado',
