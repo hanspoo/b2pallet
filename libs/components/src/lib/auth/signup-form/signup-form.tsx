@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import styles from "./signup-form.module.css"
+import styles from "../auth-form.module.css"
 import { Button, Checkbox, Form, Input, notification, Spin, Typography } from 'antd';
 import { SignupRequest } from '@flash-ws/api-interfaces';
 import { useDispatch } from 'react-redux';
@@ -110,12 +110,14 @@ export const SignupForm: React.FC<{ cancel: () => void }> = ({ cancel }) => {
             <Input.Password />
           </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              {loading ? <Spin /> : "Enviar"}
-            </Button>
-          </Form.Item>
-          <Button style={{ padding: 0, margin: 0 }} onClick={cancel} type="link">Cancelar</Button>
+          <div style={{ textAlign: "center", marginTop: '3em' }}>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" >
+                {loading ? <Spin /> : "Enviar"}
+              </Button>
+              <Button onClick={cancel} >Cancelar</Button>
+            </Form.Item>
+          </div>
         </Form>
       </div >
     </Context.Provider>

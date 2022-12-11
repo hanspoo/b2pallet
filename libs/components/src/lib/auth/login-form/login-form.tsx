@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import styles from "./login-form.module.css"
-import { Button, Checkbox, Form, Input, notification, Spin, Typography } from 'antd';
+import styles from "../auth-form.module.css"
+import { Button, Checkbox, Form, Input, notification, Typography } from 'antd';
 import { LoginRequest } from '@flash-ws/api-interfaces';
 import { useDispatch } from 'react-redux';
 import { setLoggedIn } from '@flash-ws/reductor';
@@ -42,16 +42,18 @@ export const LoginForm: React.FC = () => {
 
 
       const token = response.headers.get("x-token");
-      if (!token) { console.log(`El token ${token} es inválido`); return; }
+      if (!token) { console.log(`Info: No viene el token en la respuesta`); }
 
       response.text().then(data => {
+        setLoading(false)
         if (data !== "login Ok") {
-          api.error({
-            message: `Problemas al iniciar la sesión`,
-            description: data,
-            placement: "top"
-          });
-          setLoading(false)
+          // api.error({
+          //   message: `Problemas al iniciar la sesión`,
+          //   description: data,
+          //   placement: "top"
+          // });
+          // setLoading(false)
+          setError(data)
         } else {
           let i = 0;
 
@@ -60,9 +62,10 @@ export const LoginForm: React.FC = () => {
           console.log(i++);
           console.log("el token es", token);
 
-          dispatch(setLoggedIn(token));
+          if (token)
+            dispatch(setLoggedIn(token));
           console.log(i++);
-          setLoading(false)
+          // setLoading(false)
           console.log(i++);
         }
 
@@ -80,53 +83,58 @@ export const LoginForm: React.FC = () => {
 
 
 
-  const Context = React.createContext({ name: 'Default' });
+
   return (
-    <Context.Provider value={contextValue}>
 
-      <div className={styles["login-form"]}>
-        {contextHolder}
-        <Form
-          layout="vertical"
-          className={styles["ant-form"]}
-          name="basic"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
+
+    <div className={styles["login-form"]}>
+
+
+      <Form
+        layout="vertical"
+        className={styles["ant-form"]}
+        name="basic"
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+      >
+
+        <Title level={3} style={{ marginBottom: '1em' }}>Iniciar sesión</Title>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, message: 'Requerido' }]}
         >
+          <Input />
+        </Form.Item>
 
-          <Title level={3} style={{ marginBottom: '1em' }}>Ingresar</Title>
+        <Form.Item
+          label="Contraseña"
+          name="password"
+          rules={[{ required: true, message: 'Requerido' }]}
+        >
+          <Input.Password />
+        </Form.Item>
 
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: 'Requerido' }]}
-          >
-            <Input />
-          </Form.Item>
+        <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 0 }}>
+          <Checkbox>Recordarme en este equipo</Checkbox>
+        </Form.Item>
 
-          <Form.Item
-            label="Contraseña"
-            name="password"
-            rules={[{ required: true, message: 'Requerido' }]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 0 }}>
-            <Checkbox>Recordarme en este equipo</Checkbox>
-          </Form.Item>
-
+        <div style={{ textAlign: "center" }}>
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              {loading ? <Spin /> : "Enviar"}
+            <Button type="primary" htmlType="submit" style={{ marginRight: '0.1em' }}>
+              Enviar
             </Button>
+            <Button>Cancelar</Button>
           </Form.Item>
-          <Button onClick={() => setView(View.REGISTER)} style={{ margin: 0, padding: 0 }} type="link">Registrar Gratís</Button>
-        </Form>
-      </div >
-    </Context.Provider>
+          <Button type="link" onClick={() => setView(View.REGISTER)} >Registrar Gratís</Button>
+        </div>
+      </Form>
+    </div >
+
   );
 };
 

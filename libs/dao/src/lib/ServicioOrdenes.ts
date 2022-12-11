@@ -13,9 +13,9 @@ export class ServicioOrdenes {
     orden_compra."emision" as emision,
     orden_compra."entrega" as entrega
 FROM
-    "orden_compra" orden_compra INNER JOIN "linea_detalle" linea_detalle ON orden_compra."id" = linea_detalle."ordenCompraId"
-    INNER JOIN "unidad_negocio" unidad_negocio ON orden_compra."unidadId" = unidad_negocio."id"
-    INNER JOIN "cliente" cliente ON unidad_negocio."clienteId" = cliente."id"
+    "public"."orden_compra" orden_compra INNER JOIN "public"."linea_detalle" linea_detalle ON orden_compra."id" = linea_detalle."ordenCompraId"
+    INNER JOIN "public"."unidad_negocio" unidad_negocio ON orden_compra."unidadId" = unidad_negocio."id"
+    INNER JOIN "public"."cliente" cliente ON unidad_negocio."clienteId" = cliente."id"
 GROUP BY
     unidad_negocio."nombre",
     cliente."nombre",

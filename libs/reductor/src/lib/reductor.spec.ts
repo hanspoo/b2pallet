@@ -1,7 +1,6 @@
-import { reductor } from './reductor';
-
+import { persistor } from '../lib/app/store';
 describe('reductor', () => {
   it('should work', () => {
-    expect(reductor()).toEqual('reductor');
+    expect(persistor).toBeTruthy();
   });
 });

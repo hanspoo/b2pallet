@@ -8,13 +8,14 @@
 
 .login-form .ant-form {
   border: solid 1px black;
-  background-color: tomato;
+  min-width: 400px;
+  /* background-color: #bad5dd; */
   color: white;
   padding: 2em 3em;
 }
 
 .login-form {
-  background-color: darksalmon;
+  /* background-color: #5b759d; */
   min-height: 100vh;
   display: flex;
   justify-content: center;

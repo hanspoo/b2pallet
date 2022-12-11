@@ -1,4 +1,5 @@
-import { store } from '@flash-ws/reductor';
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistor, store } from '@flash-ws/reductor';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode } from 'react';
 
@@ -18,13 +19,16 @@ const queryClient = new QueryClient();
 root.render(
   <StrictMode>
     <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <GlobalLoader>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </GlobalLoader>
-      </QueryClientProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <QueryClientProvider client={queryClient}>
+          <GlobalLoader>
+            <BrowserRouter>
+
+              <App />
+            </BrowserRouter>
+          </GlobalLoader>
+        </QueryClientProvider>
+      </PersistGate>
     </Provider>
   </StrictMode>
 );

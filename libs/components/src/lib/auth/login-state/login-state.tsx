@@ -8,20 +8,20 @@ import styles from './login-state.module.css';
 export interface LoginStateProps { }
 
 export function LoginState(props: LoginStateProps) {
+  const token = useSelector((state: RootState) => state.counter.token)
   const dispatch = useDispatch();
 
   const loggedIn = useSelector((state: RootState) => state.counter.loggedIn)
   if (!loggedIn)
     return <p>Desconectado</p>
 
-  const access_token = localStorage.getItem('access_token');
   const onLogout = () => {
     dispatch(logout())
   }
 
   return (
     <div className={styles['container']}>
-      <small style={{ position: "absolute", right: "2em", top: "2em", textAlign: "right" }}>SessionID:<br /> {access_token}
+      <small style={{ position: "absolute", right: "2em", top: "2em", textAlign: "right" }}>SessionID:<br /> {token}
         <br /> <Button size='small' type="link" onClick={onLogout}><small>Logout</small></Button></small>
     </div>
   );

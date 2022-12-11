@@ -30,8 +30,8 @@ type GlobalLoaderProps = {
 export function GlobalLoader({ children }: GlobalLoaderProps) {
   console.log('Rendering GlobalLoader');
   // const dispatch = useDispatch();
-  const p = useQuery(['productos'], requestProductos, { cacheTime: 120000 });
-  const l = useQuery(['locales'], requestLocales, { cacheTime: 120000 });
+  const p = useQuery(['productos'], requestProductos, { refetchInterval: 1000 * 360 });
+  const l = useQuery(['locales'], requestLocales, { refetchInterval: 1000 * 360 });
 
   // useEffect(() => {
   //   console.log('useEffect Rendering GlobalLoader');

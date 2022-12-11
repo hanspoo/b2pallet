@@ -9,8 +9,8 @@ import { Button, Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 
 import { LoginState, LoginForm, Productos, SeccionOrdenes } from '@flash-ws/components';
-import { useSelector } from 'react-redux';
-import { RootState } from '@flash-ws/reductor';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout, RootState } from '@flash-ws/reductor';
 
 const { Header, Sider, Content } = Layout;
 
@@ -24,6 +24,7 @@ enum Modo {
 }
 
 const App = () => {
+  const dispatch = useDispatch();
   const loggedIn = useSelector((state: RootState) => state.counter.loggedIn)
   const [modo, setModo] = useState(Modo.ORDENES);
   const [collapsed, setCollapsed] = useState(false);
@@ -107,7 +108,7 @@ const App = () => {
           {modo === Modo.ORDENES && <SeccionOrdenes />}
           {modo === Modo.PREFS && <p>Preferencias</p>}
           <Button style={{ position: "absolute", left: '1em', bottom: '1em' }} type="link" onClick={() => {
-            localStorage.removeItem("access_token")
+            dispatch(logout())
           }}>Borrar access token</Button>
         </Content>
       </Layout>

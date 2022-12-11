@@ -19,10 +19,14 @@ auth.post('/login', async function (req: ReqWithSession, res: Response) {
     return res.send('please give username and password');
   }
 
-  const [loginOk, payload] = await new LoginService().login(
-    req.body.email,
-    req.body.password
-  );
+  const { email, password } = req.body;
+
+  if (!(/\w+@\w+/.test(email) && /\w+/.test(password))) {
+    console.log(`email: ${email}, o contraseña inválida: ${password}`);
+    return res.send(`No hemos encontrado ninguna cuenta asociada a ese email`);
+  }
+
+  const [loginOk, payload] = await new LoginService().login(email, password);
 
   if (loginOk) {
     req.session.user = req.body.email;

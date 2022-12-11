@@ -4,7 +4,8 @@ import { Button, Spin, Table, Input } from 'antd';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { formatNumber } from '../front-utils';
-import { httpClient } from '../httpClient';
+import { useHttpClient } from '../useHttpClient';
+
 import styles from './ordenes-consolidadas.module.css';
 
 /* eslint-disable-next-line */
@@ -16,6 +17,7 @@ export interface OrdenesConsolidadasProps {
 const { Search } = Input;
 
 export function OrdenesConsolidadas(props: OrdenesConsolidadasProps) {
+  const httpClient = useHttpClient();
   const [error, setError] = useState('');
   const [borradas, setBorradas] = useState(false);
   const [selected, setSelected] = useState<Array<string>>();
