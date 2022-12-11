@@ -85,12 +85,12 @@ export async function ultimaHUCliente(clienteId: number): Promise<number> {
   select
 	max(hu) as hu
 from
-	"public"."local" local
-inner join "public"."pallet" pallet on
+	"local" local
+inner join "pallet" pallet on
 	local."id" = pallet."localId"
-inner join "public"."unidad_negocio" unidad_negocio on
+inner join "unidad_negocio" unidad_negocio on
 	local."unidadId" = unidad_negocio."id"
-inner join "public"."cliente" cliente on
+inner join "cliente" cliente on
 	unidad_negocio."clienteId" = cliente."id"
 where
 	cliente.id = ${clienteId}

@@ -79,7 +79,7 @@ export class PalletRobot {
     }, 0);
 
     const numPallets = volTotal / proto.volumen;
-    console.log(`se esperan ${numPallets} pallets`);
+    if (process.env['DEBUG']) console.log(`se esperan ${numPallets} pallets`);
 
     const pallets: Pallet[] = [];
     for (let index = 0; index < numPallets; index++) {

@@ -87,7 +87,7 @@ app.use('/api/files', files);
 app.use('/api/archivos', archivos);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
-app.use('/api/productos', productos);
+app.use('/api/productos', authMiddleware, productos);
 app.use('/api/ordenes', authMiddleware, ordenes);
 app.use('/api/unidades', unidades);
 
