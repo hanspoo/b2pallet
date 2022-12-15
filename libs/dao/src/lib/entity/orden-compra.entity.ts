@@ -11,6 +11,7 @@ import { Pallet } from './pallet.entity';
 import { UnidadNegocio } from './unidad-negocio.entity';
 import { Pedido } from './pedido.entity';
 import { Caja } from './caja.entity';
+import { Cliente } from './cliente.entity';
 
 @Entity()
 @Unique(['numero', 'unidad'])
@@ -35,6 +36,9 @@ export class OrdenCompra {
     onDelete: 'CASCADE',
   })
   lineas: LineaDetalle[];
+
+  @ManyToOne(() => Cliente, (cli) => cli.ordenes)
+  cliente: Cliente;
 
   @OneToMany(() => Pallet, (pallet) => pallet.ordenCompra, {
     cascade: true,

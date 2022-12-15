@@ -3,6 +3,7 @@
  */
 import { EstadoLinea } from '@flash-ws/api-interfaces';
 import {
+  Cliente,
   dataSource,
   inicializarCencosud,
   LineaDetalle,
@@ -91,6 +92,7 @@ class OrdenBuiler {
     unidad: sisa,
     lineas: [],
     pallets: [],
+    cliente: new Cliente(),
   };
 
   lineas: Array<LineaDetalle> = [];

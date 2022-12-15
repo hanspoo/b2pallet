@@ -7,6 +7,7 @@ import {
   Unique,
 } from 'typeorm';
 import { Empresa } from './auth/empresa.entity';
+import { OrdenCompra } from './orden-compra.entity';
 import { Pedido } from './pedido.entity';
 import { UnidadNegocio } from './unidad-negocio.entity';
 
@@ -26,6 +27,9 @@ export class Cliente {
 
   @OneToMany(() => UnidadNegocio, (unidad) => unidad.cliente, { cascade: true })
   unidades: UnidadNegocio[];
+
+  @OneToMany(() => OrdenCompra, (orden) => orden.cliente, { cascade: true })
+  ordenes: OrdenCompra[];
 
   @ManyToOne(() => Empresa, (empresa) => empresa.clientes)
   empresa: Empresa;
