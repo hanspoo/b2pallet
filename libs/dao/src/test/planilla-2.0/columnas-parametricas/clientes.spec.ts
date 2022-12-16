@@ -1,6 +1,6 @@
 import xlsx from 'node-xlsx';
 import { Campo } from '../../../lib/parser-2.0/Campo';
-import { ConfigPLanilla } from '../../../lib/parser-2.0/ConfigPLanilla';
+import { ConfigPLanilla } from '../../../lib/parser-2.0/ConfigPlanilla';
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
 import { config } from './config-campos-cenco';
 

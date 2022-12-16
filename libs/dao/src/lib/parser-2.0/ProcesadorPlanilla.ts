@@ -4,7 +4,7 @@ import { OrdenCompra } from '../entity/orden-compra.entity';
 import { Producto } from '../entity/producto.entity';
 
 import { Campo } from './Campo';
-import { ConfigPLanilla } from './ConfigPLanilla';
+import { ConfigPLanilla } from './ConfigPlanilla';
 
 type Sheet = { name: string; data: unknown[] };
 export type LineaCruda = {

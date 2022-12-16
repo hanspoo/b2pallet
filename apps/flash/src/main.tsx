@@ -21,12 +21,12 @@ root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <QueryClientProvider client={queryClient}>
-          <GlobalLoader>
-            <BrowserRouter>
 
-              <App />
-            </BrowserRouter>
-          </GlobalLoader>
+          <BrowserRouter>
+
+            <App />
+          </BrowserRouter>
+
         </QueryClientProvider>
       </PersistGate>
     </Provider>

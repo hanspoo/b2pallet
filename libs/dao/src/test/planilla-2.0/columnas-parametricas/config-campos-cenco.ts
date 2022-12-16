@@ -1,5 +1,5 @@
 import { Campo } from '../../../lib/parser-2.0/Campo';
-import { ConfigPLanilla } from '../../../lib/parser-2.0/ConfigPLanilla';
+import { ConfigPLanilla } from '../../../lib/parser-2.0/ConfigPlanilla';
 
 export const config = new ConfigPLanilla('Gargola S.A.');
 

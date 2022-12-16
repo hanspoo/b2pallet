@@ -1,7 +1,5 @@
-import { dataSource } from 'libs/dao/src/lib/data-source';
-import { UnidadNegocio } from 'libs/dao/src/lib/entity/unidad-negocio.entity';
 import xlsx from 'node-xlsx';
-import { Local, Producto } from '../../..';
+import { dataSource, Local, Producto, UnidadNegocio } from '../../..';
 
 import { Cliente } from '../../../lib/entity/cliente.entity';
 import { OrdenCompra } from '../../../lib/entity/orden-compra.entity';

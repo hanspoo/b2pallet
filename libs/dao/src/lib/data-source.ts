@@ -22,9 +22,9 @@ const testEnv = 'test';
 
 const dataSource = new DataSource({
   type: process.env['NODE_ENV'] === testEnv ? 'sqlite' : 'postgres',
-  host: 'localhost',
-  username: 'flash',
-  password: 'flash',
+  host: process.env.DB_HOST || 'localhost',
+  username: process.env.DB_USER || 'flash',
+  password: process.env.DB_PASS || 'flash',
 
   database:
     process.env['NODE_ENV'] === testEnv
