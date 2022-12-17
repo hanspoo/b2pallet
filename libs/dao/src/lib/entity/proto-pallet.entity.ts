@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
+import { Empresa } from './auth/empresa.entity';
 import { Box } from './box.entity';
 
 @Entity()
@@ -22,6 +24,11 @@ export class ProtoPallet {
   @OneToOne(() => Box, { cascade: ['insert'], onDelete: 'CASCADE' })
   @JoinColumn()
   box: Box;
+
+  @ManyToOne(() => Empresa, (empresa) => empresa.protoPallets, {
+    nullable: false,
+  })
+  empresa: Empresa;
 
   get volumen(): number {
     return this.box.volumen;

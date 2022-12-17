@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Cliente } from '../cliente.entity';
 import { Producto } from '../producto.entity';
+import { ProtoPallet } from '../proto-pallet.entity';
 import { Usuario } from './usuario.entity';
 
 @Entity()
@@ -59,6 +60,9 @@ export class Empresa {
 
   @OneToMany(() => Usuario, (u) => u.empresa, { cascade: true })
   usuarios: Usuario[];
+
+  @OneToMany(() => ProtoPallet, (u) => u.empresa, { cascade: true })
+  protoPallets: ProtoPallet[];
 
   // @OneToMany(() => OrdenCompra, (orden) => orden.comprador)
   // ordenesEnviadas: OrdenCompra[];

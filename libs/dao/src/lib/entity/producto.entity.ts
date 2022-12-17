@@ -39,7 +39,7 @@ export class Producto {
   @JoinColumn()
   box: Box;
 
-  @ManyToOne(() => Empresa, (empresa) => empresa.productos)
+  @ManyToOne(() => Empresa, (empresa) => empresa.productos, { nullable: false })
   empresa: Empresa;
 
   @BeforeInsert()

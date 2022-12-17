@@ -1,5 +1,5 @@
 import { inicializarCencosud, obtainToken, OrdenCompra } from '@flash-ws/dao';
-import { crearOrdenHelper } from '@flash-ws/test-utils';
+import { crearOrdenHelper } from '@flash-ws/dao';
 
 // import { crearProducto, crerOrdenLocal } from '@flash-ws/worker';
 import request = require('supertest');

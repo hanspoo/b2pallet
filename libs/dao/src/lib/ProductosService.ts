@@ -4,13 +4,14 @@ import * as fs from 'fs';
 import {
   Box,
   dataSource,
+  Empresa,
   LineaDetalle,
   Local,
   OrdenCompra,
   Producto,
 } from '@flash-ws/dao';
 
-import { StatusCode } from './StatusCode';
+import { StatusCode } from '../../../worker/src/lib/StatusCode';
 
 type EntityStatus = {
   codigo: StatusCode;
@@ -25,6 +26,7 @@ export class ProductoService {
   }
   statusLines: Array<EntityStatus> = [];
   locales: Array<Local>;
+  constructor(public empresa: Empresa) {}
 
   async cargarPlanilla(path: string): Promise<Array<EntityStatus>> {
     if (!fs.existsSync(path)) {
@@ -44,7 +46,7 @@ export class ProductoService {
     return this.statusLines;
   }
 
-  async crearActualizarProducto(linea: object) {
+  async crearActualizarProducto(linea: any) {
     const codCenco = linea['CENCO'];
     const alto = linea['ALTO (CM)'];
     const ancho = linea['ANCHO (CM)'];
@@ -109,20 +111,22 @@ export class ProductoService {
 
     return l;
   }
-  async findByCodCenco(codCenco: string): Promise<Producto> {
-    return dataSource
-      .getRepository(Producto)
-      .findOne({ where: { codCenco }, relations: { box: true } });
+  async findByCodCenco(codCenco: string): Promise<Producto | null> {
+    return dataSource.getRepository(Producto).findOne({
+      where: { codCenco, empresa: { id: this.empresa.id } },
+      relations: { box: true },
+    });
   }
-  static async findById(id: number): Promise<Producto> {
+  static async findById(id: number): Promise<Producto | null> {
     return dataSource
       .getRepository(Producto)
       .findOne({ where: { id }, relations: { box: true } });
   }
-  async findByCodigo(codigo: string): Promise<Producto> {
-    return dataSource
-      .getRepository(Producto)
-      .findOne({ where: { codigo }, relations: { box: true } });
+  async findByCodigo(codigo: string): Promise<Producto | null> {
+    return dataSource.getRepository(Producto).findOne({
+      where: { codigo, empresa: { id: this.empresa.id } },
+      relations: { box: true },
+    });
   }
 }
 

@@ -1,15 +1,14 @@
 import { EstadoLinea } from '@flash-ws/api-interfaces';
-import {
-  OrdenCompra,
-  dataSource,
-  UnidadNegocio,
-  Box,
-  Producto,
-  Local,
-  LineaDetalle,
-  Caja,
-} from '@flash-ws/dao';
 import * as crypto from 'node:crypto';
+import { dataSource } from '../data-source';
+import { Empresa } from '../entity/auth/empresa.entity';
+import { Box } from '../entity/box.entity';
+import { Caja } from '../entity/caja.entity';
+import { LineaDetalle } from '../entity/linea-detalle.entity';
+import { Local } from '../entity/local.entity';
+import { OrdenCompra } from '../entity/orden-compra.entity';
+import { Producto } from '../entity/producto.entity';
+import { UnidadNegocio } from '../entity/unidad-negocio.entity';
 
 export async function crearOrdenHelper(numLineas = 1): Promise<OrdenCompra> {
   const sisa = await dataSource
@@ -32,6 +31,12 @@ export async function crearOrdenHelper(numLineas = 1): Promise<OrdenCompra> {
   p.codCenco = '1651844';
   p.vigente = true;
   p.box = box;
+  const e = await dataSource
+    .getRepository(Empresa)
+    .findOne({ where: { nombre: 'b2pallet' } });
+
+  if (!e) throw Error('Debe estar creada la empresa b2pallet');
+  p.empresa = e;
 
   const producto = await dataSource.getRepository(Producto).save(p);
 

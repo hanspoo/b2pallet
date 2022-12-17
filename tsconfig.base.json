@@ -27,7 +27,6 @@
       "@flash-ws/reductor": ["libs/reductor/src/index.ts"],
       "@flash-ws/robot": ["libs/robot/src/index.ts"],
       "@flash-ws/shared": ["libs/shared/src/index.ts"],
-      "@flash-ws/test-utils": ["libs/test-utils/src/index.ts"],
       "@flash-ws/worker": ["libs/worker/src/index.ts"]
     }
   },

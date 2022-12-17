@@ -7,6 +7,7 @@ import {
 import {
   Box,
   dataSource,
+  Empresa,
   inicializarCencosud,
   obtainToken,
   OrdenCompra,
@@ -14,7 +15,7 @@ import {
   Producto,
   ProtoPallet,
 } from '@flash-ws/dao';
-import { crearOrdenHelper } from '@flash-ws/test-utils';
+import { crearOrdenHelper } from '@flash-ws/dao';
 
 import supertest from 'supertest';
 import { app } from '../app';
@@ -73,7 +74,13 @@ beforeAll(async () => {
     alto: 170,
   });
 
+  const e = await dataSource
+    .getRepository(Empresa)
+    .findOne({ where: { nombre: 'b2pallet' } });
+
   const p = new ProtoPallet(box);
+  p.empresa = e;
+
   p.nombre = 'Pallet Standard';
   proto = await dataSource.getRepository(ProtoPallet).save(p);
 

@@ -18,7 +18,6 @@
     "reductor": "libs/reductor",
     "robot": "libs/robot",
     "shared": "libs/shared",
-    "test-utils": "libs/test-utils",
     "worker": "libs/worker"
   }
 }

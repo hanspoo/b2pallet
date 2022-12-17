@@ -16,6 +16,7 @@ import {
   formatNumber,
   volumen,
 } from '../front-utils';
+import { useProductos } from './useProductos';
 
 const { Title } = Typography;
 
@@ -108,23 +109,12 @@ const columns = [
 ];
 
 /* eslint-disable-next-line */
-export interface ProductosProps {}
+export interface ProductosProps { }
 
 export function Productos(props: ProductosProps) {
+  const [loading, error, data] = useProductos();
   const [search, setSearch] = useState<RegExp>();
-  const [data, setData] = useState<Array<IProducto>>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    const productos = queryClient.getQueryData<Array<IProducto>>([
-      'productos',
-    ]) as any;
-    setData(productos);
-    setLoading(false);
-  }, [queryClient]);
 
   if (loading) return <Spin />;
   if (error) return <p>{error}</p>;
@@ -138,11 +128,11 @@ export function Productos(props: ProductosProps) {
 
   const productos = search
     ? data.filter(
-        (prod) =>
-          search.test(prod.nombre) ||
-          search.test(prod.codigo) ||
-          search.test(prod.codCenco)
-      )
+      (prod) =>
+        search.test(prod.nombre) ||
+        search.test(prod.codigo) ||
+        search.test(prod.codCenco)
+    )
     : data;
 
   return (

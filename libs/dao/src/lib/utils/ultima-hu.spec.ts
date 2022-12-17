@@ -1,11 +1,9 @@
+import { dataSource } from '../data-source';
+import { OrdenCompra } from '../entity/orden-compra.entity';
+import { Pallet } from '../entity/pallet.entity';
+import { inicializarCencosud } from '../inicializarCencosud';
+import { ServicioPallets } from '../ServicioPallets';
 import { crearOrdenHelper } from './crearOrdenHelper';
-import {
-  OrdenCompra,
-  inicializarCencosud,
-  Pallet,
-  dataSource,
-  ServicioPallets,
-} from '@flash-ws/dao';
 
 let orden: OrdenCompra;
 
@@ -22,7 +20,7 @@ async function insertarPallet(hu: number, orden: OrdenCompra) {
   p.hu = hu;
   p.ordenCompra = orden;
   p.local = orden.lineas[0].local;
-  console.log(p);
+  // console.log(p);
 
   return dataSource.getRepository(Pallet).save(p);
 }

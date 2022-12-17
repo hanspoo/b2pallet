@@ -6,7 +6,7 @@ import { EstadoLinea } from '@flash-ws/api-interfaces';
 import { dataSource, LineaDetalle, OrdenCompra, Producto } from '@flash-ws/dao';
 
 import { Cliente, inicializarCencosud, UnidadNegocio } from '@flash-ws/dao';
-import { crearOrdenHelper } from '@flash-ws/test-utils';
+import { crearOrdenHelper } from '@flash-ws/dao';
 
 import { ServicioCambioEstado } from '../lib/ServicioCambioEstado';
 

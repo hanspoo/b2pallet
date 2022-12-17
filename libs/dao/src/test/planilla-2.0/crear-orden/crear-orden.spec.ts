@@ -1,29 +1,23 @@
 import xlsx from 'node-xlsx';
-import { dataSource, Local, Producto, UnidadNegocio } from '../../..';
+import { dataSource, Empresa, inicializarCencosud, Producto } from '../../..';
 
-import { Cliente } from '../../../lib/entity/cliente.entity';
-import { OrdenCompra } from '../../../lib/entity/orden-compra.entity';
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
 import { config } from '../columnas-parametricas/config-campos-cenco';
 import { OrdenCreator } from '../../../lib/parser-2.0/OrdenCreator';
 
+let empresa: Empresa;
 beforeAll(async () => {
-  if (!dataSource.isInitialized) await dataSource.initialize();
-  const repoProd = dataSource.getRepository(Producto);
-  await repoProd.save(
-    repoProd.create({
-      codCenco: '1647753',
-      codigo: 'KP-TOOTH -1.6*65MM',
-      nombre: 'Bolsa mondadientes 100un',
-      peso: 1,
-    })
-  );
+  await inicializarCencosud();
+  empresa = await dataSource
+    .getRepository(Empresa)
+    .findOne({ where: { nombre: 'b2pallet' } });
 });
+
 beforeEach(async () => {
-  await dataSource.getRepository(OrdenCompra).clear();
-  await dataSource.getRepository(Local).clear();
-  await dataSource.getRepository(UnidadNegocio).clear();
-  await dataSource.getRepository(Cliente).clear();
+  await dataSource.query('delete from orden_compra');
+  await dataSource.query('delete from local');
+  await dataSource.query('delete from unidad_negocio');
+  await dataSource.query('delete from cliente');
 });
 
 describe('Usando el procesador de planillas crea toda la estructura', () => {
@@ -33,8 +27,9 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
     const procesador = new ProcesadorPlanilla(config);
 
     const result = await procesador.procesar(ws[0]);
-    const { ordenes } = await OrdenCreator.fromProcesador(result);
+    const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
 
+    expect(ordenes.length).toBe(1);
     expect(ordenes[0].numero).toBe('5575426472');
   });
   it('le asigna el cliente', async () => {
@@ -43,7 +38,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
     const procesador = new ProcesadorPlanilla(config);
 
     const result = await procesador.procesar(ws[0]);
-    const { ordenes } = await OrdenCreator.fromProcesador(result);
+    const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
     expect(ordenes[0].cliente).toBeTruthy();
     expect(ordenes[0].cliente.identLegal).toBe('C001');
     expect(ordenes[0].cliente.nombre).toBe('CENCOSUD RETAIL S.A.');
@@ -53,7 +48,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
     const procesador = new ProcesadorPlanilla(config);
     const result = await procesador.procesar(ws[0]);
 
-    const { ordenes } = await OrdenCreator.fromProcesador(result);
+    const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
     expect(ordenes[0].cliente.unidades[0].nombre).toBe('Sisa');
   });
   it('crea la unidad con su local', async () => {
@@ -61,7 +56,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
     const procesador = new ProcesadorPlanilla(config);
     const result = await procesador.procesar(ws[0]);
 
-    const { ordenes } = await OrdenCreator.fromProcesador(result);
+    const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
     expect(ordenes[0].cliente.unidades[0].locales[0].codigo).toBe('N524');
   });
   it('datos de la orden: emision', async () => {
@@ -69,7 +64,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
     const procesador = new ProcesadorPlanilla(config);
     const result = await procesador.procesar(ws[0]);
 
-    const { ordenes } = await OrdenCreator.fromProcesador(result);
+    const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
     expect(ordenes[0].emision).toBe('15-09-2022');
   });
   it('datos de la orden: entrega', async () => {
@@ -77,7 +72,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
     const procesador = new ProcesadorPlanilla(config);
     const result = await procesador.procesar(ws[0]);
 
-    const { ordenes } = await OrdenCreator.fromProcesador(result);
+    const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
     expect(ordenes[0].entrega).toBe('22-09-2022');
   });
 });
@@ -88,7 +83,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
     const procesador = new ProcesadorPlanilla(config);
     const result = await procesador.procesar(ws[0]);
 
-    const { ordenes } = await OrdenCreator.fromProcesador(result);
+    const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
     const linea = ordenes[0].lineas[0];
     expect(linea.cantidad).toBe(1);
   });
@@ -98,7 +93,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
     const procesador = new ProcesadorPlanilla(config);
     const result = await procesador.procesar(ws[0]);
 
-    const { errores } = await OrdenCreator.fromProcesador(result);
+    const { errores } = await new OrdenCreator(empresa).fromProcesador(result);
     expect(errores.length).toBe(1);
   });
 });

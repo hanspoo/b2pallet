@@ -18,6 +18,7 @@ export const obtainToken = async () => {
   return token;
 };
 
+export const CODIGO_PROD = 'KP-TOOTH -1.6*65MM';
 export async function inicializarCencosud(): Promise<Cliente> {
   if (!dataSource.isInitialized) await dataSource.initialize();
   // const entities = dataSource.entityMetadatas;
@@ -46,25 +47,23 @@ export async function inicializarCencosud(): Promise<Cliente> {
   producto.nombre = 'Producto de prueba';
   producto.peso = 1;
   producto.vigente = true;
-  producto.codigo = '1234567';
+  producto.codigo = CODIGO_PROD;
 
   // await repoProducto.save(p);
 
   const repoEmpresa = dataSource.getRepository(Empresa);
   const e = await repoEmpresa.save(
     repoEmpresa.create({
-      nombre: 'Chilean Trading',
+      nombre: 'b2pallet',
       identLegal: '123456789',
     })
   );
 
-  const user = dataSource
-    .getRepository(Usuario)
-    .create({
-      email: 'info@welinux.cl',
-      password: '123456',
-      nombre: 'Usuario de prueba',
-    });
+  const user = dataSource.getRepository(Usuario).create({
+    email: 'info@welinux.cl',
+    password: '123456',
+    nombre: 'Usuario de prueba',
+  });
 
   e.clientes = [cliente];
   e.productos = [producto];

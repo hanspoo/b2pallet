@@ -63,13 +63,11 @@ const authMiddleware = async function (
         return res.status(401).send(`Token ${token} no encontrado`);
       }
       req['user'] = t.usuario;
+      req['empresa'] = t.usuario.empresa;
 
       return next();
     }
-  }
-  if (req.session && req.session.user === 'jose' && req.session.admin)
-    return next();
-  else return res.sendStatus(401);
+  } else return res.sendStatus(401);
 };
 
 const greeting: Message = { message: 'Welcome to the api!' };

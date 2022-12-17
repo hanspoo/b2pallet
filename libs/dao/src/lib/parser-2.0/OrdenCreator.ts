@@ -1,8 +1,9 @@
 import {
   dataSource,
+  Empresa,
   LineaDetalle,
   Local,
-  Producto,
+  ProductoService,
   UnidadNegocio,
 } from '../..';
 import { Cliente } from '../entity/cliente.entity';
@@ -15,7 +16,8 @@ type ResultCrearOrdenes = {
 };
 
 export class OrdenCreator {
-  static async fromProcesador({
+  constructor(public empresa: Empresa) {}
+  async fromProcesador({
     ordenes,
     clientes,
     unidades,
@@ -32,24 +34,29 @@ export class OrdenCreator {
     const repoCliente = dataSource.getRepository(Cliente);
     const repoLinea = dataSource.getRepository(LineaDetalle);
     const repoUnidad = dataSource.getRepository(UnidadNegocio);
-    let clientePersistente = await repoCliente.findOne({
+    let cliente = await repoCliente.findOne({
+      relations: ['unidades'],
       where: { identLegal },
     });
-    if (!clientePersistente) {
+    if (cliente) {
+      const nuevas = agregarUnidades(cliente, unidades);
+      nuevas.forEach((u) => cliente.unidades.push(u));
+      cliente = await repoCliente.save(cliente);
+    } else {
       cli.unidades = unidades.map((nombre) =>
         repoUnidad.create({
           nombre,
           locales: this.localesParaUnidad(nombre, locales),
         })
       );
-      clientePersistente = await repoCliente.save(cli);
+      cliente = await repoCliente.save(cli);
     }
 
     const ordenesCreadas: Array<OrdenCompra> = [];
 
     for (let i = 0; i < ordenes.length; i++) {
       const orden = ordenes[i];
-      orden.cliente = clientePersistente;
+      orden.cliente = cliente;
       orden.lineas = lineas.map((lc) => {
         const linea = repoLinea.create({ cantidad: lc.cantidad });
         return linea;
@@ -57,11 +64,11 @@ export class OrdenCreator {
       ordenesCreadas.push(orden as OrdenCompra);
     }
 
-    repoCliente.save(clientePersistente);
+    repoCliente.save(cliente);
 
     return { ordenes: ordenesCreadas, errores: [] };
   }
-  static localesParaUnidad(unidad: string, locales: LocalCrudo[]): Local[] {
+  localesParaUnidad(unidad: string, locales: LocalCrudo[]): Local[] {
     const repoLocal = dataSource.getRepository(Local);
 
     return locales
@@ -71,16 +78,35 @@ export class OrdenCreator {
       });
   }
 
-  static async erroresProductos(lineas: LineaCruda[]): Promise<string[]> {
-    const repoProducto = dataSource.getRepository(Producto);
+  async erroresProductos(lineas: LineaCruda[]): Promise<string[]> {
+    const service = new ProductoService(this.empresa);
+
     const prods = new Set<string>(lineas.map((l) => l.codProdProveedor));
     const array = Array.from(prods);
     const errores = [];
     for (let i = 0; i < array.length; i++) {
       const prod = array[i];
-      const p = await repoProducto.findOne({ where: { codigo: prod } });
+      const p = await service.findByCodigo(prod);
       if (p === null) errores.push(`Producto ${prod} no encontrado`);
     }
     return errores;
   }
+}
+function agregarUnidades(
+  cliente: Cliente,
+  unidadesNuevas: string[]
+): UnidadNegocio[] {
+  const nuevas = unidadesNuevas.filter((nombre) => {
+    return !existeUnidad(cliente, nombre);
+  });
+  return nuevas.map((s) => {
+    const u = new UnidadNegocio();
+    u.nombre = s;
+    return u;
+  });
+}
+function existeUnidad(cliente: Cliente, nombre: string) {
+  const re = new RegExp(nombre);
+
+  return cliente.unidades.find((u) => re.test(u.nombre));
 }

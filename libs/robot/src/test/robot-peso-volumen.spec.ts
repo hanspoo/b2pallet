@@ -7,7 +7,7 @@ import {
   ProtoPallet,
 } from '@flash-ws/dao';
 
-import { crearOrdenHelper } from '@flash-ws/test-utils';
+import { crearOrdenHelper } from '@flash-ws/dao';
 import { PalletRobot } from '../lib/PalletRobot';
 
 let orden: OrdenCompra;

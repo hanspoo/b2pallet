@@ -6,7 +6,7 @@ import {
   ProtoPallet,
 } from '@flash-ws/dao';
 
-import { crearOrdenHelper } from '@flash-ws/test-utils';
+import { crearOrdenHelper } from '@flash-ws/dao';
 import { Ordenar, Distribuir } from '@flash-ws/api-interfaces';
 import { PalletRobot } from '../lib/PalletRobot';
 

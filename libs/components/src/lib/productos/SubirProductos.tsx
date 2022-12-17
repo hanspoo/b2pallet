@@ -1,10 +1,14 @@
 import { Button, message, Upload } from 'antd';
 
 import { UploadOutlined } from '@ant-design/icons';
+import { RootState } from '@flash-ws/reductor';
+import { useSelector } from 'react-redux';
 
 const SubirProductos = () => {
+  const token = useSelector((state: RootState) => state.counter.token);
   const props = {
     name: 'file',
+    headers: { authorization: `Bearer ${token}` },
     action: `${process.env['NX_SERVER_URL']}/api/productos/masivo`,
 
     onChange(info: any) {

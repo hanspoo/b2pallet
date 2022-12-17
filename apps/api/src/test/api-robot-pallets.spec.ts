@@ -6,13 +6,14 @@ import {
 import {
   Box,
   dataSource,
+  Empresa,
   inicializarCencosud,
   obtainToken,
   OrdenCompra,
   Pallet,
   ProtoPallet,
 } from '@flash-ws/dao';
-import { crearOrdenHelper } from '@flash-ws/test-utils';
+import { crearOrdenHelper } from '@flash-ws/dao';
 import request = require('supertest');
 import { app } from '../app/index';
 
@@ -27,6 +28,10 @@ beforeAll(async () => {
   await inicializarCencosud();
   token = await obtainToken();
   await dataSource.getRepository(ProtoPallet).clear();
+  const e = await dataSource
+    .getRepository(Empresa)
+    .findOne({ where: { nombre: 'b2pallet' } });
+  proto1.empresa = e;
   await dataSource.getRepository(ProtoPallet).save(proto1);
 });
 beforeEach(async () => {
