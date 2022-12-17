@@ -20,16 +20,21 @@ beforeAll(async () => {
     .getRepository(Empresa)
     .findOne({ where: { nombre: 'b2pallet' } });
 });
+
+beforeEach(async () => {
+  await dataSource.query('delete from local');
+});
 describe('crear unidades de negocio ordenes', () => {
   describe('cliente existente', () => {
-    const repoCli = dataSource.getRepository(Cliente);
-    it('cliente existente, debe crear la unidad de negocio', async () => {
+    it('debe crear la unidad de negocio', async () => {
+      const repoCli = dataSource.getRepository(Cliente);
+      const nombreUnidad = randomBytes(10).toString('hex');
+
       await repoCli.save(
         repoCli.create({ identLegal: 'C001', nombre: 'Cliente 01' })
       );
-      const nombre = randomBytes(10).toString('hex');
 
-      const l1 = new LineBuilder().withUnidad(nombre).build();
+      const l1 = new LineBuilder().withUnidad(nombreUnidad).build();
       const hoja = new SheetBuilder().addLines(l1).build();
 
       const procesador = new ProcesadorPlanilla(config);
@@ -38,11 +43,37 @@ describe('crear unidades de negocio ordenes', () => {
 
       const unidad = await dataSource
         .getRepository(UnidadNegocio)
-        .findOne({ where: { nombre } });
+        .findOne({ where: { nombre: nombreUnidad } });
 
       expect(unidad).toBeTruthy();
     });
-    it('cliente nuevo existente, debe crear la unidad de negocio', async () => {
+    it('debe crear local de la unidad de negocio', async () => {
+      const repoCli = dataSource.getRepository(Cliente);
+      const nombreUnidad = randomBytes(10).toString('hex');
+      const nombreLocal = randomBytes(10).toString('hex');
+
+      await repoCli.save(
+        repoCli.create({ identLegal: 'C001', nombre: 'Cliente 01' })
+      );
+
+      const l1 = new LineBuilder()
+        .withUnidad(nombreUnidad)
+        .withLocal(nombreLocal)
+        .build();
+      const hoja = new SheetBuilder().addLines(l1).build();
+
+      const procesador = new ProcesadorPlanilla(config);
+      const result = await procesador.procesar(hoja);
+      await new OrdenCreator(empresa).fromProcesador(result);
+
+      const unidad = await dataSource
+        .getRepository(UnidadNegocio)
+        .findOne({ where: { nombre: nombreUnidad }, relations: ['locales'] });
+
+      expect(unidad).toBeTruthy();
+      expect(unidad.locales.length).toBe(1);
+    });
+    it('cliente nuevo, debe crear la unidad de negocio', async () => {
       const nombre = randomBytes(10).toString('hex');
 
       const l1 = new LineBuilder().withUnidad(nombre).build();

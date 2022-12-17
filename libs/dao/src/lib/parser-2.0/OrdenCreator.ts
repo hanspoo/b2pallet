@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from 'react';
 import {
   dataSource,
   Empresa,
@@ -35,12 +36,13 @@ export class OrdenCreator {
     const repoLinea = dataSource.getRepository(LineaDetalle);
     const repoUnidad = dataSource.getRepository(UnidadNegocio);
     let cliente = await repoCliente.findOne({
-      relations: ['unidades'],
+      relations: ['unidades', 'unidades.locales'],
       where: { identLegal },
     });
     if (cliente) {
-      const nuevas = agregarUnidades(cliente, unidades);
+      const nuevas = unidadesNuevas(cliente, unidades);
       nuevas.forEach((u) => cliente.unidades.push(u));
+      mezclarLocales(cliente, locales);
       cliente = await repoCliente.save(cliente);
     } else {
       cli.unidades = unidades.map((nombre) =>
@@ -92,7 +94,7 @@ export class OrdenCreator {
     return errores;
   }
 }
-function agregarUnidades(
+function unidadesNuevas(
   cliente: Cliente,
   unidadesNuevas: string[]
 ): UnidadNegocio[] {
@@ -102,6 +104,7 @@ function agregarUnidades(
   return nuevas.map((s) => {
     const u = new UnidadNegocio();
     u.nombre = s;
+    u.locales = [];
     return u;
   });
 }
@@ -109,4 +112,43 @@ function existeUnidad(cliente: Cliente, nombre: string) {
   const re = new RegExp(nombre);
 
   return cliente.unidades.find((u) => re.test(u.nombre));
+}
+function mezclarLocales(cliente: Cliente, locales: LocalCrudo[]): void {
+  const mapaUnidadLocal: Record<string, LocalCrudo[]> = locales.reduce(
+    (acc, iter) => {
+      const ele = acc[iter.unidad];
+      if (ele) {
+        acc[iter.unidad] = [...ele, iter];
+      } else {
+        acc[iter.unidad] = [iter];
+      }
+      return acc;
+    },
+    {}
+  );
+
+  console.log('cliente.unidades', cliente.unidades);
+
+  const repoLocal = dataSource.getRepository(Local);
+
+  Object.keys(mapaUnidadLocal).forEach((nombreUnidad) => {
+    const unidad = cliente.unidades.find((u) => u.nombre === nombreUnidad);
+    if (!unidad) throw Error(`La unidad ${unidad} debe existir a esta altura`);
+
+    const locales = mapaUnidadLocal[nombreUnidad];
+    locales.forEach((localPlanilla) => {
+      const localActual = unidad.locales.find(
+        ({ codigo }) => codigo === localPlanilla.codigo
+      );
+      if (localActual) return;
+      console.log(`Agregando local ${localPlanilla.nombre}`);
+
+      unidad.locales.push(
+        repoLocal.create({
+          codigo: localPlanilla.codigo,
+          nombre: localPlanilla.nombre,
+        })
+      );
+    });
+  });
 }
