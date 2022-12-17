@@ -1,17 +1,13 @@
 import * as xlsx from 'xlsx';
 import * as fs from 'fs';
-
-import {
-  Box,
-  dataSource,
-  Empresa,
-  LineaDetalle,
-  Local,
-  OrdenCompra,
-  Producto,
-} from '@flash-ws/dao';
-
-import { StatusCode } from '../../../worker/src/lib/StatusCode';
+import { StatusCode } from './StatusCode';
+import { dataSource } from './data-source';
+import { Empresa } from './entity/auth/empresa.entity';
+import { Box } from './entity/box.entity';
+import { LineaDetalle } from './entity/linea-detalle.entity';
+import { Local } from './entity/local.entity';
+import { OrdenCompra } from './entity/orden-compra.entity';
+import { Producto } from './entity/producto.entity';
 
 type EntityStatus = {
   codigo: StatusCode;
@@ -26,7 +22,9 @@ export class ProductoService {
   }
   statusLines: Array<EntityStatus> = [];
   locales: Array<Local>;
-  constructor(public empresa: Empresa) {}
+  constructor(public empresa: Empresa) {
+    if (!empresa) throw Error('La empresa es nula, debe entregar la empresa');
+  }
 
   async cargarPlanilla(path: string): Promise<Array<EntityStatus>> {
     if (!fs.existsSync(path)) {
@@ -88,6 +86,7 @@ export class ProductoService {
       box.alto = alto;
 
       p.box = box;
+      p.empresa = this.empresa;
 
       await repo.save(p);
     }

@@ -16,7 +16,7 @@ beforeEach(async () => {
   // await repoProd.manager.query('delete from empresa');
   //   repoEmpresa.clear();
   const templateProd = await repoProd.findOne({ where: { codigo: '1234567' } });
-  delete templateProd.id;
+  if (templateProd) delete templateProd.id;
   p1 = repoProd.create({
     ...templateProd,
     nombre: 'Velas 1',

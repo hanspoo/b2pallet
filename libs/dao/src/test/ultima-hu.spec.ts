@@ -1,9 +1,9 @@
-import { dataSource } from '../data-source';
-import { OrdenCompra } from '../entity/orden-compra.entity';
-import { Pallet } from '../entity/pallet.entity';
-import { inicializarCencosud } from '../inicializarCencosud';
-import { ServicioPallets } from '../ServicioPallets';
-import { crearOrdenHelper } from './crearOrdenHelper';
+import { dataSource } from '../lib/data-source';
+import { OrdenCompra } from '../lib/entity/orden-compra.entity';
+import { Pallet } from '../lib/entity/pallet.entity';
+import { inicializarCencosud } from '../lib/inicializarCencosud';
+import { ServicioPallets } from '../lib/ServicioPallets';
+import { crearOrdenHelper } from '../lib/utils/crearOrdenHelper';
 
 let orden: OrdenCompra;
 

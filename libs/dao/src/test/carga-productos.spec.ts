@@ -1,11 +1,4 @@
-import {
-  Cliente,
-  dataSource,
-  Empresa,
-  inicializarCencosud,
-  UnidadNegocio,
-} from '@flash-ws/dao';
-import { ProductoService } from '../lib/ProductosService';
+import { dataSource, Empresa, inicializarCencosud, ProductoService } from '..';
 import { StatusCode } from '../lib/StatusCode';
 
 jest.setTimeout(20000);
@@ -16,6 +9,10 @@ beforeAll(async () => {
   empresa = await dataSource
     .getRepository(Empresa)
     .findOne({ where: { nombre: 'b2pallet' } });
+});
+beforeEach(async () => {
+  await inicializarCencosud();
+  await dataSource.query('delete from producto');
 });
 
 /*

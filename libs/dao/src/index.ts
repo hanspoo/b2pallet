@@ -32,7 +32,7 @@ export * from './lib/auth/LoginService';
 export * from './lib/auth/TokenService';
 export * from './lib/auth/SignupService';
 export * from './lib/ProductosService';
-export * from './lib/utils';
+export * from './lib/utils/crearOrdenHelper';
 
 // Genera imports
 // find ./lib/entity/ -type f |perl -ane 'print qq#export * from "$F[0]"\n#' |sed s/\.ts//
