@@ -13,7 +13,7 @@ type PropsEstadoIProducto = {
   actual: EstadoLinea;
   estado: EstadoLinea;
   producto: IProducto;
-  ordenID: number;
+  ordenID: string;
   editar: boolean;
   linea: ILineaConsolidada;
   actualizar: (lineas: any) => void;

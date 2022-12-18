@@ -3,12 +3,13 @@ import axios from 'axios';
 import { Button, Select, Spin } from 'antd';
 import {
     IArchivo,
-    IOrdenCompra, IProtoPallet, SubirOrdenBody
+    IOrdenCompra, IProtoPallet, LoaderPostBody, SubirOrdenBody
 } from '@flash-ws/api-interfaces';
 import { OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
 import { MostrarErrores } from './MostrarErrores';
 import { AntUploader } from '../ant-uploader/ant-uploader';
 import Title from 'antd/lib/typography/Title';
+import { useHttpClient } from '../useHttpClient';
 
 export type UploadOrdenReallyArgs = {
     protoPallets: IProtoPallet[];
@@ -21,6 +22,7 @@ const labelStyle = {
 };
 
 export function UploadOrdenReally({ protoPallets }: UploadOrdenReallyArgs) {
+    const httpClient = useHttpClient()
     const [archivo, setArchivo] = useState<IArchivo>();
     const [loading, setLoading] = useState(false);
     const [limpiando, setLimpiando] = useState(false);
@@ -36,11 +38,10 @@ export function UploadOrdenReally({ protoPallets }: UploadOrdenReallyArgs) {
 
         setLoading(true);
         event.preventDefault();
-        const params: SubirOrdenBody = {
-            idUnidad: protoPallet,
+        const params: LoaderPostBody = {
             idArchivo: archivo.id,
         };
-        axios
+        httpClient
             .post<IOrdenCompra>(
                 `${process.env['NX_SERVER_URL']}/api/loader/subir`,
                 params
@@ -116,7 +117,7 @@ export function UploadOrdenReally({ protoPallets }: UploadOrdenReallyArgs) {
                     placeholder="Seleccione el tipo de pallet"
                 >
                     {protoPallets.map((un) => (
-                        <Select.Option value={un.id}>{un.nombre}</Select.Option>
+                        <Select.Option value={un.id} key={un.id}>{un.nombre}</Select.Option>
                     ))}
                 </Select>
             </div>

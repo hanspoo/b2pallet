@@ -42,6 +42,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
     expect(ordenes[0].cliente).toBeTruthy();
     expect(ordenes[0].cliente.identLegal).toBe('C001');
     expect(ordenes[0].cliente.nombre).toBe('CENCOSUD RETAIL S.A.');
+    expect(ordenes[0].cliente.empresa.id).toBe(empresa.id);
   });
   it('crea unidad de negocio ', async () => {
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);

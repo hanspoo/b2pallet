@@ -51,7 +51,11 @@ export class OrdenCreator {
           locales: this.localesParaUnidad(nombre, locales),
         })
       );
-      cliente = await repoCliente.save(cli);
+      cli.empresa = this.empresa;
+      const nuevoCliente = repoCliente.create(cli);
+      console.log('nuevo', JSON.stringify(nuevoCliente));
+
+      cliente = await repoCliente.save(nuevoCliente);
     }
 
     const ordenesCreadas: Array<OrdenCompra> = [];

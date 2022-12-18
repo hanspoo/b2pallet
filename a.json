@@ -1,0 +1,13 @@
+{
+  "nombre": "CENCOSUD RETAIL S.A.",
+  "identLegal": "C001",
+  "unidades": [
+    {
+      "nombre": "Sisa",
+      "locales": [
+        { "codigo": "N524", "nombre": "185 -SISA-LINARES-JANUARIO-ESP" }
+      ]
+    }
+  ],
+  "empresa": { "id": 1, "nombre": "b2pallet", "identLegal": "123456789" }
+}

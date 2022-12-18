@@ -2,7 +2,6 @@ import { Button, Input, Typography } from 'antd';
 
 import {
   IOrdenCompra,
-  IPedido,
   IProducto,
   IUnidadNegocio,
 } from '@flash-ws/api-interfaces';
@@ -22,7 +21,7 @@ import OrdenesConsolidadas from '../ordenes-consolidadas/ordenes-consolidadas';
 const { Title } = Typography;
 
 /* eslint-disable-next-line */
-export interface OrdenesProps {}
+export interface OrdenesProps { }
 
 enum Vista {
   Listado,
@@ -83,7 +82,7 @@ export function OrdenesImpl(props: OrdenesProps) {
 }
 
 type ListadoProps = {
-  vistaDetalle: (id: number) => void;
+  vistaDetalle: (id: string) => void;
 };
 
 function ListadoOrdenes(props: ListadoProps) {
@@ -131,9 +130,9 @@ function ListadoOrdenes(props: ListadoProps) {
       dataIndex: 'id',
       key: 'id',
       sorter: (a: IOrdenCompra, b: IOrdenCompra) => {
-        return a.id - b.id;
+        return a.id.localeCompare(b.id);
       },
-      render: (id: number) => {
+      render: (id: string) => {
         return (
           <Button onClick={() => props.vistaDetalle(id)} type="link">
             {id}
@@ -181,13 +180,7 @@ function ListadoOrdenes(props: ListadoProps) {
       render: (unidad: IUnidadNegocio, orden: IOrdenCompra) => {
         return formatNumber(orden.lineas.length);
       },
-    },
-
-    {
-      title: 'IPedido',
-      dataIndex: 'pedido',
-      render: (pedido: IPedido) => (pedido ? pedido.id : '--'),
-    },
+    }
   ];
   function onSearch(e: any) {
     const regex = new RegExp(e.target.value, 'i');

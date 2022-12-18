@@ -4,6 +4,9 @@ import session from 'express-session';
 import { Message } from '@flash-ws/api-interfaces';
 import { auth } from './routers/auth';
 import { users } from './routers/users';
+
+import { loader } from './routers/loader';
+import { protoPallets } from './routers/proto-pallets';
 import { productos } from './routers/productos';
 import { ordenes } from './routers/ordenes';
 import { files } from './routers/files';
@@ -87,10 +90,12 @@ app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use('/api/productos', authMiddleware, productos);
 app.use('/api/ordenes', authMiddleware, ordenes);
+app.use('/api/loader', authMiddleware, loader);
 app.use('/api/unidades', unidades);
 
 app.use('/api/locales', locales);
 app.use('/api/clientes', clientes);
 app.use('/api/pallets', pallets);
+app.use('/api/proto-pallets', authMiddleware, protoPallets);
 
 export { app };

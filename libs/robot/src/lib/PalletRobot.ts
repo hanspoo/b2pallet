@@ -63,6 +63,7 @@ export class PalletRobot {
     proto: ProtoPallet,
     lineas: Array<LineaDetalle>
   ): Pallet[] {
+    if (!proto) throw Error('Debe entregar el proto pallet');
     // const pallets: Pallet[] = [];
     const cajas = lineas.reduce((acc: Array<Caja>, iter: LineaDetalle) => {
       return acc.concat(iter.cajas);

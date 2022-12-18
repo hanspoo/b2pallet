@@ -6,15 +6,17 @@ import {
 } from '@flash-ws/api-interfaces';
 
 import { UploadOrdenReally } from './UploadOrdenReally';
+import { useHttpClient } from '../useHttpClient';
 
 
 const UploadOrden = () => {
+  const httpClient = useHttpClient();
   const [protoPallets, setprotoPallets] = React.useState<IProtoPallet[]>();
   const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    axios
+    httpClient
       .get<IProtoPallet[]>(`${process.env['NX_SERVER_URL']}/api/proto-pallets`)
       .then((response) => {
         setprotoPallets(response.data);

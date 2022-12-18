@@ -11,7 +11,7 @@ import { colores, estados } from '../front-utils';
 type PropsEstadoIProducto = {
   actual: EstadoLinea;
   estado: EstadoLinea;
-  ordenID: number;
+  ordenID: string;
   lineaID: number;
   editar: boolean;
   actualizar: (orden: ISuperOrden) => void;

@@ -7,6 +7,7 @@ import { Empresa } from './entity/auth/empresa.entity';
 import e from 'express';
 import { Usuario } from './entity/auth/usuario.entity';
 import { LoginService } from './auth/LoginService';
+import { ProtoPallet } from './entity/proto-pallet.entity';
 
 export const obtainToken = async () => {
   const [isOk, token] = await new LoginService().login(
@@ -52,6 +53,7 @@ export async function inicializarCencosud(): Promise<Cliente> {
   // await repoProducto.save(p);
 
   const repoEmpresa = dataSource.getRepository(Empresa);
+  const repoProto = dataSource.getRepository(ProtoPallet);
   const e = await repoEmpresa.save(
     repoEmpresa.create({
       nombre: 'b2pallet',
@@ -68,6 +70,18 @@ export async function inicializarCencosud(): Promise<Cliente> {
   e.clientes = [cliente];
   e.productos = [producto];
   e.usuarios = [user];
+
+  const proto = {
+    id: 3,
+    nombre: 'Standard Pallet',
+    box: {
+      largo: 100.0,
+      ancho: 120.0,
+      alto: 170.0,
+    },
+  };
+
+  e.protoPallets = [repoProto.create(proto)];
 
   await repoEmpresa.save(e);
 
