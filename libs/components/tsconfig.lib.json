@@ -14,7 +14,8 @@
     "./src/lib/lineas-detalle/LineaParaReact.ts",
     "./src/lib/pallets-icono/Cubeta.tsx",
     "./src/lib/pallets-generator/PalletsGeneratorImpl.tsx",
-    "./src/lib/detalle-pallet/EtiquetaPallet.tsx"
+    "./src/lib/detalle-pallet/EtiquetaPallet.tsx",
+    "./src/lib/upload-orden/UploadOrdenReally.tsx"
   ],
   "exclude": [
     "jest.config.ts",

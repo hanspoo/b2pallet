@@ -2,7 +2,7 @@ import xlsx from 'node-xlsx';
 import { dataSource, Empresa, inicializarCencosud, Producto } from '../../..';
 
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
-import { config } from '../columnas-parametricas/config-campos-cenco';
+import { config } from '../../../lib/parser-2.0/config-campos-cenco';
 import { OrdenCreator } from '../../../lib/parser-2.0/OrdenCreator';
 
 let empresa: Empresa;

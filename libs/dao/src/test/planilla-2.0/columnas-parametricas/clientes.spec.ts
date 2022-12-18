@@ -2,7 +2,7 @@ import xlsx from 'node-xlsx';
 import { Campo } from '../../../lib/parser-2.0/Campo';
 import { ConfigPLanilla } from '../../../lib/parser-2.0/ConfigPlanilla';
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
-import { config } from './config-campos-cenco';
+import { config } from '../../../lib/parser-2.0/config-campos-cenco';
 
 import { LineBuilder, SheetBuilder } from './hoja-builder';
 

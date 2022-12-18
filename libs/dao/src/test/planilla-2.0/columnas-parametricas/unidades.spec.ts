@@ -1,7 +1,7 @@
 import xlsx from 'node-xlsx';
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
 import { LineBuilder, SheetBuilder } from './hoja-builder';
-import { config } from './config-campos-cenco';
+import { config } from '../../../lib/parser-2.0/config-campos-cenco';
 
 describe('configuración dinámica de campos', () => {
   it('Tiene una sóla unidad, Sisa', async () => {

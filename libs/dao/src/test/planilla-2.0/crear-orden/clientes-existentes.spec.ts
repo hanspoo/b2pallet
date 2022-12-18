@@ -6,7 +6,7 @@ import { Empresa } from '../../../lib/entity/auth/empresa.entity';
 import { Cliente } from '../../../lib/entity/cliente.entity';
 import { UnidadNegocio } from '../../../lib/entity/unidad-negocio.entity';
 import { inicializarCencosud } from '../../../lib/inicializarCencosud';
-import { config } from '../columnas-parametricas/config-campos-cenco';
+import { config } from '../../../lib/parser-2.0/config-campos-cenco';
 
 import {
   LineBuilder,

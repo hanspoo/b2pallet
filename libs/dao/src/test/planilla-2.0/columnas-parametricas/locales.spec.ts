@@ -1,6 +1,6 @@
 import xlsx from 'node-xlsx';
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
-import { config } from './config-campos-cenco';
+import { config } from '../../../lib/parser-2.0/config-campos-cenco';
 import { LineBuilder, SheetBuilder } from './hoja-builder';
 
 describe('configuración dinámica de campos', () => {

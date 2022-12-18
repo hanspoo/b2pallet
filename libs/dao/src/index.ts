@@ -33,6 +33,9 @@ export * from './lib/auth/TokenService';
 export * from './lib/auth/SignupService';
 export * from './lib/ProductosService';
 export * from './lib/utils/crearOrdenHelper';
+export * from './lib/parser-2.0/OrdenCreator';
+export * from './lib/parser-2.0/ProcesadorPlanilla';
+export * from './lib/parser-2.0/config-campos-cenco';
 
 // Genera imports
 // find ./lib/entity/ -type f |perl -ane 'print qq#export * from "$F[0]"\n#' |sed s/\.ts//
