@@ -1,8 +1,6 @@
-
 export interface IBox {
-    id: number;
+  id: number;
   largo: number;
   ancho: number;
   alto: number;
-}    
-    
+}

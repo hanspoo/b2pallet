@@ -2,7 +2,7 @@ import xlsx from 'node-xlsx';
 import { Campo } from '../../../lib/parser-2.0/Campo';
 import { ConfigPLanilla } from '../../../lib/parser-2.0/ConfigPlanilla';
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
-import { config } from '../../../lib/parser-2.0/config-campos-cenco';
+import { configCenco } from '../../../lib/parser-2.0/config-campos-cenco';
 
 import { LineBuilder, SheetBuilder } from './hoja-builder';
 
@@ -27,7 +27,7 @@ describe('configuración dinámica de campos', () => {
     // Parse a file
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(ws[0]);
     expect(result.clientes.length).toBe(1);
     expect(result.clientes[0].identLegal).toBe('C001');
@@ -36,7 +36,7 @@ describe('configuración dinámica de campos', () => {
     const line = new LineBuilder().withIdentLegal('76531540-9').build();
     const hoja = new SheetBuilder().addLine(line).build();
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(hoja);
     expect(result.clientes[0].identLegal).toBe('76531540-9');
   });
@@ -45,7 +45,7 @@ describe('configuración dinámica de campos', () => {
     const l2 = new LineBuilder().withIdentLegal('76531540-9').build();
     const hoja = new SheetBuilder().addLine(l1).addLine(l2).build();
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(hoja);
 
     expect(result.clientes[0].identLegal).toBe('C001');
@@ -61,7 +61,7 @@ describe('configuración dinámica de campos', () => {
     const l6 = new LineBuilder().withIdentLegal('76531540-9').build();
     const hoja = new SheetBuilder().addLines(l1, l2, l3, l4, l5, l6).build();
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(hoja);
 
     expect(result.clientes[0].identLegal).toBe('C001');
@@ -77,7 +77,7 @@ describe('crea cliente', () => {
       .build();
     const hoja = new SheetBuilder().addLine(line).build();
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(hoja);
     expect(result.clientes[0].identLegal).toBe('76531540-9');
     expect(result.clientes[0].nombre).toBe('Paraiso Ltda');
@@ -93,7 +93,7 @@ describe('crea cliente', () => {
       .build();
     const hoja = new SheetBuilder().addLines(l1, l2).build();
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(hoja);
 
     expect(result.clientes[0].identLegal).toBe('1-9');

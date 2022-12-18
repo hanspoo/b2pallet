@@ -1,9 +1,10 @@
-import { IPedido } from './ipedido.entity';
+import { IOrdenCompra } from './iorden-compra.entity';
 import { IUnidadNegocio } from './iunidad-negocio.entity';
 
 export interface ICliente {
   id: number;
   nombre: string;
+  identLegal: string;
   unidades: IUnidadNegocio[];
-  pedidos: IPedido[];
+  ordenes: IOrdenCompra[];
 }

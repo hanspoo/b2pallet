@@ -11,10 +11,10 @@ export * from './lib/model/icliente.entity';
 export * from './lib/model/ilinea-detalle.entity';
 export * from './lib/model/ilocal.entity';
 export * from './lib/model/iorden-compra.entity';
-export * from './lib/model/ipedido.entity';
+
 export * from './lib/model/iproducto.entity';
 export * from './lib/model/iunidad-negocio.entity';
-export * from './lib/model/iuser.entity';
+
 export * from './lib/model/ipallet.entity';
 export * from './lib/model/ISuperOrden';
 export * from './lib/IConsolidadoCajas';

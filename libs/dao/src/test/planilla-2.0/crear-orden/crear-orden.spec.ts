@@ -2,7 +2,7 @@ import xlsx from 'node-xlsx';
 import { dataSource, Empresa, inicializarCencosud, Producto } from '../../..';
 
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
-import { config } from '../../../lib/parser-2.0/config-campos-cenco';
+import { configCenco } from '../../../lib/parser-2.0/config-campos-cenco';
 import { OrdenCreator } from '../../../lib/parser-2.0/OrdenCreator';
 
 let empresa: Empresa;
@@ -24,7 +24,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
   it('crea la orden', async () => {
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
 
     const result = await procesador.procesar(ws[0]);
     const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
@@ -35,7 +35,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
   it('le asigna el cliente', async () => {
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
 
     const result = await procesador.procesar(ws[0]);
     const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
@@ -45,7 +45,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
   });
   it('crea unidad de negocio ', async () => {
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(ws[0]);
 
     const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
@@ -53,7 +53,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
   });
   it('crea la unidad con su local', async () => {
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(ws[0]);
 
     const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
@@ -61,7 +61,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
   });
   it('datos de la orden: emision', async () => {
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(ws[0]);
 
     const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
@@ -69,7 +69,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
   });
   it('datos de la orden: entrega', async () => {
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(ws[0]);
 
     const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
@@ -80,7 +80,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
 describe('Usando el procesador de planillas crea toda la estructura', () => {
   it('campos líneas de detalle: cantidad', async () => {
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(ws[0]);
 
     const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
@@ -90,7 +90,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
   it('si no hemos creado el producto el creador manda errores', async () => {
     await dataSource.getRepository(Producto).clear();
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(ws[0]);
 
     const { errores } = await new OrdenCreator(empresa).fromProcesador(result);

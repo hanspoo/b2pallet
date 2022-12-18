@@ -6,7 +6,7 @@ import { Empresa } from '../../../lib/entity/auth/empresa.entity';
 import { Cliente } from '../../../lib/entity/cliente.entity';
 import { UnidadNegocio } from '../../../lib/entity/unidad-negocio.entity';
 import { inicializarCencosud } from '../../../lib/inicializarCencosud';
-import { config } from '../../../lib/parser-2.0/config-campos-cenco';
+import { configCenco } from '../../../lib/parser-2.0/config-campos-cenco';
 
 import {
   LineBuilder,
@@ -37,7 +37,7 @@ describe('crear unidades de negocio ordenes', () => {
       const l1 = new LineBuilder().withUnidad(nombreUnidad).build();
       const hoja = new SheetBuilder().addLines(l1).build();
 
-      const procesador = new ProcesadorPlanilla(config);
+      const procesador = new ProcesadorPlanilla(configCenco);
       const result = await procesador.procesar(hoja);
       await new OrdenCreator(empresa).fromProcesador(result);
 
@@ -62,7 +62,7 @@ describe('crear unidades de negocio ordenes', () => {
         .build();
       const hoja = new SheetBuilder().addLines(l1).build();
 
-      const procesador = new ProcesadorPlanilla(config);
+      const procesador = new ProcesadorPlanilla(configCenco);
       const result = await procesador.procesar(hoja);
       await new OrdenCreator(empresa).fromProcesador(result);
 
@@ -79,7 +79,7 @@ describe('crear unidades de negocio ordenes', () => {
       const l1 = new LineBuilder().withUnidad(nombre).build();
       const hoja = new SheetBuilder().addLines(l1).build();
 
-      const procesador = new ProcesadorPlanilla(config);
+      const procesador = new ProcesadorPlanilla(configCenco);
       const result = await procesador.procesar(hoja);
       await new OrdenCreator(empresa).fromProcesador(result);
 

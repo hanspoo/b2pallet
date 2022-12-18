@@ -1,5 +1,8 @@
 import { Tree, formatFiles, installPackagesTask } from '@nrwl/devkit';
+import * as fs from 'fs';
 import { libraryGenerator } from '@nrwl/workspace/generators';
+
+// TODO: Actualmente se salta las clases en directorios
 
 interface MyGeneratorGeneratorSchema {
   name: string;
@@ -13,9 +16,11 @@ export default async function (
   await formatFiles(tree);
 
   const path = options.name;
-  console.log(path);
+
   tree.children(path).forEach((fileName) => {
-    const data = tree.read(`${path}/${fileName}`);
+    const archivo = `${path}/${fileName}`;
+    if (fs.statSync(archivo).isDirectory()) return;
+    const data = tree.read(archivo);
     const s = data.toString('utf-8');
     const match = /class (\w+)/.exec(s);
     if (!match) return;

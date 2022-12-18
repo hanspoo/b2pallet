@@ -1,6 +1,6 @@
 import xlsx from 'node-xlsx';
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
-import { config } from '../../../lib/parser-2.0/config-campos-cenco';
+import { configCenco } from '../../../lib/parser-2.0/config-campos-cenco';
 import { LineBuilder, SheetBuilder } from './hoja-builder';
 
 describe('configuración dinámica de campos', () => {
@@ -8,7 +8,7 @@ describe('configuración dinámica de campos', () => {
     // Parse a file
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const { locales } = await procesador.procesar(ws[0]);
     expect(locales.length).toBe(1);
     expect(locales[0].codigo).toBe('N524');
@@ -20,7 +20,7 @@ describe('configuración dinámica de campos', () => {
     const l3 = new LineBuilder().withLocal('ABC,Abecedario').build();
     const hoja = new SheetBuilder().addLines(l1, l2, l3).build();
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(hoja);
 
     expect(result.locales.length).toBe(2);
@@ -29,7 +29,7 @@ describe('configuración dinámica de campos', () => {
     const l1 = new LineBuilder().withLocal('N641,CD LO AGUIRRE').build();
     const hoja = new SheetBuilder().addLines(l1).build();
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(hoja);
 
     expect(result.locales[0].codigo).toBe('N641');
@@ -42,7 +42,7 @@ describe('configuración dinámica de campos', () => {
       .build();
     const hoja = new SheetBuilder().addLines(l1).build();
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(hoja);
 
     expect(result.locales[0].codigo).toBe('N641');

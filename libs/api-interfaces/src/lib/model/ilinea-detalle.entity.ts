@@ -1,4 +1,5 @@
 import { EstadoLinea } from '../EstadoLinea';
+import { ICaja } from './icaja.entity';
 import { ILocal } from './ilocal.entity';
 import { IOrdenCompra } from './iorden-compra.entity';
 import { IProducto } from './iproducto.entity';
@@ -12,4 +13,5 @@ export interface ILineaDetalle {
   local: ILocal;
   localId?: number;
   estado: EstadoLinea;
+  cajas: ICaja[];
 }

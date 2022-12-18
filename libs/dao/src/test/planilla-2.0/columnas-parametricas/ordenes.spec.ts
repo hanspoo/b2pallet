@@ -1,13 +1,13 @@
 import xlsx from 'node-xlsx';
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
-import { config } from '../../../lib/parser-2.0/config-campos-cenco';
+import { configCenco } from '../../../lib/parser-2.0/config-campos-cenco';
 
 describe('configuración dinámica de campos', () => {
   it('Tiene una sóla orden', async () => {
     // Parse a file
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
 
-    const procesador = new ProcesadorPlanilla(config);
+    const procesador = new ProcesadorPlanilla(configCenco);
     const result = await procesador.procesar(ws[0]);
     expect(result.ordenes.length).toBe(1);
     expect(result.ordenes[0].numero).toBe('5575426472');

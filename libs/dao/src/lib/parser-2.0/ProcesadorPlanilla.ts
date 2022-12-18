@@ -41,7 +41,7 @@ export class ProcesadorPlanilla {
 
   extraeLineas(sheet: Sheet): Array<LineaCruda> {
     const datosProcesar = [...sheet.data].splice(1);
-    const array: Array<LineaCruda> = datosProcesar.map((linea) => {
+    const array: Array<LineaCruda> = datosProcesar.map((linea: any) => {
       const codProdCliente: string = linea[this.pos(Campo.COD_CENCOSUD)];
       const codProdProveedor: string = linea[this.pos(Campo.COD_PROVEEDOR)];
       const cantidad: number = linea[this.pos(Campo.CANTIDAD)];

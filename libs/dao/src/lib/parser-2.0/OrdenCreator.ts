@@ -1,4 +1,3 @@
-import { useSyncExternalStore } from 'react';
 import {
   dataSource,
   Empresa,
@@ -39,9 +38,10 @@ export class OrdenCreator {
       relations: ['unidades', 'unidades.locales'],
       where: { identLegal },
     });
+
     if (cliente) {
       const nuevas = unidadesNuevas(cliente, unidades);
-      nuevas.forEach((u) => cliente.unidades.push(u));
+      nuevas.forEach((u) => cliente!.unidades!.push(u));
       mezclarLocales(cliente, locales);
       cliente = await repoCliente.save(cliente);
     } else {
@@ -115,7 +115,7 @@ function existeUnidad(cliente: Cliente, nombre: string) {
 }
 function mezclarLocales(cliente: Cliente, locales: LocalCrudo[]): void {
   const mapaUnidadLocal: Record<string, LocalCrudo[]> = locales.reduce(
-    (acc, iter) => {
+    (acc: any, iter: LocalCrudo) => {
       const ele = acc[iter.unidad];
       if (ele) {
         acc[iter.unidad] = [...ele, iter];
