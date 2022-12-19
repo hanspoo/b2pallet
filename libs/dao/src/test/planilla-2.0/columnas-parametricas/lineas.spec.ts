@@ -21,7 +21,7 @@ describe('configuración dinámica de campos', () => {
     expect(lineas[0].cantidad).toBe(1);
     expect(lineas[0].codLocal).toBe('N524');
     expect(lineas[0].codProdCliente).toBe('1647753');
-    expect(lineas[0].codProdProveedor).toBe('KP-TOOTH -1.6*65MM');
+    expect(lineas[0].codProducto).toBe('DRBIO-00634');
   });
   it('La línea trae el # de orden bien datos de la línea', async () => {
     // Parse a file

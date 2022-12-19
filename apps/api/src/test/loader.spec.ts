@@ -1,10 +1,15 @@
-import {
-  crearArchivoValido,
-  crearArchivoInvalido,
-  getProtoPallet,
-} from './utils';
+// process.env.NODE_ENV = 'dev';
+import { crearArchivoValido, crearArchivoInvalido } from './utils';
 import { LoaderPostBody } from '@flash-ws/api-interfaces';
-import { Archivo, inicializarCencosud, obtainToken } from '@flash-ws/dao';
+import {
+  Archivo,
+  crearProductoPrueba,
+  dataSource,
+  inicializarSistema,
+  obtainToken,
+  OrdenCompra,
+  Producto,
+} from '@flash-ws/dao';
 import request from 'supertest';
 import { app } from '../app';
 
@@ -14,7 +19,8 @@ let archValido: Archivo;
 let archInvalido: Archivo;
 
 beforeAll(async () => {
-  await inicializarCencosud();
+  await inicializarSistema();
+  await crearProductoPrueba();
   archValido = await crearArchivoValido();
   archInvalido = await crearArchivoInvalido();
   token = await obtainToken();
@@ -67,6 +73,8 @@ describe('loader nuevo de ordenes', () => {
       .send(data)
       .set('Authorization', `Basic ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body.ordenes.length).toBe(1);
+    const repoOrdenes = dataSource.getRepository(OrdenCompra);
+    const ordenes = await repoOrdenes.find({});
+    expect(ordenes.length).toBe(1);
   });
 });

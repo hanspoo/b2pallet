@@ -16,7 +16,7 @@ const templateLine: Linea = {
   'Cód. Local Destino': 'N524',
   'Local Destino': '185 -SISA-LINARES-JANUARIO-ESP',
   'Cód. Cencosud': '1647753',
-  'Cód. Proveedor': 'KP-TOOTH -1.6*65MM',
+  'Cód. Proveedor': 'DRBIO-00634',
   EAN13: '17896380105332',
   'Cód. Empaque': '17896380105332',
   Descripción: 'BOLSA MONDADIENTES 100UN',

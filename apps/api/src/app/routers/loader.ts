@@ -41,15 +41,28 @@ loader.post(
       return res.status(400).send({ msg });
     }
 
+    const ws = xlsx.parse(archivo.path);
+
+    const procesador = new ProcesadorPlanilla(configCenco);
+
+    const result = await procesador.procesar(ws[0]);
+    if (result.ordenes.length === 0)
+      return res
+        .status(400)
+        .send({ msg: 'LDR007: No vienen ordenes en la planilla' });
+
     try {
-      const ws = xlsx.parse(archivo.path);
+      const { ordenes, errores } = await new OrdenCreator(
+        req['empresa']
+      ).fromProcesador(result);
 
-      const procesador = new ProcesadorPlanilla(configCenco);
+      if (errores.length > 0)
+        return res
+          .status(400)
+          .send({ msg: 'LDR009: Falta crear productos', errores });
 
-      const result = await procesador.procesar(ws[0]);
-      const { ordenes } = await new OrdenCreator(req['empresa']).fromProcesador(
-        result
-      );
+      if (ordenes.length === 0)
+        return res.status(400).send({ msg: 'LDR008: No se crearon ordenes' });
 
       res.send(ordenes.map((o) => o.id));
     } catch (error) {

@@ -1,13 +1,47 @@
 {
   "nombre": "CENCOSUD RETAIL S.A.",
-  "identLegal": "C001",
+  "identLegal": "4a7b1c8b07b073c5efea",
   "unidades": [
     {
       "nombre": "Sisa",
       "locales": [
-        { "codigo": "N524", "nombre": "185 -SISA-LINARES-JANUARIO-ESP" }
+        {
+          "codigo": "N524",
+          "nombre": "185 -SISA-LINARES-JANUARIO-ESP",
+          "id": 3
+        }
+      ],
+      "id": 9
+    }
+  ],
+  "ordenes": [
+    {
+      "numero": "5575426472",
+      "emision": "15-09-2022",
+      "entrega": "22-09-2022",
+      "lineas": [
+        {
+          "estado": "Nada",
+          "cantidad": 1,
+          "productoId": 1,
+          "localId": 3,
+          "producto": {
+            "id": 1,
+            "nombre": "Producto de prueba",
+            "codigo": "DRBIO-00634",
+            "peso": 1,
+            "codCenco": "1647753",
+            "vigente": true
+          },
+          "local": {
+            "id": 3,
+            "codigo": "N524",
+            "nombre": "185 -SISA-LINARES-JANUARIO-ESP"
+          }
+        }
       ]
     }
   ],
-  "empresa": { "id": 1, "nombre": "b2pallet", "identLegal": "123456789" }
+  "empresa": { "id": 1, "nombre": "b2pallet", "identLegal": "123456789" },
+  "id": 6
 }

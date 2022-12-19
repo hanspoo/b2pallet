@@ -1,7 +1,5 @@
 import { Cliente } from '../../lib/entity/cliente.entity';
-import { dataSource } from '../data-source';
 import { OrdenCompra } from '../entity/orden-compra.entity';
-import { Producto } from '../entity/producto.entity';
 
 import { Campo } from './Campo';
 import { ConfigPLanilla } from './ConfigPlanilla';
@@ -10,7 +8,7 @@ type Sheet = { name: string; data: unknown[] };
 export type LineaCruda = {
   numOrden: string;
   codProdCliente: string;
-  codProdProveedor: string;
+  codProducto: string;
   cantidad: number;
   codLocal: string;
 };
@@ -43,14 +41,14 @@ export class ProcesadorPlanilla {
     const datosProcesar = [...sheet.data].splice(1);
     const array: Array<LineaCruda> = datosProcesar.map((linea: any) => {
       const codProdCliente: string = linea[this.pos(Campo.COD_CENCOSUD)];
-      const codProdProveedor: string = linea[this.pos(Campo.COD_PROVEEDOR)];
+      const codProducto: string = linea[this.pos(Campo.COD_PRODUCTO)];
       const cantidad: number = linea[this.pos(Campo.CANTIDAD)];
       const codLocal: string = linea[this.pos(Campo.COD_LOCAL)];
       const numOrden: string = linea[this.pos(Campo.NUM_ORDEN)] + '';
 
       const l: LineaCruda = {
         codProdCliente,
-        codProdProveedor,
+        codProducto,
         cantidad,
         codLocal,
         numOrden,

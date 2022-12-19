@@ -11,7 +11,7 @@ configCenco.addCampo(Campo.COD_LOCAL, 13);
 configCenco.addCampo(Campo.NOMBRE_LOCAL, 14);
 
 configCenco.addCampo(Campo.COD_CENCOSUD, 16);
-configCenco.addCampo(Campo.COD_PROVEEDOR, 17);
+configCenco.addCampo(Campo.COD_PRODUCTO, 17);
 configCenco.addCampo(Campo.CANTIDAD, 23);
 
 configCenco.addCampo(Campo.NUM_ORDEN, 1);

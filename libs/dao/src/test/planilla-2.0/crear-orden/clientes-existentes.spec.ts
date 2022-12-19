@@ -1,3 +1,4 @@
+// process.env['DEBUG_DB'] = '1';
 import { randomBytes } from 'crypto';
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
 import { OrdenCreator } from '../../../lib/parser-2.0/OrdenCreator';
@@ -8,6 +9,7 @@ import { UnidadNegocio } from '../../../lib/entity/unidad-negocio.entity';
 import { inicializarCencosud } from '../../../lib/inicializarCencosud';
 import { configCenco } from '../../../lib/parser-2.0/config-campos-cenco';
 
+const repoCli = dataSource.getRepository(Cliente);
 import {
   LineBuilder,
   SheetBuilder,
@@ -22,12 +24,14 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  await dataSource.query('delete from linea_detalle');
   await dataSource.query('delete from local');
+  await dataSource.query('delete from unidad_negocio');
+  await dataSource.query('delete from cliente');
 });
 describe('crear unidades de negocio ordenes', () => {
   describe('cliente existente', () => {
-    it('debe crear la unidad de negocio', async () => {
-      const repoCli = dataSource.getRepository(Cliente);
+    it.skip('debe crear la unidad de negocio', async () => {
       const nombreUnidad = randomBytes(10).toString('hex');
 
       await repoCli.save(
@@ -48,7 +52,6 @@ describe('crear unidades de negocio ordenes', () => {
       expect(unidad).toBeTruthy();
     });
     it('debe crear local de la unidad de negocio', async () => {
-      const repoCli = dataSource.getRepository(Cliente);
       const nombreUnidad = randomBytes(10).toString('hex');
       const nombreLocal = randomBytes(10).toString('hex');
 
@@ -73,7 +76,28 @@ describe('crear unidades de negocio ordenes', () => {
       expect(unidad).toBeTruthy();
       expect(unidad.locales.length).toBe(1);
     });
-    it('cliente nuevo, debe crear la unidad de negocio', async () => {
+  });
+  describe('cliente nuevo', () => {
+    it('debe crear el cliente', async () => {
+      const identLegal = randomBytes(10).toString('hex');
+
+      const l1 = new LineBuilder().build();
+      const hoja = new SheetBuilder()
+        .withIdentLegal(identLegal)
+        .addLines(l1)
+        .build();
+
+      const procesador = new ProcesadorPlanilla(configCenco);
+      const result = await procesador.procesar(hoja);
+      await new OrdenCreator(empresa).fromProcesador(result);
+
+      const cliente = await dataSource
+        .getRepository(Cliente)
+        .findOne({ where: { identLegal } });
+
+      expect(cliente).toBeTruthy();
+    });
+    it('debe crear el cliente y la unidad de negocio', async () => {
       const nombre = randomBytes(10).toString('hex');
 
       const l1 = new LineBuilder().withUnidad(nombre).build();

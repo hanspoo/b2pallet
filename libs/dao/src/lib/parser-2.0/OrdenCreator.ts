@@ -1,14 +1,17 @@
 import {
+  crearEmpresa,
   dataSource,
   Empresa,
   LineaDetalle,
   Local,
+  Producto,
   ProductoService,
   UnidadNegocio,
 } from '../..';
 import { Cliente } from '../entity/cliente.entity';
 import { OrdenCompra } from '../entity/orden-compra.entity';
 import { LineaCruda, LocalCrudo, ResultadoProceso } from './ProcesadorPlanilla';
+import { crearOrdenes } from './CrearOrdenes';
 
 type ResultCrearOrdenes = {
   ordenes: Array<OrdenCompra>;
@@ -31,20 +34,25 @@ export class OrdenCreator {
     const cli = clientes[0];
     const identLegal = cli.identLegal;
 
+    const repoOrdenes = dataSource.getRepository(OrdenCompra);
+    const repoEmpresa = dataSource.getRepository(Empresa);
     const repoCliente = dataSource.getRepository(Cliente);
     const repoLinea = dataSource.getRepository(LineaDetalle);
     const repoUnidad = dataSource.getRepository(UnidadNegocio);
     let cliente = await repoCliente.findOne({
-      relations: ['unidades', 'unidades.locales'],
+      relations: ['unidades', 'unidades.locales', 'ordenes'],
       where: { identLegal },
     });
 
     if (cliente) {
+      console.log('Cliente ya existe');
+
       const nuevas = unidadesNuevas(cliente, unidades);
       nuevas.forEach((u) => cliente!.unidades!.push(u));
       mezclarLocales(cliente, locales);
       cliente = await repoCliente.save(cliente);
     } else {
+      console.log('Cliente Nuevo');
       cli.unidades = unidades.map((nombre) =>
         repoUnidad.create({
           nombre,
@@ -52,28 +60,33 @@ export class OrdenCreator {
         })
       );
       cli.empresa = this.empresa;
+      cli.ordenes = [];
       const nuevoCliente = repoCliente.create(cli);
       console.log('nuevo', JSON.stringify(nuevoCliente));
 
-      cliente = await repoCliente.save(nuevoCliente);
+      try {
+        console.log('Actualizando cliente');
+
+        cliente = await repoCliente.save(nuevoCliente);
+      } catch (error) {
+        console.log('error en repoCliente.save', error);
+        throw error;
+      }
     }
 
-    const ordenesCreadas: Array<OrdenCompra> = [];
+    const ordenesNuevas = await crearOrdenes(
+      this.empresa,
+      cliente,
+      ordenes,
+      lineas
+    );
+    const ordsSalvadas = await Promise.all(
+      ordenesNuevas.map((orden) => repoOrdenes.save(orden))
+    );
 
-    for (let i = 0; i < ordenes.length; i++) {
-      const orden = ordenes[i];
-      orden.cliente = cliente;
-      orden.lineas = lineas.map((lc) => {
-        const linea = repoLinea.create({ cantidad: lc.cantidad });
-        return linea;
-      });
-      ordenesCreadas.push(orden as OrdenCompra);
-    }
-
-    repoCliente.save(cliente);
-
-    return { ordenes: ordenesCreadas, errores: [] };
+    return { ordenes: ordsSalvadas, errores: [] };
   }
+
   localesParaUnidad(unidad: string, locales: LocalCrudo[]): Local[] {
     const repoLocal = dataSource.getRepository(Local);
 
@@ -87,7 +100,7 @@ export class OrdenCreator {
   async erroresProductos(lineas: LineaCruda[]): Promise<string[]> {
     const service = new ProductoService(this.empresa);
 
-    const prods = new Set<string>(lineas.map((l) => l.codProdProveedor));
+    const prods = new Set<string>(lineas.map((l) => l.codProducto));
     const array = Array.from(prods);
     const errores = [];
     for (let i = 0; i < array.length; i++) {

@@ -11,7 +11,7 @@ import { ProtoPallet } from './entity/proto-pallet.entity';
 
 export const obtainToken = async () => {
   const [isOk, token] = await new LoginService().login(
-    'info@welinux.cl',
+    'admin@b2pallet.com',
     '123456'
   );
   if (!isOk) throw Error('Error de fake login en test no ok');
@@ -19,7 +19,7 @@ export const obtainToken = async () => {
   return token;
 };
 
-export const CODIGO_PROD = 'KP-TOOTH -1.6*65MM';
+export const CODIGO_PROD = 'DRBIO-00634';
 export async function inicializarCencosud(): Promise<Cliente> {
   if (!dataSource.isInitialized) await dataSource.initialize();
   // const entities = dataSource.entityMetadatas;
@@ -62,7 +62,7 @@ export async function inicializarCencosud(): Promise<Cliente> {
   );
 
   const user = dataSource.getRepository(Usuario).create({
-    email: 'info@welinux.cl',
+    email: 'admin@b2pallet.com',
     password: '123456',
     nombre: 'Usuario de prueba',
   });

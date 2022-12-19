@@ -4,12 +4,15 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  Unique,
 } from 'typeorm';
 import { UnidadNegocio } from './unidad-negocio.entity';
 import { LineaDetalle } from './linea-detalle.entity';
 import { Pallet } from './pallet.entity';
 
 @Entity()
+@Unique('cod_local_unidad', ['nombre', 'unidad'])
+@Unique('nombre_local_unidad', ['codigo', 'unidad'])
 export class Local {
   static from(id: number, nombre: string): Local {
     const local = new Local();
@@ -20,10 +23,10 @@ export class Local {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   codigo: string;
 
-  @Column({ unique: true })
+  @Column()
   nombre: string;
 
   @ManyToOne(() => UnidadNegocio, (unidad) => unidad.locales)

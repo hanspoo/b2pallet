@@ -22,7 +22,7 @@ beforeAll(async () => {
   await dataSource.getRepository(Empresa).save(empresa);
 });
 const credentials: LoginRequest = {
-  email: 'info@welinux.cl',
+  email: 'admin@b2pallet.com',
   password: '123456',
 };
 

@@ -61,7 +61,7 @@ export const hojaCenco: HojaCenco = {
       '185 -SISA-LINARES-JANUARIO-ESP',
       null,
       '1647753',
-      'KP-TOOTH -1.6*65MM',
+      'DRBIO-00634',
       '17896380105332',
       '17896380105332',
       'BOLSA MONDADIENTES 100UN',
@@ -87,6 +87,11 @@ export const hojaCenco: HojaCenco = {
 };
 
 export class SheetBuilder {
+  identLegal: string;
+  withIdentLegal(identLegal: string) {
+    this.identLegal = identLegal;
+    return this;
+  }
   lines: Array<any> = [];
 
   addLines(...lines) {
@@ -106,6 +111,8 @@ export class SheetBuilder {
     };
 
     hoja.data = [hojaCenco.data[0], ...this.lines];
+
+    if (this.identLegal) hoja.data[1][2] = this.identLegal;
 
     return hoja;
   }
