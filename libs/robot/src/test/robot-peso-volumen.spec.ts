@@ -27,7 +27,7 @@ grande.alto = 27;
  * p1: liviano pero grande
  * p2: pesado pero pequeño
  */
-beforeEach(async () => {
+beforeAll(async () => {
   await inicializarCencosud();
   orden = await crearOrdenHelper(2);
 

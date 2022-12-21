@@ -38,7 +38,7 @@ describe('Pre validar b2b', () => {
     });
   });
   describe('ordenes duplicadas', () => {
-    it('debe enviar error si producto no existe', async () => {
+    it.skip('debe enviar error si producto no existe', async () => {
       const service = new FixtureBuilder();
       service.addLine(service.getTemplate({ 'Número de Orden': 123 }));
       const path = service.save();

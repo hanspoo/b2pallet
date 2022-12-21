@@ -4,11 +4,13 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  Unique,
 } from 'typeorm';
 import { Empresa } from './empresa.entity';
 import { Token } from './token.entity';
 
 @Entity()
+@Unique('email-unico', ['email']) //
 export class Usuario {
   @PrimaryGeneratedColumn()
   id: number;

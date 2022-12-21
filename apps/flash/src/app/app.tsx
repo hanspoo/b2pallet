@@ -11,6 +11,7 @@ import React, { useState } from 'react';
 import { LoginState, LoginForm, Productos, SeccionOrdenes } from '@flash-ws/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, RootState } from '@flash-ws/reductor';
+import { GlobalLoader } from './GlobalLoader';
 
 const { Header, Sider, Content } = Layout;
 
@@ -34,86 +35,88 @@ const App = () => {
 
   function onChangeMenu(args: any) {
     setModo(args.key);
-  }
+  }  
 
   return (
-    <Layout id="container" role="container" >
-      <LoginState />
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="logo" />
+    <GlobalLoader>
+      <Layout id="container" role="container" >
+        <LoginState />
+        <Sider trigger={null} collapsible collapsed={collapsed}>
+          <div className="logo" />
 
-        <Menu
-          onClick={onChangeMenu}
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={[Modo.ORDENES + '']}
-          items={[
-            {
-              key: Modo.ORDENES,
-              icon: <UserOutlined />,
-              label: 'Órdenes',
-            },
-            {
-              key: Modo.PRODUCTOS,
-              icon: <UploadOutlined />,
-              label: 'Productos',
-            },
-            {
-              key: Modo.PEDIDOS,
-              icon: <UserOutlined />,
-              label: 'Pedidos',
-            },
-            {
-              key: Modo.CLIENTES,
-              icon: <VideoCameraOutlined />,
-              label: 'Clientes',
-            },
-            {
-              key: Modo.LOCALES,
-              icon: <VideoCameraOutlined />,
-              label: 'Locales',
-            },
-            {
-              key: Modo.PREFS,
-              icon: <VideoCameraOutlined />,
-              label: 'Preferencias',
-            },
-          ]}
-        />
-      </Sider>
-      <Layout className="site-layout">
-        <Header
-          className="site-layout-background"
-          style={{
-            padding: 0,
-          }}
-        >
-          {React.createElement(
-            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-            {
-              className: 'trigger',
-              onClick: () => setCollapsed(!collapsed),
-            }
-          )}
-        </Header>
-        <Content
-          className="site-layout-background"
-          style={{
+          <Menu
+            onClick={onChangeMenu}
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={[Modo.ORDENES + '']}
+            items={[
+              {
+                key: Modo.ORDENES,
+                icon: <UserOutlined />,
+                label: 'Órdenes',
+              },
+              {
+                key: Modo.PRODUCTOS,
+                icon: <UploadOutlined />,
+                label: 'Productos',
+              },
+              {
+                key: Modo.PEDIDOS,
+                icon: <UserOutlined />,
+                label: 'Pedidos',
+              },
+              {
+                key: Modo.CLIENTES,
+                icon: <VideoCameraOutlined />,
+                label: 'Clientes',
+              },
+              {
+                key: Modo.LOCALES,
+                icon: <VideoCameraOutlined />,
+                label: 'Locales',
+              },
+              {
+                key: Modo.PREFS,
+                icon: <VideoCameraOutlined />,
+                label: 'Preferencias',
+              },
+            ]}
+          />
+        </Sider>
+        <Layout className="site-layout">
+          <Header
+            className="site-layout-background"
+            style={{
+              padding: 0,
+            }}
+          >
+            {React.createElement(
+              collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+              {
+                className: 'trigger',
+                onClick: () => setCollapsed(!collapsed),
+              }
+            )}
+          </Header>
+          <Content
+            className="site-layout-background"
+            style={{
 
-            padding: 24,
-            minHeight: 280,
-          }}
-        >
-          {modo === Modo.PRODUCTOS && <Productos />}
-          {modo === Modo.ORDENES && <SeccionOrdenes />}
-          {modo === Modo.PREFS && <p>Preferencias</p>}
-          <Button style={{ position: "absolute", left: '1em', bottom: '1em' }} type="link" onClick={() => {
-            dispatch(logout())
-          }}>Borrar access token</Button>
-        </Content>
+              padding: 24,
+              minHeight: 280,
+            }}
+          >
+            {modo === Modo.PRODUCTOS && <Productos />}
+            {modo === Modo.ORDENES && <SeccionOrdenes />}
+            {modo === Modo.PREFS && <p>Preferencias</p>}
+            <Button style={{ position: "absolute", left: '1em', bottom: '1em' }} type="link" onClick={() => {
+              dispatch(logout())
+            }}>Borrar access token</Button>
+          </Content>
+        </Layout>
+
       </Layout>
-
-    </Layout>
+    </GlobalLoader>
   );
 };
 

@@ -9,11 +9,12 @@ import { UnidadNegocio } from '../../../lib/entity/unidad-negocio.entity';
 import { inicializarCencosud } from '../../../lib/inicializarCencosud';
 import { configCenco } from '../../../lib/parser-2.0/config-campos-cenco';
 
-const repoCli = dataSource.getRepository(Cliente);
 import {
   LineBuilder,
   SheetBuilder,
 } from '../columnas-parametricas/hoja-builder';
+
+const repoCli = dataSource.getRepository(Cliente);
 
 let empresa: Empresa;
 beforeAll(async () => {
@@ -24,6 +25,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  await dataSource.query('delete from usuario');
   await dataSource.query('delete from linea_detalle');
   await dataSource.query('delete from local');
   await dataSource.query('delete from unidad_negocio');
@@ -75,43 +77,6 @@ describe('crear unidades de negocio ordenes', () => {
 
       expect(unidad).toBeTruthy();
       expect(unidad.locales.length).toBe(1);
-    });
-  });
-  describe('cliente nuevo', () => {
-    it('debe crear el cliente', async () => {
-      const identLegal = randomBytes(10).toString('hex');
-
-      const l1 = new LineBuilder().build();
-      const hoja = new SheetBuilder()
-        .withIdentLegal(identLegal)
-        .addLines(l1)
-        .build();
-
-      const procesador = new ProcesadorPlanilla(configCenco);
-      const result = await procesador.procesar(hoja);
-      await new OrdenCreator(empresa).fromProcesador(result);
-
-      const cliente = await dataSource
-        .getRepository(Cliente)
-        .findOne({ where: { identLegal } });
-
-      expect(cliente).toBeTruthy();
-    });
-    it('debe crear el cliente y la unidad de negocio', async () => {
-      const nombre = randomBytes(10).toString('hex');
-
-      const l1 = new LineBuilder().withUnidad(nombre).build();
-      const hoja = new SheetBuilder().addLines(l1).build();
-
-      const procesador = new ProcesadorPlanilla(configCenco);
-      const result = await procesador.procesar(hoja);
-      await new OrdenCreator(empresa).fromProcesador(result);
-
-      const unidad = await dataSource
-        .getRepository(UnidadNegocio)
-        .findOne({ where: { nombre } });
-
-      expect(unidad).toBeTruthy();
     });
   });
 });

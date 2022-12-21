@@ -2,13 +2,13 @@ import { IOrdenCompra, ISuperOrden } from '@flash-ws/api-interfaces';
 import { actualizarOrden } from '@flash-ws/reductor';
 import { capitalize } from '@flash-ws/shared';
 import { Descriptions, Menu, Spin, Typography } from 'antd';
-import axios from 'axios';
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import GraficoAvance from '../grafico-avance/grafico-avance';
 import { SuperConsolidada } from '../new-consolidada/SuperConsolidada';
 import PalletsGenerator from '../pallets-generator/pallets-generator';
+import { useHttpClient } from '../useHttpClient';
 
 import TablaLineas from './TablaLineas';
 
@@ -24,6 +24,7 @@ enum Vista {
 }
 
 export function DetalleOrden({ id }: PropsDetalleOrden) {
+  const httpClient = useHttpClient();
   const dispatch = useDispatch();
   const orden: any = useSelector((state: any) =>
     state.counter.ordenes.find((o: any) => o.id === id)
@@ -42,7 +43,7 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
   useEffect(() => {
     if (!orden) {
       setLoading(true);
-      axios
+      httpClient
         .get<IOrdenCompra>(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
         .then((response) => {
           dispatch(actualizarOrden(response.data));

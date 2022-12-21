@@ -7,6 +7,7 @@ import { Button, Spin } from 'antd';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { estados, colores } from '../front-utils';
+import { useHttpClient } from '../useHttpClient';
 import { IILineaDetalle, ILineaConsolidada } from './datos';
 
 type PropsEstadoIProducto = {
@@ -27,6 +28,7 @@ export function EstadoProducto({
   actual,
   linea,
 }: PropsEstadoIProducto) {
+  const httpClient = useHttpClient()
   const [actualizando, setActualizando] = useState(false);
   const [error, setError] = useState('');
 
@@ -37,7 +39,7 @@ export function EstadoProducto({
       productos: [producto.id],
       estado: estado,
     };
-    axios
+    httpClient
       .post<Array<ILineaConsolidada>>(
         `${process.env['NX_SERVER_URL']}/api/ordenes/cambiar-estado-consolidada/${ordenID}`,
         postBody

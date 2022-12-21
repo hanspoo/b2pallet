@@ -1,53 +1,44 @@
-import { setOrdenes } from '@flash-ws/reductor';
+import { logout, setOrdenes } from '@flash-ws/reductor';
 import { useQuery } from '@tanstack/react-query';
+import { Button } from 'antd';
 
-import axios from 'axios';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
-function requestProductos() {
-  return axios
-    .get(`${process.env['NX_SERVER_URL']}/api/productos`)
-    .then((response) => response.data);
-}
+import { useHttpClient } from 'libs/components/src/lib/useHttpClient';
+import { useDispatch } from 'react-redux';
 
-// export function requestOrdenes() {
-//   return axios
-//     .get(`${process.env['NX_SERVER_URL']}/api/ordenes`)
-//     .then((response) => response.data);
-// }
-
-function requestLocales() {
-  return axios
-    .get(`${process.env['NX_SERVER_URL']}/api/locales`)
-    .then((response) => response.data);
-}
 
 type GlobalLoaderProps = {
   children: React.ReactNode;
 };
 
 export function GlobalLoader({ children }: GlobalLoaderProps) {
+  const dispatch = useDispatch();
+  const httpClient = useHttpClient();
   console.log('Rendering GlobalLoader');
-  // const dispatch = useDispatch();
+
+  function requestProductos() {
+    return httpClient
+      .get(`${process.env['NX_SERVER_URL']}/api/productos`)
+      .then((response) => response.data);
+  }
+
+  function requestLocales() {
+    return httpClient
+      .get(`${process.env['NX_SERVER_URL']}/api/locales`)
+      .then((response) => response.data);
+  }
   const p = useQuery(['productos'], requestProductos, { refetchInterval: 1000 * 360 });
   const l = useQuery(['locales'], requestLocales, { refetchInterval: 1000 * 360 });
-
-  // useEffect(() => {
-  //   console.log('useEffect Rendering GlobalLoader');
-  //   axios
-  //     .get(`${process.env['NX_SERVER_URL']}/api/ordenes`)
-  //     .then((response) => dispatch(setOrdenes(response.data)));
-  // }, []);
-
-  // const q = useQuery(['ordenes'], requestOrdenes);
 
   if (p.isLoading || l.isLoading) {
     return <span>Loading... wait</span>;
   }
 
   if (p.error || l.error) {
-    return <span>{JSON.stringify(p.error)}</span>;
+    return <div>
+      <p>Hay problemas al conectar al sistema, <Button onClick={() => dispatch(logout())}>Conectar nuevamente</Button></p>
+    </div>
+
   }
 
   return <>{children}</>;

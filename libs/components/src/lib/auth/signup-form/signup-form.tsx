@@ -104,7 +104,7 @@ export const SignupForm: React.FC<{ cancel: () => void }> = ({ cancel }) => {
           </Form.Item>
           <Form.Item
             label="Repetir Contraseña"
-            name="password"
+            name="repassword"
             rules={[{ required: true, message: 'Requerido' }]}
           >
             <Input.Password />

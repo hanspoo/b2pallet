@@ -8,7 +8,6 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
 import App from './app/app';
-import { GlobalLoader } from './app/GlobalLoader';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 
 

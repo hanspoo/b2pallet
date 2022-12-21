@@ -11,7 +11,6 @@ beforeAll(async () => {
     .findOne({ where: { nombre: 'b2pallet' } });
 });
 beforeEach(async () => {
-  await inicializarCencosud();
   await dataSource.query('delete from producto');
 });
 

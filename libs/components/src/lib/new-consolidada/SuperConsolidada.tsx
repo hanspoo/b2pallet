@@ -21,6 +21,7 @@ import SelectorEstado from '../selector-estado/selector-estado';
 import { ILineaConsolidada } from '../tabla-consolidada/datos';
 import { EstadoProducto } from '../tabla-consolidada/EstadoProducto';
 import { ModalLineaConsolidada } from '../tabla-consolidada/ModalLineaConsolidada';
+import { useHttpClient } from '../useHttpClient';
 
 const { Option } = Select;
 
@@ -38,6 +39,7 @@ type SuperConsolidadaProps = {
 type LineaConsolidadaConIProducto = ILineaConsolidada & { producto: IProducto };
 
 export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
+  const httpClient = useHttpClient();
   const dispatch = useDispatch();
   const [lineas, setLineas] = useState<Array<LineaConsolidadaConIProducto>>();
   const [search, setSearch] = useState<string>('');
@@ -192,7 +194,7 @@ export function SuperConsolidada({ orden }: SuperConsolidadaProps) {
       productos: selected,
       estado: estado!,
     };
-    axios
+    httpClient
       .post<Array<ILineaConsolidada>>(
         `${process.env['NX_SERVER_URL']}/api/ordenes/cambiar-estado-consolidada/${orden.id}`,
         postBody

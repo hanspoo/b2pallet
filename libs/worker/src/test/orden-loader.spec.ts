@@ -23,7 +23,7 @@ beforeEach(async () => {
   await dataSource.getRepository(OrdenCompra).clear();
 });
 
-describe('crear ordenes', () => {
+describe.skip('crear ordenes', () => {
   it('crea orden', async () => {
     await new LocalesService(sisa).crearLocalesNuevos(
       'fixtures/orden-una-linea.xls'

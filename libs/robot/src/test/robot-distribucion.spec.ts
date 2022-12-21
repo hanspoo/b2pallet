@@ -34,7 +34,7 @@ box.ancho = 100;
 box.alto = 100;
 proto.box = box;
 
-beforeEach(async () => {
+beforeAll(async () => {
   await inicializarCencosud();
   orden = await crearOrdenHelper(4);
 

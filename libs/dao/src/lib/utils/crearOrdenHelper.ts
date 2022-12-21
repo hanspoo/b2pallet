@@ -4,6 +4,7 @@ import { dataSource } from '../data-source';
 import { Empresa } from '../entity/auth/empresa.entity';
 import { Box } from '../entity/box.entity';
 import { Caja } from '../entity/caja.entity';
+import { Cliente } from '../entity/cliente.entity';
 import { LineaDetalle } from '../entity/linea-detalle.entity';
 import { Local } from '../entity/local.entity';
 import { OrdenCompra } from '../entity/orden-compra.entity';
@@ -39,12 +40,16 @@ export async function crearOrdenHelper(numLineas = 1): Promise<OrdenCompra> {
   p.empresa = e;
 
   const producto = await dataSource.getRepository(Producto).save(p);
+  const clientes = await dataSource.getRepository(Cliente).find();
+  if (clientes.length === 0)
+    throw Error('No hay clientes, se cancela orden de prueba');
 
   const orden = new OrdenCompra();
   orden.unidad = sisa;
   orden.numero = crypto.randomInt(100000000) + '';
   orden.emision = '15-09-2022';
   orden.entrega = '22-09-2022';
+  orden.cliente = clientes[0];
 
   let local = new Local();
   local.nombre = crypto.randomBytes(12).toString('hex');

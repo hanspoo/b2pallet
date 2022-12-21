@@ -1,31 +1,43 @@
 import { IOrdenConsolidada } from '@flash-ws/api-interfaces';
+import { Empresa } from '..';
 import { dataSource } from './data-source';
 
+// cajas: number;
+// unidad: string;
+// cliente: string;
+// numero: string;
+// id: string;
+// emision: string;
+// entrega: string;
+
 export class ServicioOrdenes {
-  static async ordenes(): Promise<IOrdenConsolidada[]> {
+  constructor(public empresa: Empresa) {}
+
+  async ordenes(): Promise<IOrdenConsolidada[]> {
+    if (!this.empresa) throw Error('Este servicio require la empresa');
     const sql = `
     SELECT
     sum(linea_detalle."cantidad") AS cajas,
-    unidad_negocio."nombre" AS unidad,
     cliente."nombre" AS cliente,
     orden_compra."numero" AS numero,
     orden_compra."id" AS id,
-    orden_compra."emision" as emision,
-    orden_compra."entrega" as entrega
+    orden_compra."emision" AS emision,
+    orden_compra."entrega" AS entrega
 FROM
     "orden_compra" orden_compra INNER JOIN "linea_detalle" linea_detalle ON orden_compra."id" = linea_detalle."ordenCompraId"
-    INNER JOIN "unidad_negocio" unidad_negocio ON orden_compra."unidadId" = unidad_negocio."id"
-    INNER JOIN "cliente" cliente ON unidad_negocio."clienteId" = cliente."id"
+    INNER JOIN cliente cliente ON orden_compra."clienteId" = cliente."id"
+    INNER JOIN empresa ON cliente."empresaId" = empresa."id"
+
+WHERE
+empresa."id" = ${this.empresa.id}    
 GROUP BY
-    unidad_negocio."nombre",
     cliente."nombre",
     orden_compra."numero",
     orden_compra."id",
     orden_compra."emision",
     orden_compra."entrega"
-    
-order by 
-orden_compra."emision"     
+ORDER BY
+    orden_compra."emision" ASC
   `;
 
     const queryRunner = dataSource.createQueryRunner();

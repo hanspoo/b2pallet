@@ -5,7 +5,6 @@ import { LineaDetalle } from '../entity/linea-detalle.entity';
 import { Local } from '../entity/local.entity';
 import { OrdenCompra } from '../entity/orden-compra.entity';
 import { Producto } from '../entity/producto.entity';
-import { UnidadNegocio } from '../entity/unidad-negocio.entity';
 import { LineaCruda } from './ProcesadorPlanilla';
 
 export async function crearOrdenes(
@@ -16,9 +15,7 @@ export async function crearOrdenes(
 ) {
   const repoOrdenes = dataSource.getRepository(OrdenCompra);
   const repoEmpresa = dataSource.getRepository(Empresa);
-  const repoCliente = dataSource.getRepository(Cliente);
   const repoLinea = dataSource.getRepository(LineaDetalle);
-  const repoUnidad = dataSource.getRepository(UnidadNegocio);
 
   const ordenesCreadas: Array<OrdenCompra> = [];
 
@@ -55,9 +52,10 @@ export async function crearOrdenes(
     console.log('Creando orden ' + i);
 
     const orden = repoOrdenes.create(ordenes[i]);
+    orden.cliente = cliente;
     orden.lineas = lineas
       .filter((linea) => linea.numOrden === orden.numero)
-      .map(({ cantidad, codLocal, codProdCliente, codProducto }) => {
+      .map(({ cantidad, codLocal, codProducto }) => {
         console.log('Creando líneas');
         const producto = findByCodigo[codProducto];
         if (!producto)

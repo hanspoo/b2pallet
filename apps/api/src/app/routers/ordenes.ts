@@ -44,7 +44,7 @@ import { In } from 'typeorm';
 const ordenes = express.Router();
 
 ordenes.get('/consolidadas', async function (req: Request, res: Response) {
-  const ordenes = await ServicioOrdenes.ordenes();
+  const ordenes = await new ServicioOrdenes(req['empresa']).ordenes();
   res.json(ordenes);
 });
 ordenes.get('/', async function (req: Request, res: Response) {

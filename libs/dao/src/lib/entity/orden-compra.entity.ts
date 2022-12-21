@@ -14,7 +14,7 @@ import { Caja } from './caja.entity';
 import { Cliente } from './cliente.entity';
 
 @Entity()
-@Unique(['numero', 'unidad'])
+@Unique('numero-orden-unico', ['cliente.id', 'numero']) //
 export class OrdenCompra {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -37,7 +37,7 @@ export class OrdenCompra {
   })
   lineas: LineaDetalle[];
 
-  @ManyToOne(() => Cliente, (cli) => cli.ordenes)
+  @ManyToOne(() => Cliente, (cli) => cli.ordenes, { nullable: false })
   cliente: Cliente;
 
   @OneToMany(() => Pallet, (pallet) => pallet.ordenCompra, {
