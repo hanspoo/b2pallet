@@ -91,6 +91,15 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
     const linea = ordenes[0].lineas[0];
     expect(linea.cantidad).toBe(1);
   });
+  it('crea las cajas', async () => {
+    const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
+    const procesador = new ProcesadorPlanilla(configCenco);
+    const result = await procesador.procesar(ws[0]);
+
+    const { ordenes } = await new OrdenCreator(empresa).fromProcesador(result);
+    const linea = ordenes[0].lineas[0];
+    expect(linea.cajas.length).toBe(1);
+  });
   it('si no hemos creado el producto el creador manda errores', async () => {
     await dataSource.getRepository(Producto).clear();
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);

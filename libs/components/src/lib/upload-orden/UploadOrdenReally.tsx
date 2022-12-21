@@ -68,17 +68,14 @@ export function UploadOrdenReally({ protoPallets }: UploadOrdenReallyArgs) {
     if (loading)
         return <Spin />;
     if (error) {
-        const { msg, ordenesDuplicadas, productosNoEncontrados } = error;
+        const { msg, errores } = error;
 
         return (
             <>
                 <p>{msg}</p>
                 <MostrarErrores
                     title="Productos no encontrados"
-                    list={productosNoEncontrados || []} />
-                <MostrarErrores
-                    title="Ordenes de compra duplicadas"
-                    list={ordenesDuplicadas || []} />
+                    list={errores || []} />
                 <Button
                     onClick={() => {
                         limpiar();

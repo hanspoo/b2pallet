@@ -18,6 +18,7 @@ import {
 } from '@ant-design/icons';
 import { CambiarEstadoBody, EstadoLinea } from '@flash-ws/api-interfaces';
 import axios from 'axios';
+import { useHttpClient } from '../useHttpClient';
 
 export interface TablaLineasProps {
   orden: IOrdenCompra;
@@ -26,6 +27,7 @@ export interface TablaLineasProps {
 
 const { Option } = Select;
 export function TablaLineas({ orden, recargar }: TablaLineasProps) {
+  const httpClient = useHttpClient()
   const [search, setSearch] = useState<string>('');
   const [data, setData] = useState<Array<ILineaDetalle>>();
   const [loading, setLoading] = useState(true);
@@ -166,7 +168,7 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
       ids: selected,
       estado: estado,
     };
-    axios
+    httpClient
       .post<IOrdenCompra>(
         `${process.env['NX_SERVER_URL']}/api/ordenes/cambiar-estado/${orden.id}`,
         postBody

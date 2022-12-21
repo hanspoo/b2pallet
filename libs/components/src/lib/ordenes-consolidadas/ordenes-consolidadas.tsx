@@ -1,7 +1,6 @@
 import { IOrdenConsolidada } from '@flash-ws/api-interfaces';
 import { Button, Spin, Table, Input } from 'antd';
 
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { formatNumber } from '../front-utils';
 import { useHttpClient } from '../useHttpClient';
@@ -115,7 +114,7 @@ export function OrdenesConsolidadas(props: OrdenesConsolidadasProps) {
     if (!selected) return;
     // setBorrando(true);
     const promesas = selected.map((id) =>
-      axios.delete(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
+      httpClient.delete(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
     );
     await Promise.all(promesas);
 

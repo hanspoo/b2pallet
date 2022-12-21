@@ -28,7 +28,10 @@ export class OrdenCreator {
     lineas,
   }: ResultadoProceso): Promise<ResultCrearOrdenes> {
     // Creamos el cliente y pasamos un cliente persistido a la orden
-    const errores = await this.erroresProductos(lineas);
+    // const validadorProductos = process.env.USAR_COD_CENCO
+    //   ? this.erroresProductosCodigoCliente
+    //   : this.erroresProductosCodigoProveedor;
+    const errores = await this.erroresProductosCodigoCenco(lineas);
     if (errores.length > 0) return { ordenes: [], errores };
 
     const cli = clientes[0];
@@ -97,7 +100,9 @@ export class OrdenCreator {
       });
   }
 
-  async erroresProductos(lineas: LineaCruda[]): Promise<string[]> {
+  async erroresProductosCodigoProveedor(
+    lineas: LineaCruda[]
+  ): Promise<string[]> {
     const service = new ProductoService(this.empresa);
 
     const prods = new Set<string>(lineas.map((l) => l.codProducto));
@@ -106,7 +111,21 @@ export class OrdenCreator {
     for (let i = 0; i < array.length; i++) {
       const prod = array[i];
       const p = await service.findByCodigo(prod);
-      if (p === null) errores.push(`Producto ${prod} no encontrado`);
+      if (p === null) errores.push(`Producto: "${prod}", no encontrado`);
+    }
+    return errores;
+  }
+
+  async erroresProductosCodigoCenco(lineas: LineaCruda[]): Promise<string[]> {
+    const service = new ProductoService(this.empresa);
+
+    const prods = new Set<string>(lineas.map((l) => l.codProdCliente));
+    const array = Array.from(prods);
+    const errores = [];
+    for (let i = 0; i < array.length; i++) {
+      const prod = array[i];
+      const p = await service.findByCodCenco(prod);
+      if (p === null) errores.push(`Producto: "${prod}", no encontrado`);
     }
     return errores;
   }

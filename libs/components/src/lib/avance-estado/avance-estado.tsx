@@ -34,7 +34,7 @@ export function AvanceEstadoConsolidada({
           backgroundColor: '#ccc',
           textAlign: 'center',
         }}
-      ></Col>
+      >All</Col>
       {data.map((iter) => {
         const e = iter.estado as EstadoLinea;
         return (

@@ -14,6 +14,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import PalletsIcono from '../pallets-icono/pallets-icono';
 import Pallets from '../pallets/pallets';
+import { useHttpClient } from '../useHttpClient';
 import { PalletsGeneratorImpl } from './PalletsGeneratorImpl';
 
 /* eslint-disable-next-line */
@@ -39,6 +40,7 @@ enum VistaPallets {
   ARBOL = 'ARBOL',
 }
 export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
+  const httpClient = useHttpClient()
   const [vistaPallets, setVistaPallets] = useState<VistaPallets>(
     VistaPallets.ICONO
   );
@@ -50,7 +52,7 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
   useEffect(() => {
     setLoading(true);
     const url = `${process.env['NX_SERVER_URL']}/api/ordenes/${orden.id}/pallets-cons`;
-    axios
+    httpClient
       .get<IPalletConsolidado[]>(url)
       .then((response) => {
         setPallets(response.data);

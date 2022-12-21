@@ -1,5 +1,6 @@
 import { dataSource } from '../data-source';
 import { Empresa } from '../entity/auth/empresa.entity';
+import { Caja } from '../entity/caja.entity';
 import { Cliente } from '../entity/cliente.entity';
 import { LineaDetalle } from '../entity/linea-detalle.entity';
 import { Local } from '../entity/local.entity';
@@ -35,6 +36,13 @@ export async function crearOrdenes(
     },
     {}
   );
+  const findByCodCenco: Record<string, Producto> = e.productos.reduce(
+    (acc: Record<string, Producto>, iter: Producto) => {
+      acc[iter.codCenco] = iter;
+      return acc;
+    },
+    {}
+  );
   const locs: Local[] = cliente.unidades.reduce((acc: any, iter: any) => {
     acc = [...acc, ...iter.locales];
     return acc;
@@ -48,6 +56,9 @@ export async function crearOrdenes(
     {}
   );
 
+  // const productosFinder = process.env.USAR_COD_CENCO
+  //   ? findByCodCenco
+  //   : findByCodigo;
   for (let i = 0; i < ordenes.length; i++) {
     console.log('Creando orden ' + i);
 
@@ -55,12 +66,12 @@ export async function crearOrdenes(
     orden.cliente = cliente;
     orden.lineas = lineas
       .filter((linea) => linea.numOrden === orden.numero)
-      .map(({ cantidad, codLocal, codProducto }) => {
+      .map(({ cantidad, codLocal, codProdCliente }) => {
         console.log('Creando líneas');
-        const producto = findByCodigo[codProducto];
+        const producto = findByCodCenco[codProdCliente];
         if (!producto)
           throw Error(
-            `Producto ${codProducto} no encontrado en empresa ${empresa.nombre}`
+            `Producto ${codProdCliente} no encontrado en empresa ${empresa.nombre}`
           );
         const local = findByLocal[codLocal];
         if (!local)
@@ -68,9 +79,16 @@ export async function crearOrdenes(
             `Local ${codLocal} no encontrado en cliente ${cliente.nombre}`
           );
 
-        const linea = repoLinea.create({ cantidad, producto, local });
-        console.log('insertando linea', linea);
-        return linea;
+        const l = repoLinea.create({ cantidad, producto, local, cajas: [] });
+        console.log('insertando linea', l);
+
+        for (let i = 0; i < l.cantidad; i++) {
+          const caja = new Caja();
+          caja.linea = l;
+          l.cajas.push(caja);
+        }
+
+        return l;
       });
 
     ordenesCreadas.push(orden as OrdenCompra);

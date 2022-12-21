@@ -396,8 +396,7 @@ ordenes.post(
       if (error) {
         const err: OrdenesResponseInvalid = {
           msg: `Hay información inválida`,
-          ordenesDuplicadas,
-          productosNoEncontrados,
+          errores: [...ordenesDuplicadas, ...productosNoEncontrados],
         };
         res.status(400).send(err);
         return;
@@ -446,8 +445,7 @@ ordenes.post('/masivo', upload.single('file'), async function (req: any, res) {
     if (error) {
       const err: OrdenesResponseInvalid = {
         msg: `Hay información inválida`,
-        ordenesDuplicadas,
-        productosNoEncontrados,
+        errores: [...ordenesDuplicadas, ...productosNoEncontrados],
       };
       res.status(400).send(err);
       return;

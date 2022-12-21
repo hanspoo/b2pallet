@@ -20,6 +20,8 @@ export const obtainToken = async () => {
 };
 
 export const CODIGO_PROD = 'DRBIO-00634';
+export const PRODUCTO_CENCO_TEST = '1647753';
+
 export async function inicializarCencosud(): Promise<Cliente> {
   if (!dataSource.isInitialized) await dataSource.initialize();
   // const entities = dataSource.entityMetadatas;
@@ -44,7 +46,7 @@ export async function inicializarCencosud(): Promise<Cliente> {
   producto.box.largo = 1;
   producto.box.ancho = 1;
   producto.box.alto = 1;
-  producto.codCenco = '1647753';
+  producto.codCenco = PRODUCTO_CENCO_TEST;
   producto.nombre = 'Producto de prueba';
   producto.peso = 1;
   producto.vigente = true;

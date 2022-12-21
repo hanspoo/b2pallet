@@ -18,6 +18,7 @@ import {
   OpcionesGenPallets,
 } from './pallets-generator';
 import Title from 'antd/lib/typography/Title';
+import { useHttpClient } from '../useHttpClient';
 
 enum StateMachine {
   NO_EJECUTADA,
@@ -28,6 +29,7 @@ export function PalletsGeneratorImpl({
   orden,
   setPallets,
 }: PalletsGeneratorImplProps) {
+  const httpClient = useHttpClient()
   const [generacion, setGeneracion] = useState<StateMachine>(
     StateMachine.NO_EJECUTADA
   );
@@ -87,16 +89,16 @@ export function PalletsGeneratorImpl({
       ordenar,
       distribuir,
     };
-    axios
+    httpClient
       .post<IPalletConsolidado[]>(
         `${process.env['NX_SERVER_URL']}/api/ordenes/${orden.id}/gen-pallets`,
         args
       )
-      .then((response) => {
+      .then((response: any) => {
         setLocalPallets(response.data);
         setGeneracion(StateMachine.EJECUTADA);
       })
-      .catch((error) => {
+      .catch((error: any) => {
         setErrorGenerando(error.message);
         setGeneracion(StateMachine.EJECUTADA);
       });
