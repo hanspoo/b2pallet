@@ -6,6 +6,7 @@ import { auth } from './routers/auth';
 import { users } from './routers/users';
 
 import { loader } from './routers/loader';
+import { me } from './routers/me';
 import { protoPallets } from './routers/proto-pallets';
 import { productos } from './routers/productos';
 import { ordenes } from './routers/ordenes';
@@ -88,6 +89,8 @@ app.use('/api/files', files);
 app.use('/api/archivos', archivos);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
+
+app.use('/api/me', authMiddleware, me);
 app.use('/api/productos', authMiddleware, productos);
 app.use('/api/ordenes', authMiddleware, ordenes);
 app.use('/api/loader', authMiddleware, loader);

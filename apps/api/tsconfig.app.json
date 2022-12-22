@@ -17,5 +17,5 @@
     "**/*.ts",
     "../../libs/worker/src/lib/ServicioCambioEstadoProdConsolidada.ts",
     "../../libs/api-interfaces/src/lib/BodyCambioEstadoProdConsolidada.ts"
-, "../../libs/dao/src/lib/inicializarSistema.ts"  ]
+, "../../libs/dao/src/lib/inicializarSistema.ts", "../../libs/api-interfaces/src/lib/Me.ts"  ]
 }

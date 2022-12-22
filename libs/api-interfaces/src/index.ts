@@ -29,3 +29,4 @@ export * from './lib/LoginRequest';
 export * from './lib/SignupRequest';
 export * from './lib/AddProtoPalletArgs';
 export * from './lib/LoaderPostBody';
+export * from './lib/Me';
