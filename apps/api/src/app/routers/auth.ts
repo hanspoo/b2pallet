@@ -35,7 +35,7 @@ auth.post('/login', async function (req: ReqWithSession, res: Response) {
     return res.header('x-token', payload).send('login Ok');
   }
 
-  res.send('invalid credentials');
+  res.send('Credenciales inválidas');
 });
 auth.post(
   '/signup',

@@ -34,8 +34,12 @@ productos.post(
   upload.single('file'),
   async function (req: any, res) {
     const service = new ProductoService(req['empresa']);
-    const status = await service.cargarPlanilla(req.file.path);
-    res.send(status);
+    try {
+      const status = await service.cargarPlanilla(req.file.path);
+      res.send(status);
+    } catch (error) {
+      res.status(400).send({ msg: JSON.stringify(error) });
+    }
   }
 );
 

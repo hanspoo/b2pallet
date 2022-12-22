@@ -1,3 +1,4 @@
+import { PassService } from './auth/PassService';
 import { dataSource } from './data-source';
 import { Empresa } from './entity/auth/empresa.entity';
 import { Usuario } from './entity/auth/usuario.entity';
@@ -37,7 +38,7 @@ export async function crearEmpresa(): Promise<Empresa> {
 
   const user = dataSource.getRepository(Usuario).create({
     email: 'admin@b2pallet.com',
-    password: '123456',
+    password: await new PassService().hash('123456'),
     nombre: 'Admin',
   });
 

@@ -1,6 +1,7 @@
 import { dataSource } from '../data-source';
 import { Empresa } from '../entity/auth/empresa.entity';
 import { Usuario } from '../entity/auth/usuario.entity';
+import { PassService } from './PassService';
 
 export type SignupArgs = {
   empresa: string;
@@ -26,7 +27,7 @@ export class SignupService {
     const user = dataSource.getRepository(Usuario).create({
       nombre: this.nombre,
       email: this.email,
-      password: this.password,
+      password: await new PassService().hash(this.password),
       esAdmin: true,
     });
 

@@ -37,7 +37,7 @@ export type PorLocal = Array<LocalEntry>;
 enum VistaPallets {
   ICONO = 'ICONO',
   TABLA = 'TABLA',
-  ARBOL = 'ARBOL',
+  // ARBOL = 'ARBOL',
 }
 export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
   const httpClient = useHttpClient()
@@ -92,7 +92,6 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
         </Button>
       </div>
 
-      {vistaPallets === VistaPallets.ARBOL && <p>Pendiente</p>}
       {vistaPallets === VistaPallets.TABLA && <Pallets pallets={pallets} />}
       {vistaPallets === VistaPallets.ICONO && (
         <PalletsIcono pallets={pallets} />

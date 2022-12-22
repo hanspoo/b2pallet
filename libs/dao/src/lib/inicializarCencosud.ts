@@ -8,6 +8,7 @@ import e from 'express';
 import { Usuario } from './entity/auth/usuario.entity';
 import { LoginService } from './auth/LoginService';
 import { ProtoPallet } from './entity/proto-pallet.entity';
+import { PassService } from './auth/PassService';
 
 export const obtainToken = async () => {
   const [isOk, token] = await new LoginService().login(
@@ -59,13 +60,12 @@ export async function inicializarCencosud(): Promise<Cliente> {
   const e = await repoEmpresa.save(
     repoEmpresa.create({
       nombre: 'b2pallet',
-      identLegal: '123456789',
     })
   );
 
   const user = dataSource.getRepository(Usuario).create({
     email: 'admin@b2pallet.com',
-    password: '123456',
+    password: await new PassService().hash('123456'),
     nombre: 'Usuario de prueba',
   });
 

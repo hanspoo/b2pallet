@@ -1,5 +1,6 @@
 import { dataSource } from '../data-source';
 import { Usuario } from '../entity/auth/usuario.entity';
+import { PassService } from './PassService';
 
 export class CredentialsService {
   async validate(
@@ -13,7 +14,10 @@ export class CredentialsService {
 
     if (u === null) return [false, 'Usuario no existe'];
 
-    if (u.password === password.trim()) {
+    const service = new PassService();
+    const isOk = await service.comparePassword(password.trim(), u.password);
+
+    if (isOk) {
       return [true, u];
     } else {
       return [false, 'Contraseña incorrecta'];
