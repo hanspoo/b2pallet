@@ -13,6 +13,7 @@ import {
   ServicioOrdenes,
   ServicioPallets,
   UnidadNegocio,
+  ProductoService,
 } from '@flash-ws/dao';
 import {
   ClienteService,
@@ -21,7 +22,6 @@ import {
   ordenarPorNombreProducto,
   OrdenService,
   PrevalidacionService,
-  ProductoService,
   ServicioCambioEstado,
   CambioEstadoProdConsolidada,
 } from '@flash-ws/worker';

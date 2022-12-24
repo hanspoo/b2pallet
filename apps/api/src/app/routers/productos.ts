@@ -2,7 +2,7 @@ import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
 import { dataSource, Empresa, Producto } from '@flash-ws/dao';
-import { ProductoService } from '@flash-ws/worker';
+import { ProductoService } from '@flash-ws/dao';
 
 const productos = express.Router();
 productos.get('/', async function (req: Request, res: Response) {
