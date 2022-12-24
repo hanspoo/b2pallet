@@ -28,7 +28,9 @@ export class OrdenCompra {
   @Column()
   entrega: string;
 
-  @ManyToOne(() => UnidadNegocio, (unidad) => unidad.ordenes)
+  @ManyToOne(() => UnidadNegocio, (unidad) => unidad.ordenes, {
+    nullable: false,
+  })
   unidad: UnidadNegocio;
 
   @OneToMany(() => LineaDetalle, (linea) => linea.ordenCompra, {

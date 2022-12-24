@@ -26,6 +26,6 @@ function capAll(s: string): string {
   return words.join(' ');
 }
 
-export function ifDebug(s: string): void {
-  if (process.env['DEBUG']) console.log(s);
+export function ifDebug(...s: any[]): void {
+  if (process.env['DEBUG']) console.log(s.join(' '));
 }

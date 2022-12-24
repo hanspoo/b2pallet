@@ -68,7 +68,7 @@ export class ProductoService {
     const cod = esValido ? StatusCode.OK : StatusCode.ERROR;
 
     if (esValido) {
-      let p = await this.findByCodigo(codigo);
+      let p = await this.findByCodCenco(codCenco);
       if (!p) {
         p = new Producto();
         p.vigente = true;
@@ -89,6 +89,14 @@ export class ProductoService {
       p.empresa = this.empresa;
 
       await repo.save(p);
+    } else {
+      const e = `Producto inválido: ${codCenco}`;
+
+      const status: EntityStatus = {
+        codigo: codCenco,
+        descripcion: e,
+      };
+      this.statusLines.push(status);
     }
 
     const status: EntityStatus = {

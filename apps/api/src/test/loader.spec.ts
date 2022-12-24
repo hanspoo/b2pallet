@@ -64,7 +64,7 @@ describe('loader nuevo de ordenes', () => {
     expect(res.status).toBe(400);
     expect(res.body.msg).toContain('LDR003');
   });
-  it('planilla válida, crea la orden', async () => {
+  it('planilla válida, crea la orden (2)', async () => {
     const data: LoaderPostBody = {
       idArchivo: archValido.id,
     };

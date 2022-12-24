@@ -6,6 +6,7 @@ import { ConfigPLanilla } from './ConfigPlanilla';
 
 type Sheet = { name: string; data: unknown[] };
 export type LineaCruda = {
+  unidad: string;
   numOrden: string;
   codProdCliente: string;
   codProducto: string;
@@ -44,9 +45,11 @@ export class ProcesadorPlanilla {
       const codProducto: string = linea[this.pos(Campo.COD_PRODUCTO)];
       const cantidad: number = linea[this.pos(Campo.CANTIDAD)];
       const codLocal: string = linea[this.pos(Campo.COD_LOCAL)];
+      const unidad: string = linea[this.pos(Campo.UNIDAD_NEGOCIO)];
       const numOrden: string = linea[this.pos(Campo.NUM_ORDEN)] + '';
 
       const l: LineaCruda = {
+        unidad,
         codProdCliente,
         codProducto,
         cantidad,

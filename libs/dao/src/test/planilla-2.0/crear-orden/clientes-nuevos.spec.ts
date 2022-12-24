@@ -1,4 +1,3 @@
-process.env['DEBUG_DB'] = '1';
 import { randomBytes } from 'crypto';
 import { ProcesadorPlanilla } from '../../../lib/parser-2.0/ProcesadorPlanilla';
 import { OrdenCreator } from '../../../lib/parser-2.0/OrdenCreator';

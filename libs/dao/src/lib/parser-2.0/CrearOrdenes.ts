@@ -1,3 +1,5 @@
+import { ifDebug } from '@flash-ws/shared';
+import { In } from 'typeorm';
 import { dataSource } from '../data-source';
 import { Empresa } from '../entity/auth/empresa.entity';
 import { Caja } from '../entity/caja.entity';
@@ -6,6 +8,7 @@ import { LineaDetalle } from '../entity/linea-detalle.entity';
 import { Local } from '../entity/local.entity';
 import { OrdenCompra } from '../entity/orden-compra.entity';
 import { Producto } from '../entity/producto.entity';
+import { UnidadNegocio } from '../entity/unidad-negocio.entity';
 import { LineaCruda } from './ProcesadorPlanilla';
 
 export async function crearOrdenes(
@@ -60,14 +63,15 @@ export async function crearOrdenes(
   //   ? findByCodCenco
   //   : findByCodigo;
   for (let i = 0; i < ordenes.length; i++) {
-    console.log('Creando orden ' + i);
+    ifDebug('Creando orden ' + i);
 
     const orden = repoOrdenes.create(ordenes[i]);
     orden.cliente = cliente;
+
     orden.lineas = lineas
       .filter((linea) => linea.numOrden === orden.numero)
       .map(({ cantidad, codLocal, codProdCliente }) => {
-        console.log('Creando líneas');
+        ifDebug('Creando líneas');
         const producto = findByCodCenco[codProdCliente];
         if (!producto)
           throw Error(
@@ -80,7 +84,6 @@ export async function crearOrdenes(
           );
 
         const l = repoLinea.create({ cantidad, producto, local, cajas: [] });
-        console.log('insertando linea', l);
 
         for (let i = 0; i < l.cantidad; i++) {
           const caja = new Caja();
@@ -91,8 +94,44 @@ export async function crearOrdenes(
         return l;
       });
 
+    await agregarUnidad(orden);
     ordenesCreadas.push(orden as OrdenCompra);
   }
 
   return ordenesCreadas;
+}
+
+async function agregarUnidad(orden: OrdenCompra) {
+  const setLoc = orden.lineas.reduce((acc, iter) => {
+    acc.add(iter.local.id);
+    return acc;
+  }, new Set<number>());
+
+  // Sacamos las unidades de los locales
+  const ids = Array.from(setLoc);
+
+  const locals: Array<Local> = await dataSource
+    .getRepository(Local)
+    .find({ where: { id: In(ids) }, relations: ['unidad'] });
+
+  // Sacar las unidades diferentes, debe ser una sóla
+
+  const INITIAL: Record<string, UnidadNegocio> = {};
+  const objUnidades: Record<string, UnidadNegocio> = locals.reduce(
+    (acc, iter) => {
+      acc[iter.unidad.id + ''] = iter.unidad;
+      return acc;
+    },
+    INITIAL
+  );
+
+  const unidades = Array.from(Object.values(objUnidades));
+  if (unidades.length === 0) throw Error(`No hay unidades de negocio`);
+  if (unidades.length > 1)
+    throw Error(
+      `La orden sólo debe ser de una unidad de negocio y tiene ${unidades.length}:` +
+        JSON.stringify(unidades)
+    );
+
+  orden.unidad = unidades[0];
 }

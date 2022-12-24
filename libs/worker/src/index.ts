@@ -1,5 +1,4 @@
 export { ClienteService } from './lib/ClienteService';
-export { ProductoService } from '../../dao/src/lib/ProductosService';
 export { OrdenService } from './lib/OrdenService';
 export { PrevalidacionService } from './lib/PrevalidacionService';
 

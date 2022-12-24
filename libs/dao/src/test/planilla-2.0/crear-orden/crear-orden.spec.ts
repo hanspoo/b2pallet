@@ -21,7 +21,7 @@ beforeEach(async () => {
 });
 
 describe('Usando el procesador de planillas crea toda la estructura', () => {
-  it('crea la orden', async () => {
+  it('crea la orden (3)', async () => {
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
 
     const procesador = new ProcesadorPlanilla(configCenco);
@@ -81,7 +81,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
   });
 });
 
-describe('Usando el procesador de planillas crea toda la estructura', () => {
+describe('crear orden lineas, unidad y productos', () => {
   it('campos líneas de detalle: cantidad', async () => {
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
     const procesador = new ProcesadorPlanilla(configCenco);
@@ -100,7 +100,7 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
     const linea = ordenes[0].lineas[0];
     expect(linea.cajas.length).toBe(1);
   });
-  it('si no hemos creado el producto el creador manda errores', async () => {
+  it.skip('si no hemos creado el producto el creador manda errores', async () => {
     await dataSource.getRepository(Producto).clear();
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
     const procesador = new ProcesadorPlanilla(configCenco);
@@ -108,5 +108,18 @@ describe('Usando el procesador de planillas crea toda la estructura', () => {
 
     const { errores } = await new OrdenCreator(empresa).fromProcesador(result);
     expect(errores.length).toBe(1);
+  });
+  it('la orden debe ser de una sóla unidad de negocio', async () => {
+    const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
+    const procesador = new ProcesadorPlanilla(configCenco);
+    const result = await procesador.procesar(ws[0]);
+    expect(result.lineas.length).toBe(1);
+
+    const { ordenes, errores } = await new OrdenCreator(empresa).fromProcesador(
+      result
+    );
+    expect(errores).toEqual([]);
+    expect(ordenes.length).toBe(1);
+    expect(ordenes[0].unidad).toBeTruthy();
   });
 });

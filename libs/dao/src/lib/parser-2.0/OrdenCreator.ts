@@ -1,5 +1,4 @@
 import {
-  crearEmpresa,
   dataSource,
   Empresa,
   LineaDetalle,
@@ -12,6 +11,7 @@ import { Cliente } from '../entity/cliente.entity';
 import { OrdenCompra } from '../entity/orden-compra.entity';
 import { LineaCruda, LocalCrudo, ResultadoProceso } from './ProcesadorPlanilla';
 import { crearOrdenes } from './CrearOrdenes';
+import { ifDebug } from '@flash-ws/shared';
 
 type ResultCrearOrdenes = {
   ordenes: Array<OrdenCompra>;
@@ -38,9 +38,7 @@ export class OrdenCreator {
     const identLegal = cli.identLegal;
 
     const repoOrdenes = dataSource.getRepository(OrdenCompra);
-    const repoEmpresa = dataSource.getRepository(Empresa);
     const repoCliente = dataSource.getRepository(Cliente);
-    const repoLinea = dataSource.getRepository(LineaDetalle);
     const repoUnidad = dataSource.getRepository(UnidadNegocio);
     let cliente = await repoCliente.findOne({
       relations: ['unidades', 'unidades.locales', 'ordenes'],
@@ -48,14 +46,14 @@ export class OrdenCreator {
     });
 
     if (cliente) {
-      console.log('Cliente ya existe');
+      ifDebug('Cliente ya existe');
 
       const nuevas = unidadesNuevas(cliente, unidades);
       nuevas.forEach((u) => cliente!.unidades!.push(u));
       mezclarLocales(cliente, locales);
       cliente = await repoCliente.save(cliente);
     } else {
-      console.log('Cliente Nuevo');
+      ifDebug('Cliente Nuevo');
       cli.unidades = unidades.map((nombre) =>
         repoUnidad.create({
           nombre,
@@ -65,14 +63,14 @@ export class OrdenCreator {
       cli.empresa = this.empresa;
       cli.ordenes = [];
       const nuevoCliente = repoCliente.create(cli);
-      console.log('nuevo', JSON.stringify(nuevoCliente));
+      ifDebug('nuevo', JSON.stringify(nuevoCliente));
 
       try {
-        console.log('Actualizando cliente');
+        ifDebug('Actualizando cliente');
 
         cliente = await repoCliente.save(nuevoCliente);
       } catch (error) {
-        console.log('error en repoCliente.save', error);
+        console.log('error en repoCliente.save', JSON.stringify(error));
         throw error;
       }
     }
@@ -117,15 +115,27 @@ export class OrdenCreator {
   }
 
   async erroresProductosCodigoCenco(lineas: LineaCruda[]): Promise<string[]> {
-    const service = new ProductoService(this.empresa);
+    const productos = await dataSource
+      .getRepository(Producto)
+      .find({ where: { empresa: { id: this.empresa.id } } });
+
+    // if (!e) throw Error(`La empresa ${this.empresa.id} no se pudo recuperar`);
+
+    if (productos.length === 0)
+      throw Error(`La empresa ${this.empresa.id} no tiene productos`);
+
+    const byCodCenco: Record<string, any> = productos.reduce((acc, iter) => {
+      acc[iter.codCenco] = iter;
+      return acc;
+    }, <Record<string, any>>{});
 
     const prods = new Set<string>(lineas.map((l) => l.codProdCliente));
     const array = Array.from(prods);
     const errores = [];
     for (let i = 0; i < array.length; i++) {
       const prod = array[i];
-      const p = await service.findByCodCenco(prod);
-      if (p === null) errores.push(`Producto: "${prod}", no encontrado`);
+
+      if (!byCodCenco[prod]) errores.push(`Producto: "${prod}", no encontrado`);
     }
     return errores;
   }
@@ -163,7 +173,7 @@ function mezclarLocales(cliente: Cliente, locales: LocalCrudo[]): void {
     {}
   );
 
-  console.log('cliente.unidades', cliente.unidades);
+  ifDebug('cliente.unidades', cliente.unidades);
 
   const repoLocal = dataSource.getRepository(Local);
 
@@ -177,7 +187,7 @@ function mezclarLocales(cliente: Cliente, locales: LocalCrudo[]): void {
         ({ codigo }) => codigo === localPlanilla.codigo
       );
       if (localActual) return;
-      console.log(`Agregando local ${localPlanilla.nombre}`);
+      ifDebug(`Agregando local ${localPlanilla.nombre}`);
 
       unidad.locales.push(
         repoLocal.create({

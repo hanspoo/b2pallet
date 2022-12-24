@@ -7,6 +7,7 @@ import {
   JoinColumn,
   BeforeInsert,
   ManyToOne,
+  BeforeRemove,
 } from 'typeorm';
 import { LineaDetalle } from './linea-detalle.entity';
 import { Box } from './box.entity';
@@ -45,5 +46,10 @@ export class Producto {
   @BeforeInsert()
   updateDates() {
     this.nombre = this.nombre.trim();
+  }
+
+  @BeforeRemove()
+  antesDeEliminar() {
+    console.log('ELIMINANDO PRODUCTO ' + this.codCenco);
   }
 }
