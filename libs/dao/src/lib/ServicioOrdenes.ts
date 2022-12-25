@@ -27,7 +27,7 @@ FROM "unidad_negocio" unidad_negocio
     INNER JOIN "orden_compra" orden_compra ON unidad_negocio."id" = orden_compra."unidadId"
     INNER JOIN "cliente" cliente ON unidad_negocio."clienteId" = cliente."id"
     INNER JOIN "linea_detalle" linea_detalle ON orden_compra."id" = linea_detalle."ordenCompraId"
-WHERE cliente."empresaId" = 5
+WHERE cliente."empresaId" = ${this.empresa.id}
 GROUP BY cliente."nombre",
     orden_compra."numero",
     orden_compra."id",

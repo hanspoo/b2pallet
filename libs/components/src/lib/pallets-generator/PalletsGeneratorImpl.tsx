@@ -6,7 +6,6 @@ import {
   IPalletConsolidado,
 } from '@flash-ws/api-interfaces';
 import { Button, Spin, Table } from 'antd';
-import axios from 'axios';
 import { useState } from 'react';
 import { GenPalletsOptions } from '../gen-pallets-options/gen-pallets-options';
 import styles from './pallets-generator.module.css';
@@ -81,10 +80,13 @@ export function PalletsGeneratorImpl({
     },
   ];
 
-  function genPallets({ distribuir, nextHU, ordenar }: OpcionesGenPallets) {
+  function genPallets({ distribuir, nextHU, ordenar, protoID }: OpcionesGenPallets) {
+    if (!protoID)
+      throw Error("Falta el palletID")
+
     setGeneracion(StateMachine.EJECUTANDO);
     const args: BodyGenPallets = {
-      protoID: 1,
+      protoID,
       nextHU,
       ordenar,
       distribuir,

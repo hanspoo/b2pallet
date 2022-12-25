@@ -27,7 +27,7 @@ export interface OpcionesGenPallets {
   ordenar: Ordenar;
   tipoHU: TipoHU;
   nextHU: number;
-  protoPallets: IProtoPallet[];
+  protoID: number;
 }
 export type LocalEntry = {
   local: ILocal;

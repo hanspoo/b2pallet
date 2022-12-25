@@ -150,8 +150,8 @@ const GenPalletsOptions = ({
           name="protoID"
           rules={[
             {
-              required: usarHUManual,
-              message: 'Por favor ingrese el tipo de pallet',
+              required: true,
+              message: 'Seleccion tipo de pallet',
             },
           ]}
         >
