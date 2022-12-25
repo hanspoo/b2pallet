@@ -33,6 +33,7 @@ export * from './lib/auth/TokenService';
 export * from './lib/auth/SignupService';
 export * from './lib/ProductosService';
 export * from './lib/utils/crearOrdenHelper';
+export * from './lib/utils/clonar-utils';
 export * from './lib/parser-2.0/OrdenCreator';
 export * from './lib/parser-2.0/ProcesadorPlanilla';
 export * from './lib/parser-2.0/config-campos-cenco';

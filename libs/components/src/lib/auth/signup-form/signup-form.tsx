@@ -112,12 +112,13 @@ export const SignupForm: React.FC<{ cancel: () => void }> = ({ cancel }) => {
 
           <div style={{ textAlign: "center", marginTop: '3em' }}>
             <Form.Item>
-              <Button type="primary" htmlType="submit" >
+              <Button type="primary" htmlType="submit" block>
                 {loading ? <Spin /> : "Enviar"}
               </Button>
-              <Button onClick={cancel} >Cancelar</Button>
+
             </Form.Item>
           </div>
+          <Button block type="link" onClick={cancel} >Volver al inicio</Button>
         </Form>
       </div >
     </Context.Provider>

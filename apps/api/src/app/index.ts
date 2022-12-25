@@ -47,7 +47,7 @@ app.use(
 );
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  if (process.env.DEBUG) console.log(req.url);
+  console.log(req.url);
 
   next();
 });
@@ -71,7 +71,10 @@ const authMiddleware = async function (
 
       return next();
     }
-  } else return res.sendStatus(401);
+  } else {
+    console.log('Petición sin token: ' + req.url);
+    return res.sendStatus(401);
+  }
 };
 
 const greeting: Message = { message: 'Welcome to the api!' };

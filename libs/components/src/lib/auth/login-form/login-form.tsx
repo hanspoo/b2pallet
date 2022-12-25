@@ -125,10 +125,9 @@ export const LoginForm: React.FC = () => {
 
         <div style={{ textAlign: "center" }}>
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ marginRight: '0.1em' }}>
+            <Button block type="primary" htmlType="submit" style={{ marginRight: '0.1em' }}>
               Enviar
             </Button>
-            <Button>Cancelar</Button>
           </Form.Item>
           <Button type="link" onClick={() => setView(View.REGISTER)} >Registrar Gratís</Button>
         </div>

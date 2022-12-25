@@ -44,7 +44,7 @@ export class Box {
     return b;
   }
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Column('decimal', { precision: 5, scale: 2 })
   largo: number;

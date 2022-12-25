@@ -104,14 +104,14 @@ export function UploadOrdenReally({ protoPallets }: UploadOrdenReallyArgs) {
         <form onSubmit={handleSubmit}>
             <Title level={3}>Subir ordenes de compra</Title>
             <div style={{ marginBottom: '1.5em' }}>
-                <label style={labelStyle}>Tipo de Pallet</label>
+                <label style={labelStyle}>Configuración de campos</label>
 
                 <Select
                     style={{ width: 240 }}
                     value={protoPallet}
                     onChange={setProtoPallet}
                     showSearch
-                    placeholder="Seleccione el tipo de pallet"
+                    placeholder="Seleccione lc configuración"
                 >
                     {protoPallets.map((un) => (
                         <Select.Option value={un.id} key={un.id}>{un.nombre}</Select.Option>

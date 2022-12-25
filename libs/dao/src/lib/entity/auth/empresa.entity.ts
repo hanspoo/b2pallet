@@ -1,10 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  Unique,
+} from 'typeorm';
 import { Cliente } from '../cliente.entity';
 import { Producto } from '../producto.entity';
 import { ProtoPallet } from '../proto-pallet.entity';
 import { Usuario } from './usuario.entity';
 
 @Entity()
+@Unique('nombre-empresa', ['nombre']) //
+@Unique('identLegal-empresa', ['identLegal']) //
 export class Empresa {
   agregarCliente(cliente: Cliente) {
     // El salvado en cascade de la empresa le agrega el id al cliente

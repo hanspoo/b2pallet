@@ -18,7 +18,10 @@ const repo = dataSource.getRepository(Producto);
 
 export class ProductoService {
   findAll(): Promise<Array<Producto>> {
-    return repo.find({ relations: { box: true } });
+    return repo.find({
+      where: { empresa: { id: this.empresa.id } },
+      relations: { box: true },
+    });
   }
   statusLines: Array<EntityStatus> = [];
   locales: Array<Local>;
@@ -72,6 +75,7 @@ export class ProductoService {
       if (!p) {
         p = new Producto();
         p.vigente = true;
+        p.empresa = this.empresa;
       }
 
       p.nombre = nombre;
@@ -86,7 +90,6 @@ export class ProductoService {
       box.alto = alto;
 
       p.box = box;
-      p.empresa = this.empresa;
 
       await repo.save(p);
     } else {
@@ -124,10 +127,11 @@ export class ProductoService {
       relations: { box: true },
     });
   }
-  static async findById(id: number): Promise<Producto | null> {
-    return dataSource
-      .getRepository(Producto)
-      .findOne({ where: { id }, relations: { box: true } });
+  async findById(id: number): Promise<Producto | null> {
+    return dataSource.getRepository(Producto).findOne({
+      where: { id, empresa: { id: this.empresa.id } },
+      relations: { box: true },
+    });
   }
   async findByCodigo(codigo: string): Promise<Producto | null> {
     return dataSource.getRepository(Producto).findOne({

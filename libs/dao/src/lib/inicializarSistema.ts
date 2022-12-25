@@ -8,6 +8,9 @@ import { ProtoPallet } from './entity/proto-pallet.entity';
 
 export async function inicializarSistema(): Promise<Empresa> {
   if (!dataSource.isInitialized) await dataSource.initialize();
+  if (process.env['NODE_ENV']?.startsWith('test')) {
+    await dataSource.synchronize(true);
+  }
   const repoEmpresa = dataSource.getRepository(Empresa);
   const e = await repoEmpresa.findOne({ where: { nombre: 'b2pallet' } });
   if (e) {

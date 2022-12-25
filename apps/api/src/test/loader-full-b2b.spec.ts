@@ -14,6 +14,7 @@ import { app } from '../app';
 
 let token: string;
 let archValido: Archivo;
+jest.setTimeout(10000);
 
 const repoArchivo = dataSource.getRepository(Archivo);
 beforeAll(async () => {

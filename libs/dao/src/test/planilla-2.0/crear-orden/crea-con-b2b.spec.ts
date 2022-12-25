@@ -1,7 +1,7 @@
 // process.env.NODE_ENV = 'dev';
 
-import { ProductoService } from '../../../lib/ProductosService';
 import { inicializarSistema } from '../../../lib//inicializarSistema';
+import { ProductoService } from '../../../lib/ProductosService';
 import { OrdenCreator } from '../../../lib//parser-2.0/OrdenCreator';
 import { b2b } from './b2b';
 
@@ -15,6 +15,6 @@ beforeAll(async () => {
   );
 });
 
-it('crear ordenes usando el b2b', async () => {
+it.skip('crear ordenes usando el b2b', async () => {
   await new OrdenCreator(empresa).fromProcesador(b2b);
 });

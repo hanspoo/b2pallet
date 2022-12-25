@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Form, Input, Button, Radio, Spin } from 'antd';
+import { Form, Input, Button, Radio, Spin, Select } from 'antd';
 import styles from './gen-pallets-options.module.css';
 
 import { OpcionesGenPallets } from '../pallets-generator/pallets-generator';
-import { TipoHU, Distribuir, Ordenar } from '@flash-ws/api-interfaces';
+import { TipoHU, Distribuir, Ordenar, IProtoPallet } from '@flash-ws/api-interfaces';
 import { capitalize } from '@flash-ws/shared';
+import { useHttpClient } from '../useHttpClient';
+import { AsyncStatus, AsyncState } from '../async-help';
 import axios from 'axios';
 
 const ID_CLIENTE = 1;
@@ -13,26 +15,43 @@ const GenPalletsOptions = ({
   genPallets,
 }: {
   genPallets: (options: OpcionesGenPallets) => void;
+
 }) => {
-  const [nextHU, setNextHU] = useState<number>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const httpClient = useHttpClient()
+  const [protoStatus, setProtoStatus] = useState<AsyncStatus<IProtoPallet[]>>({ state: AsyncState.RUNNING });
+  const [nextHURequest, setNextHURequest] = useState<AsyncStatus<number>>({ state: AsyncState.RUNNING });
   const [usarHUManual, setHUManual] = useState(false);
 
+
   useEffect(() => {
-    axios
+    httpClient
       .get<{ hu: number }>(
         `${process.env['NX_SERVER_URL']}/api/clientes/${ID_CLIENTE}/ultima-hu`
       )
       .then((response) => {
-        setNextHU(response.data.hu + 1);
-        setLoading(false);
+        setNextHURequest({ state: AsyncState.OK, data: response.data.hu + 1 });
       })
       .catch((error) => {
-        setError(error.message);
-        setLoading(false);
+        setNextHURequest({ state: AsyncState.ERROR, msg: error.message });
+      });
+    httpClient
+      .get<IProtoPallet[]>(`${process.env['NX_SERVER_URL']}/api/proto-pallets`)
+      .then((response) => {
+        setProtoStatus({ state: AsyncState.OK, data: response.data });
+      })
+      .catch((ex) => {
+        const error = axios.isCancel(ex)
+          ? 'Request Cancelled'
+          : ex.code === 'ECONNABORTED'
+            ? 'A timeout has occurred'
+            : ex.response.status === 404
+              ? 'Resource Not Found'
+              : 'An unexpected error has occurred';
+
+        setProtoStatus({ state: AsyncState.ERROR, msg: error });
       });
   }, []);
+
   const onValuesChange = ({ tipoHU }: { tipoHU: TipoHU }) => {
     if (tipoHU) setHUManual(tipoHU === TipoHU.MANUAL);
   };
@@ -44,8 +63,13 @@ const GenPalletsOptions = ({
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
-  if (loading) return <Spin size="small" />;
-  if (error) return <p>{error}</p>;
+  if (nextHURequest.state === AsyncState.RUNNING) return <Spin />;
+  if (nextHURequest.state === AsyncState.ERROR) return <p>Error: {nextHURequest?.msg}</p>;
+  if (!nextHURequest.data) return <p>Estado inválido no hay HU</p>;
+
+  if (protoStatus.state === AsyncState.RUNNING) return <Spin />;
+  if (protoStatus.state === AsyncState.ERROR) return <p>Error: {protoStatus?.msg}</p>;
+  if (!protoStatus.data) return <p>Estado inválido no hay protoPallets</p>;
 
   return (
     <div className={styles['container']}>
@@ -54,7 +78,7 @@ const GenPalletsOptions = ({
         onFinishFailed={onFinishFailed}
         layout="vertical"
         initialValues={{
-          nextHU,
+          nextHU: nextHURequest.data,
           distribuir: Distribuir.HORIZONTAL,
           ordenar: Ordenar.PESO,
           tipoHU: TipoHU.AUTOMATICA,
@@ -120,6 +144,26 @@ const GenPalletsOptions = ({
           ]}
         >
           <Input disabled={!usarHUManual} />
+        </Form.Item>
+        <Form.Item
+          label="Tipo de pallet"
+          name="protoID"
+          rules={[
+            {
+              required: usarHUManual,
+              message: 'Por favor ingrese el tipo de pallet',
+            },
+          ]}
+        >
+          <Select
+            style={{ width: 240 }}
+            placeholder="Seleccione el tipo de pallet"
+          >
+            {protoStatus.data.map((un) => (
+              <Select.Option value={un.id} key={un.id}>{un.nombre}</Select.Option>
+            ))}
+          </Select>
+
         </Form.Item>
         <div style={{ marginBottom: '1em' }}>
           <div>

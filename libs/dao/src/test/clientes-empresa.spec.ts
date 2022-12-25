@@ -2,18 +2,21 @@ import { Repository } from 'typeorm';
 import { dataSource } from '../lib/data-source';
 import { Cliente } from '../lib/entity/cliente.entity';
 import { Empresa } from '../lib/entity/auth/empresa.entity';
-import { inicializarCencosud } from '../lib/inicializarCencosud';
 
 let cli1: Cliente, cli2: Cliente, cli3: Cliente, e1: Empresa, e2: Empresa;
 let repoCli: Repository<Cliente>, repoEmpresa: Repository<Empresa>;
 
 beforeAll(async () => {
-  await inicializarCencosud();
   repoCli = dataSource.getRepository(Cliente);
   repoEmpresa = dataSource.getRepository(Empresa);
+  if (!dataSource.isInitialized) await dataSource.initialize();
 });
 beforeEach(async () => {
-  //   repoEmpresa.clear();
+  await repoEmpresa.query('delete from proto_pallet');
+  await repoEmpresa.query('delete from token');
+  await repoEmpresa.query('delete from usuario');
+  await repoEmpresa.query('delete from cliente');
+  await repoEmpresa.query('delete from empresa');
   cli1 = repoCli.create({ nombre: 'Europa', identLegal: '1-9' });
   cli2 = repoCli.create({ nombre: 'Europa', identLegal: '1-9' });
   cli3 = repoCli.create({ nombre: 'Calisto', identLegal: '2-7' });

@@ -16,28 +16,25 @@ export class ServicioOrdenes {
   async ordenes(): Promise<IOrdenConsolidada[]> {
     if (!this.empresa) throw Error('Este servicio require la empresa');
     const sql = `
-    SELECT
-    sum(linea_detalle."cantidad") AS cajas,
-    cliente."nombre" AS cliente,
+    SELECT sum(linea_detalle."cantidad") AS cajas,
     orden_compra."numero" AS numero,
-    orden_compra."id" AS id,
     orden_compra."emision" AS emision,
-    orden_compra."entrega" AS entrega
-FROM
-    "orden_compra" orden_compra INNER JOIN "linea_detalle" linea_detalle ON orden_compra."id" = linea_detalle."ordenCompraId"
-    INNER JOIN cliente cliente ON orden_compra."clienteId" = cliente."id"
-    INNER JOIN empresa ON cliente."empresaId" = empresa."id"
-
-WHERE
-empresa."id" = ${this.empresa.id}    
-GROUP BY
-    cliente."nombre",
+    orden_compra."entrega" AS entrega,
+    unidad_negocio."nombre" AS unidad,
+    cliente."nombre" AS cliente,
+    orden_compra."id" AS id
+FROM "unidad_negocio" unidad_negocio
+    INNER JOIN "orden_compra" orden_compra ON unidad_negocio."id" = orden_compra."unidadId"
+    INNER JOIN "cliente" cliente ON unidad_negocio."clienteId" = cliente."id"
+    INNER JOIN "linea_detalle" linea_detalle ON orden_compra."id" = linea_detalle."ordenCompraId"
+WHERE cliente."empresaId" = 5
+GROUP BY cliente."nombre",
     orden_compra."numero",
     orden_compra."id",
     orden_compra."emision",
-    orden_compra."entrega"
-ORDER BY
-    orden_compra."emision" ASC
+    orden_compra."entrega",
+    unidad
+ORDER BY orden_compra."emision" ASC
   `;
 
     const queryRunner = dataSource.createQueryRunner();

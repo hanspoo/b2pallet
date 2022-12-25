@@ -1,4 +1,10 @@
-import { dataSource, Empresa, inicializarCencosud, ProductoService } from '..';
+import {
+  dataSource,
+  Empresa,
+  inicializarCencosud,
+  ProductoService,
+  SignupService,
+} from '..';
 import { StatusCode } from '../lib/StatusCode';
 
 jest.setTimeout(20000);
@@ -25,6 +31,21 @@ describe('carga productos', () => {
     );
 
     expect(result.length).toBe(1);
+  });
+  it('cada empresa tiene su propia base de datos de productos', async () => {
+    await new ProductoService(empresa).cargarPlanilla(
+      'fixtures/producto-1647753.xlsx'
+    );
+
+    const e2 = await crearEmpresaRandom();
+    await new ProductoService(e2).cargarPlanilla(
+      'fixtures/producto-1647753.xlsx'
+    );
+
+    expect(e2).not.toEqual(empresa);
+
+    expect((await new ProductoService(empresa).findAll()).length).toBe(1);
+    expect((await new ProductoService(e2).findAll()).length).toBe(1);
   });
   it('hay un producto valido, retorna una línea de status valido', async () => {
     const result = await new ProductoService(empresa).cargarPlanilla(
@@ -106,3 +127,12 @@ describe('carga productos', () => {
     expect(productos.length).toBe(134);
   });
 });
+async function crearEmpresaRandom(): Promise<Empresa> {
+  const nombre = 'abc',
+    email = 'x@c.com',
+    password = '123';
+  const service = new SignupService({ empresa, nombre, email, password });
+  const e = await service.execute();
+
+  return e;
+}

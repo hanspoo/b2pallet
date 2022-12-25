@@ -13,6 +13,7 @@ import { UnidadNegocio } from './unidad-negocio.entity';
 
 @Entity()
 @Unique('en-misma-empresa-nombre-dup', ['nombre', 'empresa.id']) //
+@Unique('en-misma-empresa-idente-legal-dup', ['identLegal', 'empresa.id']) //
 export class Cliente {
   @PrimaryGeneratedColumn()
   id: number;

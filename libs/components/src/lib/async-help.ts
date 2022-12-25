@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Spin } from 'antd';
-import {
-  IProtoPallet,
-} from '@flash-ws/api-interfaces';
+/**
+ * Hace más breve el manenjo de estado de peticiones asincrónicas
+ */
+export enum AsyncState {
+  NADA,
+  RUNNING,
+  ERROR,
+  OK,
+}
 
-import { UploadOrdenReally } from './UploadOrdenReally';
-import { useHttpClient } from '../useHttpClient';
-import { AsyncStatus, AsyncState } from '../async-help';
+export interface AsyncStatus<T> {
+  state: AsyncState;
+  msg?: string;
+  data?: T;
+}
 
-
-
-const UploadOrden = () => {
+/**
+ * Ejemplo de uso 
+ * 
+ * const UploadOrden = () => {
 
 
   const httpClient = useHttpClient();
@@ -45,6 +51,4 @@ const UploadOrden = () => {
 
   return <UploadOrdenReally protoPallets={protoStatus.data} />;
 };
-
-
-export { UploadOrden };
+ */

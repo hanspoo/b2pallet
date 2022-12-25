@@ -4,13 +4,13 @@ import {
   ILocal,
   IOrdenCompra,
   IPalletConsolidado,
+  IProtoPallet,
   Ordenar,
   TipoHU,
 } from '@flash-ws/api-interfaces';
 import { capitalize } from '@flash-ws/shared';
 
 import { Button, Radio, Spin } from 'antd';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import PalletsIcono from '../pallets-icono/pallets-icono';
 import Pallets from '../pallets/pallets';
@@ -27,6 +27,7 @@ export interface OpcionesGenPallets {
   ordenar: Ordenar;
   tipoHU: TipoHU;
   nextHU: number;
+  protoPallets: IProtoPallet[];
 }
 export type LocalEntry = {
   local: ILocal;
