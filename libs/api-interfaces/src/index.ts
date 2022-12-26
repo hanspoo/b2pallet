@@ -5,6 +5,11 @@ export * from './lib/EstadoLinea';
 export * from './lib/BodyCambioEstadoProdConsolidada';
 export * from './lib/OrdenesResponseInvalid';
 
+export * from './lib/model/campos/ifields-mapper';
+export * from './lib/model/campos/TipoPlanilla';
+export * from './lib/model/campos/Campo';
+export * from './lib/model/campos/ifield-map';
+
 export * from './lib/model/iarchivo.entity';
 export * from './lib/model/ibox.entity';
 export * from './lib/model/icliente.entity';

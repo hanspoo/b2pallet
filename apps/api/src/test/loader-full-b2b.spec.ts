@@ -42,6 +42,7 @@ describe('loader nuevo de ordenes', () => {
   it('planilla válida, crea la orden (1)', async () => {
     const data: LoaderPostBody = {
       idArchivo: archValido.id,
+      idFieldsMapper: 1,
     };
     const res = await request(app)
       .post('/api/loader/subir')

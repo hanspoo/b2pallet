@@ -9,6 +9,8 @@ import { Usuario } from './entity/auth/usuario.entity';
 import { LoginService } from './auth/LoginService';
 import { ProtoPallet } from './entity/proto-pallet.entity';
 import { PassService } from './auth/PassService';
+import { TipoPlanilla, Campo } from '@flash-ws/api-interfaces';
+import { FieldsMapper } from './entity/campos/FieldsMapper';
 
 export const obtainToken = async () => {
   const [isOk, token] = await new LoginService().login(
@@ -22,6 +24,31 @@ export const obtainToken = async () => {
 
 export const CODIGO_PROD = 'DRBIO-00634';
 export const PRODUCTO_CENCO_TEST = '1647753';
+
+function mapaCenco(): FieldsMapper {
+  const mapper = dataSource.getRepository(FieldsMapper).create({
+    nombre: 'Campos en b2b Cencosud Estándar',
+    campos: [],
+    tipo: TipoPlanilla.B2B,
+  });
+
+  mapper.addCampo(Campo.IDENT_LEGAL, 3);
+  mapper.addCampo(Campo.NOMBRE_CLIENTE, 4);
+  mapper.addCampo(Campo.UNIDAD_NEGOCIO, 37);
+
+  mapper.addCampo(Campo.COD_LOCAL, 13);
+  mapper.addCampo(Campo.NOMBRE_LOCAL, 14);
+
+  mapper.addCampo(Campo.COD_CENCOSUD, 16);
+  mapper.addCampo(Campo.COD_PRODUCTO, 17);
+  mapper.addCampo(Campo.CANTIDAD, 23);
+
+  mapper.addCampo(Campo.NUM_ORDEN, 1);
+  mapper.addCampo(Campo.FEC_EMISION, 7);
+  mapper.addCampo(Campo.FEC_ENTREGA, 8);
+
+  return mapper;
+}
 
 export async function inicializarCencosud(): Promise<Cliente> {
   if (!dataSource.isInitialized) await dataSource.initialize();
@@ -60,6 +87,7 @@ export async function inicializarCencosud(): Promise<Cliente> {
   const e = await repoEmpresa.save(
     repoEmpresa.create({
       nombre: 'b2pallet',
+      fieldMappers: [mapaCenco()],
     })
   );
 

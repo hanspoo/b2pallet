@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Button, Select, Spin } from 'antd';
 import {
     IArchivo,
+    IFieldsMapper,
     IOrdenCompra, IProtoPallet, LoaderPostBody, SubirOrdenBody
 } from '@flash-ws/api-interfaces';
 import { OrdenesResponseInvalid } from '@flash-ws/api-interfaces';
@@ -13,6 +14,7 @@ import { useHttpClient } from '../useHttpClient';
 
 export type UploadOrdenReallyArgs = {
     protoPallets: IProtoPallet[];
+    fieldsMapper: IFieldsMapper[]
 };
 
 const labelStyle = {
@@ -21,17 +23,17 @@ const labelStyle = {
     marginBottom: '0.5em',
 };
 
-export function UploadOrdenReally({ protoPallets }: UploadOrdenReallyArgs) {
+export function UploadOrdenReally({ protoPallets, fieldsMapper }: UploadOrdenReallyArgs) {
     const httpClient = useHttpClient()
     const [archivo, setArchivo] = useState<IArchivo>();
+    const [idFieldsMapper, setIdFieldsMapper] = useState<number>();
     const [loading, setLoading] = useState(false);
     const [limpiando, setLimpiando] = useState(false);
     const [error, setError] = useState<OrdenesResponseInvalid>();
     const [ordenes, setOrdenes] = useState<number[]>();
-    const [protoPallet, setProtoPallet] = useState<number>();
 
     const handleSubmit = async (event: any) => {
-        if (!protoPallet)
+        if (!idFieldsMapper)
             throw Error('No está definida la protoPallet de negocio');
         if (!archivo)
             throw Error('No está definido el archivo');
@@ -40,6 +42,7 @@ export function UploadOrdenReally({ protoPallets }: UploadOrdenReallyArgs) {
         event.preventDefault();
         const params: LoaderPostBody = {
             idArchivo: archivo.id,
+            idFieldsMapper
         };
         httpClient
             .post<IOrdenCompra>(
@@ -63,7 +66,7 @@ export function UploadOrdenReally({ protoPallets }: UploadOrdenReallyArgs) {
         setOrdenes(undefined);
         setLimpiando(true);
         setTimeout(() => setLimpiando(false), 1000);
-        setProtoPallet(undefined);
+        setIdFieldsMapper(undefined);
     };
     if (loading)
         return <Spin />;
@@ -108,13 +111,13 @@ export function UploadOrdenReally({ protoPallets }: UploadOrdenReallyArgs) {
 
                 <Select
                     style={{ width: 240 }}
-                    value={protoPallet}
-                    onChange={setProtoPallet}
+                    value={idFieldsMapper}
+                    onChange={setIdFieldsMapper}
                     showSearch
                     placeholder="Seleccione lc configuración"
                 >
-                    {protoPallets.map((un) => (
-                        <Select.Option value={un.id} key={un.id}>{un.nombre}</Select.Option>
+                    {fieldsMapper.map((fm) => (
+                        <Select.Option value={fm.id} key={fm.id}>{fm.nombre}</Select.Option>
                     ))}
                 </Select>
             </div>
@@ -128,7 +131,7 @@ export function UploadOrdenReally({ protoPallets }: UploadOrdenReallyArgs) {
             <Button
                 type="primary"
                 htmlType="submit"
-                disabled={!(protoPallet && archivo)}
+                disabled={!(idFieldsMapper && archivo)}
                 style={{ marginRight: '0.25em' }}
             >
                 Enviar

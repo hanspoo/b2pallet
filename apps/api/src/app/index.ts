@@ -17,6 +17,7 @@ import { pallets } from './routers/pallets';
 import { clientes } from './routers/clientes';
 import { archivos } from './routers/archivos';
 import { TokenService } from '@flash-ws/dao';
+import { fieldsMappers } from './routers/fields-mappers';
 
 type ReqWithSession = Request<
   unknown,
@@ -103,5 +104,6 @@ app.use('/api/locales', locales);
 app.use('/api/clientes', clientes);
 app.use('/api/pallets', pallets);
 app.use('/api/proto-pallets', authMiddleware, protoPallets);
+app.use('/api/fields-mappers', authMiddleware, fieldsMappers);
 
 export { app };

@@ -42,7 +42,7 @@ export class OrdenCreator {
     const repoUnidad = dataSource.getRepository(UnidadNegocio);
     let cliente = await repoCliente.findOne({
       relations: ['unidades', 'unidades.locales', 'ordenes'],
-      where: { identLegal },
+      where: { identLegal, empresa: { id: this.empresa.id } },
     });
 
     if (cliente) {

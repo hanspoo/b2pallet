@@ -16,6 +16,8 @@ import { Archivo } from './entity/archivo.entity';
 import { Empresa } from './entity/auth/empresa.entity';
 import { Token } from './entity/auth/token.entity';
 import { Usuario } from './entity/auth/usuario.entity';
+import { FieldsMapper } from './entity/campos/FieldsMapper';
+import { FieldMap } from './entity/campos/FieldMap';
 
 const LOGGING = !!process.env['DEBUG_DB'] || false;
 const testEnv = 'test';
@@ -47,6 +49,8 @@ const dataSource = new DataSource({
     Empresa,
     Usuario,
     Token,
+    FieldsMapper,
+    FieldMap,
   ],
   logging: LOGGING,
   synchronize: true,

@@ -34,6 +34,7 @@ describe('loader nuevo de ordenes', () => {
   it('archivo no viene o inválido lanza error 400', async () => {
     const data: LoaderPostBody = {
       idArchivo: null,
+      idFieldsMapper: 1,
     };
     const res = await request(app)
       .post('/api/loader/subir')
@@ -45,6 +46,7 @@ describe('loader nuevo de ordenes', () => {
   it('archivo id inválido lanza error 400', async () => {
     const data: LoaderPostBody = {
       idArchivo: 9999999,
+      idFieldsMapper: 1,
     };
     const res = await request(app)
       .post('/api/loader/subir')
@@ -56,6 +58,7 @@ describe('loader nuevo de ordenes', () => {
   it('archivo inválido lanza error 400', async () => {
     const data: LoaderPostBody = {
       idArchivo: archInvalido.id,
+      idFieldsMapper: 1,
     };
     const res = await request(app)
       .post('/api/loader/subir')
@@ -67,6 +70,7 @@ describe('loader nuevo de ordenes', () => {
   it('planilla válida, crea la orden (2)', async () => {
     const data: LoaderPostBody = {
       idArchivo: archValido.id,
+      idFieldsMapper: 1,
     };
     const res = await request(app)
       .post('/api/loader/subir')

@@ -7,11 +7,13 @@ import { useEffect, useState } from 'react';
 import { useHttpClient } from '../../useHttpClient';
 import { Me } from '@flash-ws/api-interfaces';
 import axios from 'axios';
+import { useQueryClient } from '@tanstack/react-query';
 
 /* eslint-disable-next-line */
 export interface LoginStateProps { }
 
 export function LoginState(props: LoginStateProps) {
+  const queryClient = useQueryClient();
   const httpClient = useHttpClient();
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -44,6 +46,7 @@ export function LoginState(props: LoginStateProps) {
 
   const onLogout = () => {
     dispatch(logout())
+    queryClient.invalidateQueries();
   }
 
   if (loading)

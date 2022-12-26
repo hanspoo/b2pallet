@@ -1,8 +1,9 @@
 import { dataSource } from '../data-source';
 import { Empresa } from '../entity/auth/empresa.entity';
 import { Usuario } from '../entity/auth/usuario.entity';
+import { FieldsMapper } from '../entity/campos/FieldsMapper';
 import { ProtoPallet } from '../entity/proto-pallet.entity';
-import { clonarProtos } from '../utils/clonar-utils';
+import { clonarMappers, clonarProtos } from '../utils/clonar-utils';
 import { PassService } from './PassService';
 
 export type SignupArgs = {
@@ -21,19 +22,31 @@ export class SignupService {
   async execute(): Promise<Empresa> {
     const repoEmpresa = dataSource.getRepository(Empresa);
     const repoProto = dataSource.getRepository(ProtoPallet);
+    const repoFieldsMapper = dataSource.getRepository(FieldsMapper);
+
     const protoPallets = await repoProto.find({
       where: { empresa: { id: 1 } },
       relations: ['box'],
     });
-    console.log('protoPallets' + ' ' + JSON.stringify(protoPallets));
+
     if (!protoPallets) throw Error('Error al recupera los proto pallets');
     if (protoPallets.length === 0)
       throw Error('Error, no hay proto pallets en empresa 1');
+
+    const fieldsMappers = await repoFieldsMapper.find({
+      where: { empresa: { id: 1 } },
+      relations: ['campos'],
+    });
+
+    if (!fieldsMappers) throw Error('Error al recupera los field mappers');
+    if (fieldsMappers.length === 0)
+      throw Error('Error, no hay field mappers en empresa 1');
 
     const e = await repoEmpresa.save(
       repoEmpresa.create({
         nombre: this.empresa,
         protoPallets: clonarProtos(protoPallets),
+        fieldMappers: clonarMappers(fieldsMappers),
       })
     );
 

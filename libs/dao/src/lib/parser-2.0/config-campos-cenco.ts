@@ -1,7 +1,9 @@
-import { Campo } from './Campo';
-import { ConfigPLanilla } from './ConfigPlanilla';
+import { Campo } from '@flash-ws/api-interfaces';
+import { FieldsMapper } from '../entity/campos/FieldsMapper';
 
-const configCenco = new ConfigPLanilla('Gargola S.A.');
+const configCenco = new FieldsMapper();
+configCenco.nombre = 'Gargola S.A.';
+configCenco.campos = [];
 
 configCenco.addCampo(Campo.IDENT_LEGAL, 3);
 configCenco.addCampo(Campo.NOMBRE_CLIENTE, 4);

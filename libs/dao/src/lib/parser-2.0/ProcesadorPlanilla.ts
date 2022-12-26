@@ -1,8 +1,7 @@
 import { Cliente } from '../../lib/entity/cliente.entity';
 import { OrdenCompra } from '../entity/orden-compra.entity';
-
-import { Campo } from './Campo';
-import { ConfigPLanilla } from './ConfigPlanilla';
+import { FieldsMapper } from '../entity/campos/FieldsMapper';
+import { Campo } from '@flash-ws/api-interfaces';
 
 type Sheet = { name: string; data: unknown[] };
 export type LineaCruda = {
@@ -20,7 +19,12 @@ export type LocalCrudo = {
 };
 
 export class ProcesadorPlanilla {
-  constructor(public config: ConfigPLanilla) {}
+  constructor(public config: FieldsMapper) {
+    if (!config) throw Error('No viene el mapeador de campos');
+    if (!config.campos)
+      throw Error('El mapeador no tiene definidos los campos');
+    if (config.campos.length === 0) throw Error('El mapeador no tiene campos');
+  }
   pos(campo: Campo): number {
     const cc = this.config.campos.find((f) => f.campo === campo);
     if (!cc)

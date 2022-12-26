@@ -5,6 +5,9 @@ export * from './lib/dao';
 export * from './lib/data-source';
 export * from './lib/inicializarSistema';
 
+export * from './lib/entity/campos/FieldsMapper';
+export * from './lib/entity/campos/FieldMap';
+
 export * from './lib/entity/auth/token.entity';
 export * from './lib/entity/auth/empresa.entity';
 export * from './lib/entity/auth/usuario.entity';

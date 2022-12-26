@@ -5,6 +5,8 @@ import {
   OneToMany,
   Unique,
 } from 'typeorm';
+import { FieldsMapper } from '../campos/FieldsMapper';
+
 import { Cliente } from '../cliente.entity';
 import { Producto } from '../producto.entity';
 import { ProtoPallet } from '../proto-pallet.entity';
@@ -14,6 +16,11 @@ import { Usuario } from './usuario.entity';
 @Unique('nombre-empresa', ['nombre']) //
 @Unique('identLegal-empresa', ['identLegal']) //
 export class Empresa {
+  @OneToMany(() => FieldsMapper, (prod) => prod.empresa, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  fieldMappers: FieldsMapper[];
   agregarCliente(cliente: Cliente) {
     // El salvado en cascade de la empresa le agrega el id al cliente
     if (

@@ -5,8 +5,8 @@ import {
   dataSource,
   Archivo,
   ProcesadorPlanilla,
-  configCenco,
   OrdenCreator,
+  FieldsMapper,
 } from '@flash-ws/dao';
 import express, { Request, Response } from 'express';
 
@@ -41,9 +41,26 @@ loader.post(
       return res.status(400).send({ msg });
     }
 
+    const { idFieldsMapper } = req.body;
+
+    if (!idFieldsMapper) {
+      return res
+        .status(400)
+        .send({ msg: 'LDR011: No viene el id del fieldsMapper' });
+    }
+
+    const fieldsMapper = await dataSource
+      .getRepository(FieldsMapper)
+      .findOne({ where: { id: idFieldsMapper }, relations: ['campos'] });
+    if (!fieldsMapper) {
+      return res
+        .status(400)
+        .send({ msg: `LDR010: Fields mapper ${idFieldsMapper} no encontrado` });
+    }
+
     const ws = xlsx.parse(archivo.path);
 
-    const procesador = new ProcesadorPlanilla(configCenco);
+    const procesador = new ProcesadorPlanilla(fieldsMapper);
 
     const result = await procesador.procesar(ws[0]);
     if (result.ordenes.length === 0)

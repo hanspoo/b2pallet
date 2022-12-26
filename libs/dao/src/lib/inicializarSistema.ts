@@ -1,10 +1,37 @@
+import { Campo, TipoPlanilla } from '@flash-ws/api-interfaces';
 import { PassService } from './auth/PassService';
 import { dataSource } from './data-source';
 import { Empresa } from './entity/auth/empresa.entity';
 import { Usuario } from './entity/auth/usuario.entity';
 import { Box } from './entity/box.entity';
+import { FieldsMapper } from './entity/campos/FieldsMapper';
 import { Producto } from './entity/producto.entity';
 import { ProtoPallet } from './entity/proto-pallet.entity';
+
+function mapaCenco(): FieldsMapper {
+  const mapper = dataSource.getRepository(FieldsMapper).create({
+    nombre: 'Campos en b2b Cencosud Estándar',
+    campos: [],
+    tipo: TipoPlanilla.B2B,
+  });
+
+  mapper.addCampo(Campo.IDENT_LEGAL, 3);
+  mapper.addCampo(Campo.NOMBRE_CLIENTE, 4);
+  mapper.addCampo(Campo.UNIDAD_NEGOCIO, 37);
+
+  mapper.addCampo(Campo.COD_LOCAL, 13);
+  mapper.addCampo(Campo.NOMBRE_LOCAL, 14);
+
+  mapper.addCampo(Campo.COD_CENCOSUD, 16);
+  mapper.addCampo(Campo.COD_PRODUCTO, 17);
+  mapper.addCampo(Campo.CANTIDAD, 23);
+
+  mapper.addCampo(Campo.NUM_ORDEN, 1);
+  mapper.addCampo(Campo.FEC_EMISION, 7);
+  mapper.addCampo(Campo.FEC_ENTREGA, 8);
+
+  return mapper;
+}
 
 export async function inicializarSistema(): Promise<Empresa> {
   if (!dataSource.isInitialized) await dataSource.initialize();
@@ -21,6 +48,10 @@ export async function inicializarSistema(): Promise<Empresa> {
   const empresa = await crearEmpresa();
   const protoPallet = await crearProtoPallet();
   empresa.protoPallets = [protoPallet];
+  const fm = mapaCenco();
+  fm.empresa = empresa;
+
+  empresa.fieldMappers = [fm];
 
   return repoEmpresa.save(empresa);
 }

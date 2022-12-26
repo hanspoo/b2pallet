@@ -58,7 +58,7 @@ export function TablaLineas({ orden, recargar }: TablaLineasProps) {
         ? findProd(linea.productoId)
         : undefined;
       const local = linea.localId ? findLocal(linea.localId) : undefined;
-      if (!(producto && local)) throw Error(`producto o local no encontrado`);
+      if (!(producto && local)) throw Error(`producto ${linea.productoId} o local ${linea.localId} no encontrado`);
       return {
         ...linea,
         producto,
