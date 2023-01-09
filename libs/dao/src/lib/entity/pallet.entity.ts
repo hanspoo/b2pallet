@@ -22,7 +22,7 @@ export class Pallet {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   hu?: number;
 
   @ManyToOne(() => OrdenCompra, (orden) => orden.pallets, {

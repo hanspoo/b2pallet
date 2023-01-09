@@ -1,0 +1,92 @@
+import { jsPDF } from 'jspdf';
+import { EtiquetaPallet } from './EtiquetaPallet';
+import { dataSource, OrdenCompra } from '@flash-ws/dao';
+import { randomBytes } from 'crypto';
+import { PDFDocument } from 'pdf-lib';
+import { epBarcode } from './epBarcode';
+
+export class EtiquetasService {
+  async genPdf(etiPallets: EtiquetaPallet[]): Promise<string> {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'cm',
+      format: [10, 10],
+    });
+    doc.setFontSize(14);
+
+    const barcodes = await Promise.all(
+      etiPallets.map((ep) => {
+        return epBarcode({ ep });
+      })
+    );
+    etiPallets.forEach((ep, i) => {
+      if (i > 0) doc.addPage();
+
+      if (!ep['identLegal'])
+        throw Error(`No viene identlegal en etipallet` + JSON.stringify(ep));
+
+      doc.text(ep.identLegal, 1, 1);
+      // doc.text(ep.codLocal, 1, 2);
+      // doc.text(ep.hu + '', 1, 3);
+      // doc.text(ep.vendedor, 1, 4);
+
+      // fs.writeFileSync('/tmp/xxx.png', barcodes[i]);
+
+      doc.addImage(
+        `data:image/png;base64,${barcodes[i].toString('base64')}`,
+        'png',
+        1,
+        2,
+        5,
+        5
+      );
+    });
+
+    const fileName = `/tmp/` + randomBytes(6).toString('hex') + '.pdf';
+    doc.save(fileName);
+
+    return fileName;
+  }
+
+  async etiquetasPallets(): Promise<EtiquetaPallet[]> {
+    const sql = `
+SELECT
+     empresa."identLegal" AS "identLegal",
+     empresa."nombre" AS "vendedor",
+     local."nombre" AS "local",
+     local."codigo" AS "codLocal",
+     pallet."hu" AS "hu"
+FROM
+     "local" local INNER JOIN "pallet" pallet ON local."id" = pallet."localId"
+     INNER JOIN "orden_compra" orden_compra ON pallet."ordenCompraId" = orden_compra."id"
+     INNER JOIN "cliente" cliente ON orden_compra."clienteId" = cliente."id"
+     INNER JOIN "empresa" empresa ON cliente."empresaId" = empresa."id"
+WHERE
+    orden_compra."id" = '${this.orden.id}'
+     `;
+
+    const queryRunner = dataSource.createQueryRunner();
+    const rows: Array<EtiquetaPallet> = await queryRunner.manager.query(sql);
+
+    queryRunner.release();
+
+    return rows;
+  }
+  constructor(public orden: OrdenCompra) {}
+}
+
+async function mergePDFDocuments(pdfsToMerges: ArrayBuffer[]) {
+  const mergedPdf = await PDFDocument.create();
+  const actions = pdfsToMerges.map(async (pdfBuffer) => {
+    const pdf = await PDFDocument.load(pdfBuffer);
+    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+    copiedPages.forEach((page) => {
+      // console.log('page', page.getWidth(), page.getHeight());
+      // page.setWidth(210);
+      mergedPdf.addPage(page);
+    });
+  });
+  await Promise.all(actions);
+  const mergedPdfFile = await mergedPdf.save();
+  return mergedPdfFile;
+}

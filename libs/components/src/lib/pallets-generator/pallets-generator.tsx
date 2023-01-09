@@ -4,7 +4,6 @@ import {
   ILocal,
   IOrdenCompra,
   IPalletConsolidado,
-  IProtoPallet,
   Ordenar,
   TipoHU,
 } from '@flash-ws/api-interfaces';
@@ -41,7 +40,8 @@ enum VistaPallets {
   // ARBOL = 'ARBOL',
 }
 export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
-  const httpClient = useHttpClient()
+  const [urlEtiquetas, setUrlEtiquetas] = useState<string>();
+  const httpClient = useHttpClient();
   const [vistaPallets, setVistaPallets] = useState<VistaPallets>(
     VistaPallets.ICONO
   );
@@ -81,10 +81,33 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
     );
   }
 
+  function generarEtiquetas() {
+    httpClient
+      .get(`${process.env['NX_SERVER_URL']}/api/ordenes/${orden.id}/etiquetas`)
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        setUrlEtiquetas(url);
+      })
+      .catch((error) => console.log(error));
+  }
+
   return (
     <div>
       <div style={{ marginBottom: '1.5em', marginTop: '1.5em' }}>
         <SelectorVistaPallets vista={vistaPallets} setVista={setVistaPallets} />
+        <Button
+          href={`${process.env['NX_SERVER_URL']}/api/files/${orden.id}/etiquetas`}
+        >
+          Etiquetas
+        </Button>
+
+        {/* {urlEtiquetas ? (
+          <Button target="_blank" href={urlEtiquetas}>
+            Descargar
+          </Button>
+        ) : (
+          <Button onClick={generarEtiquetas}>Generar etiquetas</Button>
+        )} */}
         <Button
           style={{ float: 'right' }}
           onClick={() => setMostrarGenerador(true)}

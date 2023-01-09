@@ -1,8 +1,11 @@
-import { IOrdenConsolidada } from '@flash-ws/api-interfaces';
+import { IOrdenConsolidada, IProducto } from '@flash-ws/api-interfaces';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Spin, Table, Input } from 'antd';
 
 import { useEffect, useState } from 'react';
 import { formatNumber } from '../front-utils';
+import productos from '../productos/productos';
+
 import { useHttpClient } from '../useHttpClient';
 
 import styles from './ordenes-consolidadas.module.css';
@@ -16,6 +19,9 @@ export interface OrdenesConsolidadasProps {
 const { Search } = Input;
 
 export function OrdenesConsolidadas(props: OrdenesConsolidadasProps) {
+  const queryClient = useQueryClient();
+
+
   const httpClient = useHttpClient();
   const [error, setError] = useState('');
   const [borradas, setBorradas] = useState(false);
@@ -35,7 +41,11 @@ export function OrdenesConsolidadas(props: OrdenesConsolidadasProps) {
         setError(error.message);
         setLoading(false);
       });
+
   }, []);
+  const productos = queryClient.getQueryData<Array<IProducto>>([
+    'productos',
+  ]) as Array<IProducto>;
 
   const columns = [
     {
@@ -132,6 +142,8 @@ export function OrdenesConsolidadas(props: OrdenesConsolidadasProps) {
   if (loading) return <Spin />;
   if (error) return <p>{error}</p>;
   if (!ordenes) return <p>Error grave</p>;
+  if (productos.length === 0)
+    return <p>Para comenzar cargue su base de datos de productos.</p>
 
   return (
     <div className={styles['container']}>

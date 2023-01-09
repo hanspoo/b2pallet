@@ -6,7 +6,7 @@ const fieldsMappers = express.Router();
 fieldsMappers.get('/', async function (req: Request, res: Response) {
   const fieldsMappers = await dataSource
     .getRepository(FieldsMapper)
-    .find({ where: { empresa: req['empresa'] } });
+    .find({ relations: ['campos'], where: { empresa: req['empresa'] } });
   res.json(fieldsMappers);
 });
 

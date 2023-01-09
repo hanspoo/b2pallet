@@ -3,12 +3,13 @@ import { actualizarOrden } from '@flash-ws/reductor';
 import { capitalize } from '@flash-ws/shared';
 import { Descriptions, Menu, Spin, Typography } from 'antd';
 
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import GraficoAvance from '../grafico-avance/grafico-avance';
 import { SuperConsolidada } from '../new-consolidada/SuperConsolidada';
 import PalletsGenerator from '../pallets-generator/pallets-generator';
 import { useHttpClient } from '../useHttpClient';
+import { OrdenContext } from './OrdenContext';
 
 import TablaLineas from './TablaLineas';
 
@@ -41,28 +42,30 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
   // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!orden) {
-      setLoading(true);
-      httpClient
-        .get<IOrdenCompra>(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
-        .then((response) => {
-          dispatch(actualizarOrden(response.data));
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError(`Error: ${JSON.stringify(error)}`);
-          setLoading(false);
-        });
-    }
+
+    setLoading(true);
+    httpClient
+      .get<IOrdenCompra>(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
+      .then((response) => {
+        dispatch(actualizarOrden(response.data));
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(`Error: ${JSON.stringify(error)}`);
+        setLoading(false);
+      });
+
   }, [id]);
 
   if (loading) return <Spin />;
-  // if (error) return <p>Error: {error}</p>;
+  if (error) return <p>Error: {error}</p>;
 
   if (!orden) return <Spin />;
+  console.log("orden", orden);
+
 
   return (
-    <>
+    <OrdenContext.Provider value={orden}>
       <Title level={4}>Detalle de Orden</Title>
       <Descriptions
         bordered
@@ -119,7 +122,7 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
           <PalletsGenerator orden={orden} />
         </span>
       )}
-    </>
+    </OrdenContext.Provider>
   );
 }
 

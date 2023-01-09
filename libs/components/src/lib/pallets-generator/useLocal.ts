@@ -19,7 +19,7 @@ export function useLocal(lineas: ILineaDetalle[]): UseLocalReturn {
 
     const hidratadas = lineas.map((linea) => {
       const local = linea.localId ? findLocal(linea.localId) : undefined;
-      if (!local) throw Error(`producto o local no encontrado`);
+      if (!local) throw Error(`local no encontrado`);
       return {
         ...linea,
         local,

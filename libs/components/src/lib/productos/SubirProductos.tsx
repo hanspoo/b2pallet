@@ -25,11 +25,11 @@ const SubirProductos = () => {
   };
 
   return (
-    <>
-      <Upload {...props}>
-        <Button icon={<UploadOutlined />}>Actualizar desde excel</Button>
-      </Upload>
-    </>
+
+    <Upload {...props}>
+      <Button icon={<UploadOutlined />}>Actualizar desde excel</Button>
+    </Upload>
+
   );
 };
 

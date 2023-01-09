@@ -1,13 +1,13 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { Box, dataSource, ProtoPallet } from '@flash-ws/dao';
+import { dataSource, ProtoPallet } from '@flash-ws/dao';
 import { AddProtoPalletArgs } from '@flash-ws/api-interfaces';
 
 const protoPallets = express.Router();
 protoPallets.get('/', async function (req: Request, res: Response) {
   const protoPallets = await dataSource
     .getRepository(ProtoPallet)
-    .find({ where: { empresa: req['empresa'] } });
+    .find({ relations: ['box'], where: { empresa: req['empresa'] } });
   res.json(protoPallets);
 });
 

@@ -66,7 +66,7 @@ const UploadOrden = () => {
   if (fmStatus.state === AsyncState.ERROR) return <p>Error: {protoStatus?.msg}</p>;
   if (!fmStatus.data) return <p>Estado inválido no hay mapeadores de campos</p>;
 
-  return <UploadOrdenReally protoPallets={protoStatus.data} fieldsMapper={fmStatus.data} />;
+  return <UploadOrdenReally fieldsMapper={fmStatus.data} />;
 };
 
 

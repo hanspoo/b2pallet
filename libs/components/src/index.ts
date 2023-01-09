@@ -1,3 +1,4 @@
+export * from './lib/preferencias/preferencias';
 export * from './lib/auth/login-form/login-form';
 export * from './lib/auth/login-state/login-state';
 

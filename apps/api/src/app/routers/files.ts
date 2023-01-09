@@ -1,8 +1,10 @@
+import * as fs from 'fs';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
 import { dataSource, OrdenCompra } from '@flash-ws/dao';
 import { OrdenService } from '@flash-ws/worker';
+import { EtiquetasService } from '@flash-ws/etiquetas';
 
 const files = express.Router();
 files.get('/', async function (req: Request, res: Response) {
@@ -44,5 +46,29 @@ files.delete('/:id', async function (req: Request, res: Response) {
     .delete(req.params.id);
   return res.send(results);
 });
+
+files.get(
+  '/:id/etiquetas',
+  async function (req: Request<Request & { id: string }>, res: Response) {
+    const id = req.params.id;
+    if (!id) throw Error('No viene el id de orden de compra');
+    const orden = await dataSource.getRepository(OrdenCompra).findOne({
+      where: { id },
+    });
+    if (!orden)
+      return res.status(404).send({ msg: `orden ${id} no encontrada` });
+
+    const service = new EtiquetasService(orden);
+    const etiPallets = await service.etiquetasPallets();
+    const path = await service.genPdf(etiPallets);
+
+    const file = fs.createReadStream(path);
+    const stat = fs.statSync(path);
+    res.setHeader('Content-Length', stat.size);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=etiquetas.pdf');
+    file.pipe(res);
+  }
+);
 
 export { files };

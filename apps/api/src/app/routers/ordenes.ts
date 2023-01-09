@@ -1,3 +1,4 @@
+import fs from 'fs';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
@@ -13,8 +14,8 @@ import {
   ServicioOrdenes,
   ServicioPallets,
   UnidadNegocio,
-  ProductoService,
 } from '@flash-ws/dao';
+import { EtiquetasService } from '@flash-ws/etiquetas';
 import {
   ClienteService,
   Consolidado,
@@ -23,7 +24,6 @@ import {
   OrdenService,
   PrevalidacionService,
   ServicioCambioEstado,
-  CambioEstadoProdConsolidada,
 } from '@flash-ws/worker';
 import {
   BodyCambioEstadoProdConsolidada,
@@ -40,6 +40,7 @@ import { SuperOrden } from '@flash-ws/dao';
 import { PalletRobot, PalletRobotConfig } from '@flash-ws/robot';
 import { ifDebug } from '@flash-ws/shared';
 import { In } from 'typeorm';
+import { fstat } from 'fs';
 
 const ordenes = express.Router();
 
@@ -97,15 +98,40 @@ ordenes.get(
     return res.send(orden);
   }
 );
+ordenes.get(
+  '/:id/etiquetas',
+  async function (req: Request<RequestWithId>, res: Response) {
+    const id = req.params.id;
+    if (!id) throw Error('No viene el id de orden de compra');
+    const orden = await dataSource.getRepository(OrdenCompra).findOne({
+      where: { id },
+    });
+    if (!orden)
+      return res.status(404).send({ msg: `orden ${id} no encontrada` });
+
+    const service = new EtiquetasService(orden);
+    const etiPallets = await service.etiquetasPallets();
+    const path = await service.genPdf(etiPallets);
+
+    const file = fs.createReadStream(path);
+    const stat = fs.statSync(path);
+    res.setHeader('Content-Length', stat.size);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=etiquetas.pdf');
+    file.pipe(res);
+  }
+);
 
 ordenes.get(
   '/:id',
   async function (req: Request<RequestWithId>, res: Response) {
-    const results = await dataSource.getRepository(OrdenCompra).find({
+    const orden = (await dataSource.getRepository(OrdenCompra).findOne({
       where: { id: req.params.id },
-      relations: { lineas: true },
-    });
-    const orden = results[0] as SuperOrden;
+      relations: ['lineas', 'cliente'],
+    })) as SuperOrden;
+
+    console.log('orden', orden);
+
     const c = new Consolidado(orden.lineas);
     await c.calcular();
     orden.lineasConsolidadas = (await ordenarPorNombreProducto(

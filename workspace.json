@@ -8,6 +8,7 @@
     "components": "libs/components",
     "components-e2e": "apps/components-e2e",
     "dao": "libs/dao",
+    "etiquetas": "libs/etiquetas",
     "flash": "apps/flash",
     "flash-e2e": "apps/flash-e2e",
     "generador": "apps/generador",

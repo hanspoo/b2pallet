@@ -31,6 +31,8 @@ export class ProtoPallet {
   empresa: Empresa;
 
   get volumen(): number {
+    if (!this.box)
+      throw Error(`Proto pallet ${this.id} no tiene creado el box`);
     return this.box.volumen;
   }
 }

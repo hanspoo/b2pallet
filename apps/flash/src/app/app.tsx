@@ -8,7 +8,7 @@ import {
 import { Button, Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 
-import { LoginState, LoginForm, Productos, SeccionOrdenes } from '@flash-ws/components';
+import { LoginState, LoginForm, Productos, SeccionOrdenes, Preferencias } from '@flash-ws/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, RootState } from '@flash-ws/reductor';
 import { GlobalLoader } from './GlobalLoader';
@@ -35,7 +35,7 @@ const App = () => {
 
   function onChangeMenu(args: any) {
     setModo(args.key);
-  }  
+  }
 
   return (
     <GlobalLoader>
@@ -106,9 +106,12 @@ const App = () => {
               minHeight: 280,
             }}
           >
+            {modo === Modo.PEDIDOS && <p>En construcción</p>}
+            {modo === Modo.CLIENTES && <p>En construcción</p>}
+            {modo === Modo.LOCALES && <p>En construcción</p>}
             {modo === Modo.PRODUCTOS && <Productos />}
             {modo === Modo.ORDENES && <SeccionOrdenes />}
-            {modo === Modo.PREFS && <p>Preferencias</p>}
+            {modo === Modo.PREFS && <Preferencias />}
             <Button style={{ position: "absolute", left: '1em', bottom: '1em' }} type="link" onClick={() => {
               dispatch(logout())
             }}>Borrar access token</Button>

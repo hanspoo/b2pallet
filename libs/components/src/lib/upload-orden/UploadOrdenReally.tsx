@@ -13,7 +13,6 @@ import Title from 'antd/lib/typography/Title';
 import { useHttpClient } from '../useHttpClient';
 
 export type UploadOrdenReallyArgs = {
-    protoPallets: IProtoPallet[];
     fieldsMapper: IFieldsMapper[]
 };
 
@@ -23,7 +22,7 @@ const labelStyle = {
     marginBottom: '0.5em',
 };
 
-export function UploadOrdenReally({ protoPallets, fieldsMapper }: UploadOrdenReallyArgs) {
+export function UploadOrdenReally({ fieldsMapper }: UploadOrdenReallyArgs) {
     const httpClient = useHttpClient()
     const [archivo, setArchivo] = useState<IArchivo>();
     const [idFieldsMapper, setIdFieldsMapper] = useState<number>();

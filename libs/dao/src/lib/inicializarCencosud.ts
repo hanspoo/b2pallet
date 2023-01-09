@@ -52,6 +52,14 @@ function mapaCenco(): FieldsMapper {
 
 export async function inicializarCencosud(): Promise<Cliente> {
   if (!dataSource.isInitialized) await dataSource.initialize();
+  const repoEmpresa = dataSource.getRepository(Empresa);
+  const repoCliente = dataSource.getRepository(Cliente);
+  const clientes = await repoCliente.find({});
+  if (clientes.length > 0) {
+    console.log('cancelando inicialización de cencosud, ya hay datos');
+
+    return clientes[0];
+  }
   // const entities = dataSource.entityMetadatas;
 
   // for (const entity of entities) {
@@ -59,8 +67,6 @@ export async function inicializarCencosud(): Promise<Cliente> {
   //   await repository.clear(); // Clear each entity table's content
   // }
 
-  const repoProducto = dataSource.getRepository(Producto);
-  const repoCliente = dataSource.getRepository(Cliente);
   const cliente = new Cliente();
   cliente.unidades = [
     crearUnidad(cliente, 'Jumbo'),
@@ -82,11 +88,11 @@ export async function inicializarCencosud(): Promise<Cliente> {
 
   // await repoProducto.save(p);
 
-  const repoEmpresa = dataSource.getRepository(Empresa);
   const repoProto = dataSource.getRepository(ProtoPallet);
   const e = await repoEmpresa.save(
     repoEmpresa.create({
       nombre: 'b2pallet',
+      identLegal: '76531540-9',
       fieldMappers: [mapaCenco()],
     })
   );
@@ -102,7 +108,6 @@ export async function inicializarCencosud(): Promise<Cliente> {
   e.usuarios = [user];
 
   const proto = {
-    id: 3,
     nombre: 'Standard Pallet',
     box: {
       largo: 100.0,
@@ -113,7 +118,7 @@ export async function inicializarCencosud(): Promise<Cliente> {
 
   e.protoPallets = [repoProto.create(proto)];
 
-  await repoEmpresa.save(e);
+  const eok = await repoEmpresa.save(e);
 
   return cliente;
 }

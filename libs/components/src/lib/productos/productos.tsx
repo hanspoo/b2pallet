@@ -17,6 +17,7 @@ import {
   volumen,
 } from '../front-utils';
 import { useProductos } from './useProductos';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 
@@ -112,6 +113,7 @@ const columns = [
 export interface ProductosProps { }
 
 export function Productos(props: ProductosProps) {
+  const [mostrarAyuda, setMostrarAyuda] = useState(false)
   const [loading, error, data] = useProductos();
   const [search, setSearch] = useState<RegExp>();
 
@@ -135,12 +137,31 @@ export function Productos(props: ProductosProps) {
     )
     : data;
 
+  const toogleHelp = () => {
+
+    setMostrarAyuda(!mostrarAyuda);
+
+  }
   return (
     <div className={styles['container']}>
       <div style={{ float: 'right', position: 'relative', top: '+48px' }}>
         <SubirProductos />
       </div>
       <Title level={2}>Productos</Title>
+
+      <p>Aun la subida de productos utiliza el texto de los encabezados de columna para determinar la organización de la planilla, <QuestionCircleOutlined onClick={toogleHelp} /></p>
+      <pre style={{ fontSize: 'small', display: mostrarAyuda ? "block" : "none" }}>
+        {`
+    const codCenco = linea['CENCO'];
+    const alto = linea['ALTO (CM)'];
+    const ancho = linea['ANCHO (CM)'];
+    const largo = linea['LARGO (CM)'];
+    const peso = linea['PESO (GR)'];
+    const nombre = linea['TIPO PRODUCTOS '].trim();
+    const codigo = linea['CODIGO SISTEMA '];
+    `}
+      </pre>
+
       <p>Hay {productos.length} productos</p>
       <Search
         style={{ marginBottom: '0.5em' }}

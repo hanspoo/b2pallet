@@ -1,4 +1,5 @@
 import { dataSource } from '../lib/data-source';
+import { Empresa } from '../lib/entity/auth/empresa.entity';
 import { OrdenCompra } from '../lib/entity/orden-compra.entity';
 import { Pallet } from '../lib/entity/pallet.entity';
 import { inicializarCencosud } from '../lib/inicializarCencosud';
@@ -52,3 +53,53 @@ describe('ultima hu', () => {
     await insertarPallet(2, orden);
   });
 });
+
+describe.skip('hu separadas por empresa', () => {
+  describe('dos empresas nuevas', () => {
+    it('insertamos un pallet en cada, el next hu para cada una debe ser 2', async () => {
+      const e1 = await new EmpresaBuilder().build();
+      const o1 = await new OrdenBuilder().conEmpresa(e1).build();
+      const pallet = await new PalletBuilder().conOrden(o1).build();
+      expect(pallet.hu).toBe(1);
+    });
+  });
+});
+
+const repoPallet = dataSource.getRepository(Pallet);
+class PalletBuilder {
+  orden: OrdenCompra;
+  async build() {
+    const pallet = new Pallet();
+    repoPallet.save(pallet);
+    return pallet;
+  }
+  conOrden(orden: OrdenCompra) {
+    this.orden = orden;
+    return this;
+  }
+}
+const repoOrden = dataSource.getRepository(OrdenCompra);
+class OrdenBuilder {
+  empresa: Empresa;
+  async build() {
+    const orden = repoOrden.create({
+      numero: '1',
+      emision: '01-01-2000',
+      entrega: '12-01-2000',
+    });
+    repoOrden.save(orden);
+    return orden;
+  }
+  conEmpresa(e: Empresa) {
+    this.empresa = e;
+    return this;
+  }
+}
+const repoEmpresa = dataSource.getRepository(Empresa);
+class EmpresaBuilder {
+  async build() {
+    const e = new Empresa();
+    repoEmpresa.save(e);
+    return e;
+  }
+}

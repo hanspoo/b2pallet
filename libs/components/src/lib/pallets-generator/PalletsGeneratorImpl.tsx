@@ -18,6 +18,7 @@ import {
 } from './pallets-generator';
 import Title from 'antd/lib/typography/Title';
 import { useHttpClient } from '../useHttpClient';
+import { OrdenContext } from '../ordenes/OrdenContext';
 
 enum StateMachine {
   NO_EJECUTADA,
@@ -141,7 +142,8 @@ export function PalletsGeneratorImpl({
           <p>
             <b>Importante</b>: Se borrarán los pallets existentes
           </p>
-          <GenPalletsOptions genPallets={genPallets} />
+
+          <OrdenContext.Consumer>{orden => <GenPalletsOptions orden={orden!} genPallets={genPallets} />}</OrdenContext.Consumer>
 
           <Title style={{ marginTop: '1.5em' }} level={4}>
             Productos aprobados por local

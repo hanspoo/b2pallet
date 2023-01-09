@@ -3,17 +3,18 @@ import { Form, Input, Button, Radio, Spin, Select } from 'antd';
 import styles from './gen-pallets-options.module.css';
 
 import { OpcionesGenPallets } from '../pallets-generator/pallets-generator';
-import { TipoHU, Distribuir, Ordenar, IProtoPallet } from '@flash-ws/api-interfaces';
+import { TipoHU, Distribuir, Ordenar, IProtoPallet, IOrdenCompra } from '@flash-ws/api-interfaces';
 import { capitalize } from '@flash-ws/shared';
 import { useHttpClient } from '../useHttpClient';
 import { AsyncStatus, AsyncState } from '../async-help';
 import axios from 'axios';
-
-const ID_CLIENTE = 1;
+const { Option } = Select
 
 const GenPalletsOptions = ({
+  orden,
   genPallets,
 }: {
+  orden: IOrdenCompra,
   genPallets: (options: OpcionesGenPallets) => void;
 
 }) => {
@@ -22,11 +23,15 @@ const GenPalletsOptions = ({
   const [nextHURequest, setNextHURequest] = useState<AsyncStatus<number>>({ state: AsyncState.RUNNING });
   const [usarHUManual, setHUManual] = useState(false);
 
+  console.log("GenPalletsOptions", orden);
+
+
+
 
   useEffect(() => {
     httpClient
       .get<{ hu: number }>(
-        `${process.env['NX_SERVER_URL']}/api/clientes/${ID_CLIENTE}/ultima-hu`
+        `${process.env['NX_SERVER_URL']}/api/clientes/${orden.cliente.id}/ultima-hu`
       )
       .then((response) => {
         setNextHURequest({ state: AsyncState.OK, data: response.data.hu + 1 });
@@ -156,11 +161,11 @@ const GenPalletsOptions = ({
           ]}
         >
           <Select
-            style={{ width: 240 }}
+            style={{ width: 320 }}
             placeholder="Seleccione el tipo de pallet"
           >
-            {protoStatus.data.map((un) => (
-              <Select.Option value={un.id} key={un.id}>{un.nombre}</Select.Option>
+            {protoStatus.data.map(({ id, nombre, box: { largo, ancho, alto } }) => (
+              <Option value={id} key={id}>{nombre} ({largo}x{ancho}x{alto})</Option>
             ))}
           </Select>
 

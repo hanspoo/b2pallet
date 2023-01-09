@@ -1,8 +1,7 @@
-import { Pie } from '@ant-design/plots';
 import { EstadoLinea, ISuperOrden } from '@flash-ws/api-interfaces';
 import { Totales } from '@flash-ws/shared';
 import { Col, Row, Typography } from 'antd';
-import { colores, coloresFondo } from '../front-utils';
+import { coloresFondo } from '../front-utils';
 
 export interface AvanceEstadoConsolidadaProps {
   orden: ISuperOrden;
