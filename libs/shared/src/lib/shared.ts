@@ -29,3 +29,9 @@ function capAll(s: string): string {
 export function ifDebug(...s: any[]): void {
   if (process.env['DEBUG']) console.log(s.join(' '));
 }
+
+export function numericPart(s: string) {
+  const m = /(\d+)/.exec(s);
+  if (!m) return s;
+  return m[1];
+}

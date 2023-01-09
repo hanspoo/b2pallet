@@ -66,7 +66,7 @@ files.get(
     const stat = fs.statSync(path);
     res.setHeader('Content-Length', stat.size);
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=etiquetas.pdf');
+    // res.setHeader('Content-Disposition', 'attachment; filename=etiquetas.pdf');
     file.pipe(res);
   }
 );

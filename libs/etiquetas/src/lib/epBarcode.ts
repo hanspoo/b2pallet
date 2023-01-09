@@ -1,13 +1,17 @@
+import { numericPart } from '@flash-ws/shared';
 import bwipjs from 'bwip-js';
 import { EtiquetaPallet } from './EtiquetaPallet';
 
 export function epBarcode({ ep }: { ep: EtiquetaPallet }): Promise<Buffer> {
   return bwipjs.toBuffer({
     bcid: 'code128',
-    text: `${ep.identLegal}-${ep.hu}${ep.hu.toString().padStart(8, '0')}`,
-    scale: 3,
-    height: 10,
-    includetext: true,
+    text: `${numericPart(ep.identLegal)}${ep.hu.toString().padStart(8, '0')}`,
+    // scaleX: 10,
+    // height: 1,
+    // width: 60,
+    includetext: false,
+    textsize: 12,
+
     textxalign: 'center', // Always good to set this
   });
 }

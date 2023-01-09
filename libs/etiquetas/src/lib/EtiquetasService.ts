@@ -4,6 +4,7 @@ import { dataSource, OrdenCompra } from '@flash-ws/dao';
 import { randomBytes } from 'crypto';
 import { PDFDocument } from 'pdf-lib';
 import { epBarcode } from './epBarcode';
+import { numericPart } from '@flash-ws/shared';
 
 export class EtiquetasService {
   async genPdf(etiPallets: EtiquetaPallet[]): Promise<string> {
@@ -25,7 +26,7 @@ export class EtiquetasService {
       if (!ep['identLegal'])
         throw Error(`No viene identlegal en etipallet` + JSON.stringify(ep));
 
-      doc.text(ep.identLegal, 1, 1);
+      // doc.text(ep.identLegal, 1, 1);
       // doc.text(ep.codLocal, 1, 2);
       // doc.text(ep.hu + '', 1, 3);
       // doc.text(ep.vendedor, 1, 4);
@@ -36,10 +37,19 @@ export class EtiquetasService {
         `data:image/png;base64,${barcodes[i].toString('base64')}`,
         'png',
         1,
-        2,
-        5,
-        5
+        1,
+        8,
+        2
       );
+
+      doc.text(
+        numericPart(ep.identLegal) + ep.hu.toString().padStart(8, '0'),
+        3,
+        3.5
+      );
+      centeredBold(doc, ep.vendedor, 4.4);
+      centeredNormal(doc, ep.local, 5.2);
+      centeredBold(doc, ep.codLocal, 6);
     });
 
     const fileName = `/tmp/` + randomBytes(6).toString('hex') + '.pdf';
@@ -90,3 +100,22 @@ async function mergePDFDocuments(pdfsToMerges: ArrayBuffer[]) {
   const mergedPdfFile = await mergedPdf.save();
   return mergedPdfFile;
 }
+
+const centeredBold = function (doc: any, text: string, y: number) {
+  const textWidth =
+    (doc.getStringUnitWidth(text) * doc.internal.getFontSize()) /
+    doc.internal.scaleFactor;
+  const textOffset = (doc.internal.pageSize.width - textWidth) / 2;
+  doc.setFontSize(18).setFont(undefined, 'bold');
+  doc.text(textOffset, y, text);
+  doc.setFontSize(14).setFont(undefined, 'normal');
+};
+const centeredNormal = function (doc: any, text: string, y: number) {
+  const textWidth =
+    (doc.getStringUnitWidth(text) * doc.internal.getFontSize()) /
+    doc.internal.scaleFactor;
+  const textOffset = (doc.internal.pageSize.width - textWidth) / 2;
+  // doc.setFontSize(18).setFont(undefined, 'bold');
+  doc.text(textOffset, y, text);
+  // doc.setFontSize(14).setFont(undefined, 'normal');
+};
