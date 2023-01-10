@@ -48,8 +48,8 @@ export class EtiquetasService {
         3.5
       );
       centeredBold(doc, ep.vendedor, 4.4);
-      centeredNormal(doc, ep.local, 5.2);
-      centeredBold(doc, ep.codLocal, 6);
+      centeredNormal(doc, ep.local, 5.5);
+      centeredBold(doc, ep.codLocal, 6.3);
     });
 
     const fileName = `/tmp/` + randomBytes(6).toString('hex') + '.pdf';

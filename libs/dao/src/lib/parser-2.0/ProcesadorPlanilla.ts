@@ -2,6 +2,7 @@ import { Cliente } from '../../lib/entity/cliente.entity';
 import { OrdenCompra } from '../entity/orden-compra.entity';
 import { FieldsMapper } from '../entity/campos/FieldsMapper';
 import { Campo } from '@flash-ws/api-interfaces';
+import { fixNombreLocal } from '@flash-ws/shared';
 
 type Sheet = { name: string; data: unknown[] };
 export type LineaCruda = {
@@ -69,7 +70,7 @@ export class ProcesadorPlanilla {
   extraeLocales(sheet: Sheet): Array<LocalCrudo> {
     const obj: any = [...sheet.data].splice(1).reduce((acc: any, iter: any) => {
       const codigo = iter[this.pos(Campo.COD_LOCAL)];
-      const nombre = iter[this.pos(Campo.NOMBRE_LOCAL)];
+      const nombre = fixNombreLocal(iter[this.pos(Campo.NOMBRE_LOCAL)]);
       const unidad = iter[this.pos(Campo.UNIDAD_NEGOCIO)];
       acc[`${codigo},${nombre},${unidad}`] = 1;
       return acc;

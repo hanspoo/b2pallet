@@ -95,11 +95,6 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
     <div>
       <div style={{ marginBottom: '1.5em', marginTop: '1.5em' }}>
         <SelectorVistaPallets vista={vistaPallets} setVista={setVistaPallets} />
-        <Button
-          href={`${process.env['NX_SERVER_URL']}/api/files/${orden.id}/etiquetas`}
-        >
-          Etiquetas
-        </Button>
 
         {/* {urlEtiquetas ? (
           <Button target="_blank" href={urlEtiquetas}>
@@ -108,12 +103,18 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
         ) : (
           <Button onClick={generarEtiquetas}>Generar etiquetas</Button>
         )} */}
-        <Button
-          style={{ float: 'right' }}
-          onClick={() => setMostrarGenerador(true)}
-        >
-          Generar de nuevo
-        </Button>
+        <div style={{ float: 'right' }}>
+          <Button
+            target="_blank"
+            href={`${process.env['NX_SERVER_URL']}/api/files/${orden.id}/etiquetas`}
+          >
+            Etiquetas
+          </Button>
+
+          <Button onClick={() => setMostrarGenerador(true)}>
+            Generar de nuevo
+          </Button>
+        </div>
       </div>
 
       {vistaPallets === VistaPallets.TABLA && <Pallets pallets={pallets} />}

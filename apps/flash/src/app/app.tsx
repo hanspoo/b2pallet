@@ -8,7 +8,13 @@ import {
 import { Button, Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 
-import { LoginState, LoginForm, Productos, SeccionOrdenes, Preferencias } from '@flash-ws/components';
+import {
+  LoginState,
+  LoginForm,
+  Productos,
+  SeccionOrdenes,
+  Preferencias,
+} from '@flash-ws/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, RootState } from '@flash-ws/reductor';
 import { GlobalLoader } from './GlobalLoader';
@@ -26,12 +32,11 @@ enum Modo {
 
 const App = () => {
   const dispatch = useDispatch();
-  const loggedIn = useSelector((state: RootState) => state.counter.loggedIn)
+  const loggedIn = useSelector((state: RootState) => state.counter.loggedIn);
   const [modo, setModo] = useState(Modo.ORDENES);
   const [collapsed, setCollapsed] = useState(false);
 
-  if (!loggedIn)
-    return <LoginForm />
+  if (!loggedIn) return <LoginForm />;
 
   function onChangeMenu(args: any) {
     setModo(args.key);
@@ -39,7 +44,7 @@ const App = () => {
 
   return (
     <GlobalLoader>
-      <Layout id="container" role="container" >
+      <Layout id="container" role="container">
         <LoginState />
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div className="logo" />
@@ -101,7 +106,6 @@ const App = () => {
           <Content
             className="site-layout-background"
             style={{
-
               padding: 24,
               minHeight: 280,
             }}
@@ -112,12 +116,17 @@ const App = () => {
             {modo === Modo.PRODUCTOS && <Productos />}
             {modo === Modo.ORDENES && <SeccionOrdenes />}
             {modo === Modo.PREFS && <Preferencias />}
-            <Button style={{ position: "absolute", left: '1em', bottom: '1em' }} type="link" onClick={() => {
-              dispatch(logout())
-            }}>Borrar access token</Button>
+            <Button
+              style={{ position: 'absolute', left: '1em', bottom: '1em' }}
+              type="link"
+              onClick={() => {
+                dispatch(logout());
+              }}
+            >
+              Borrar access token
+            </Button>
           </Content>
         </Layout>
-
       </Layout>
     </GlobalLoader>
   );
