@@ -88,6 +88,7 @@ WHERE
       orientation: 'landscape',
       unit: 'cm',
       format: 'a7',
+      compress: true,
     });
     doc.setFontSize(14);
 
@@ -116,7 +117,8 @@ WHERE
         0.5,
         0.5,
         width - 1,
-        2
+        2,
+        'FAST'
       );
 
       centeredNormal(
