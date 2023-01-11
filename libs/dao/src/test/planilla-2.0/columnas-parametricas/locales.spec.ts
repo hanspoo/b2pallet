@@ -4,7 +4,7 @@ import { configCenco } from '../../../lib/parser-2.0/config-campos-cenco';
 import { LineBuilder, SheetBuilder } from './hoja-builder';
 
 describe('configuración dinámica de campos', () => {
-  it('Tiene una sóla local, Sisa', async () => {
+  it('Tiene un sóla local: Sisa', async () => {
     // Parse a file
     const ws = xlsx.parse(`fixtures/orden-una-linea.xls`);
 
@@ -12,7 +12,7 @@ describe('configuración dinámica de campos', () => {
     const { locales } = await procesador.procesar(ws[0]);
     expect(locales.length).toBe(1);
     expect(locales[0].codigo).toBe('N524');
-    expect(locales[0].nombre).toBe('185 -SISA-LINARES-JANUARIO-ESP');
+    expect(locales[0].nombre).toBe('Sisa Linares Januario Esp');
   });
   it('planilla con tres líneas, 2 locales', async () => {
     const l1 = new LineBuilder().withLocal('N641,CD LO AGUIRRE').build();
@@ -33,7 +33,7 @@ describe('configuración dinámica de campos', () => {
     const result = await procesador.procesar(hoja);
 
     expect(result.locales[0].codigo).toBe('N641');
-    expect(result.locales[0].nombre).toBe('CD LO AGUIRRE');
+    expect(result.locales[0].nombre).toBe('Cd Lo Aguirre');
   });
   it('agrega nombre de unidad de negocio', async () => {
     const l1 = new LineBuilder()
@@ -46,7 +46,7 @@ describe('configuración dinámica de campos', () => {
     const result = await procesador.procesar(hoja);
 
     expect(result.locales[0].codigo).toBe('N641');
-    expect(result.locales[0].nombre).toBe('CD LO AGUIRRE');
+    expect(result.locales[0].nombre).toBe('Cd Lo Aguirre');
     expect(result.locales[0].unidad).toBe('Sisa');
   });
 });
