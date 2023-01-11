@@ -1,3 +1,4 @@
+import { PrinterFilled } from '@ant-design/icons';
 import {
   Distribuir,
   ILineaDetalle,
@@ -106,6 +107,7 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
         <div style={{ float: 'right' }}>
           <Button
             target="_blank"
+            icon={<PrinterFilled />}
             href={`${process.env['NX_SERVER_URL']}/api/files/${orden.id}/etiquetas`}
           >
             Etiquetas

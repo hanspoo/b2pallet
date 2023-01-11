@@ -4,7 +4,7 @@ import { Button, Col, Descriptions, Row } from 'antd';
 
 import { ContainerCajasPallets } from '../lista-cajas-pallet/ContainerCajasPallets';
 import styles from './detalle-pallet.module.css';
-import { EtiquetaPallet } from './EtiquetaPallet';
+import { EtiquetaPalletComp } from './EtiquetaPalletComp';
 
 /* eslint-disable-next-line */
 export interface DetallePalletProps {
@@ -18,8 +18,8 @@ export function DetallePallet({ pallet, oc }: DetallePalletProps) {
   return (
     <div>
       <div style={{ position: 'absolute', right: '1em' }}>
-        <EtiquetaPallet pallet={pallet} />
-        <div style={{ textAlign: 'center' }}>
+        <EtiquetaPalletComp oc={oc} pallet={pallet} />
+        <div style={{ marginTop: '1em', width: '100%', textAlign: 'center' }}>
           <Button href={urlEtiquetas} target="_blank" icon={<PrinterFilled />}>
             Etiquetas productos
           </Button>

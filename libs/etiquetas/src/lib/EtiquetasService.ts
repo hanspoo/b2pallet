@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import { EtiquetaPallet } from './EtiquetaPallet';
+import { EtiquetaPallet } from '../../../api-interfaces/src/lib/EtiquetaPallet';
 import { EtiquetaCaja } from './EtiquetaProducto';
 import { dataSource, OrdenCompra } from '@flash-ws/dao';
 import { randomBytes } from 'crypto';
@@ -137,8 +137,8 @@ WHERE
     return fileName;
   }
 
-  async etiquetasPallets(): Promise<EtiquetaPallet[]> {
-    const sql = `
+  async etiquetasPallets(palletID?: number): Promise<EtiquetaPallet[]> {
+    let sql = `
 SELECT
      empresa."identLegal" AS "identLegal",
      empresa."nombre" AS "vendedor",
@@ -153,7 +153,7 @@ FROM
 WHERE
     orden_compra."id" = '${this.orden.id}'
      `;
-
+    if (palletID) sql += `AND pallet.id = ${palletID}`;
     const queryRunner = dataSource.createQueryRunner();
     const rows: Array<EtiquetaPallet> = await queryRunner.manager.query(sql);
 

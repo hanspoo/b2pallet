@@ -31,6 +31,7 @@ import {
   BodyGenPallets,
   CambiarEstadoBody,
   EstadoLinea,
+  EtiquetaPallet,
   IConsolidadoCajas,
   IPalletConsolidado,
   OrdenesResponseInvalid,
@@ -322,6 +323,30 @@ ordenes.get(
     const cajas: IConsolidadoCajas[] = await palletsCajas(req.params.id);
 
     return res.send(cajas);
+  }
+);
+ordenes.get(
+  `/:id/pallets/:palletID/epallet`,
+  async function (
+    req: Request<{ id: string; palletID: number }, null, null>,
+    res: Response
+  ) {
+    const { id, palletID } = req.params;
+
+    if (!id) throw Error('No viene el id de orden de compra');
+    if (!palletID) throw Error('No viene el id del pallet');
+
+    const orden = await dataSource
+      .getRepository(OrdenCompra)
+      .findOne({ where: { id: id } });
+    if (!orden) throw Error(`Orden ${id} no encontrada`);
+
+    const s = new EtiquetasService(orden);
+    const eps = await s.etiquetasPallets(palletID);
+    if (!eps || eps.length === 0)
+      throw Error(`Pallet ${palletID} no encontrado para orden ${id}`);
+
+    return res.send(eps[0]);
   }
 );
 

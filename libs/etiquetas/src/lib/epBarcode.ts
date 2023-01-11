@@ -1,6 +1,6 @@
 import { numericPart } from '@flash-ws/shared';
 import bwipjs from 'bwip-js';
-import { EtiquetaPallet } from './EtiquetaPallet';
+import { EtiquetaPallet } from '../../../api-interfaces/src/lib/EtiquetaPallet';
 
 export function epBarcode({ ep }: { ep: EtiquetaPallet }): Promise<Buffer> {
   return bwipjs.toBuffer({
