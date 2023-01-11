@@ -42,3 +42,5 @@ uploads
 .~lock*
 .env.local
 fixtures
+
+*.swp
