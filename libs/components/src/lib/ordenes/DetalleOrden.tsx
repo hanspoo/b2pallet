@@ -42,27 +42,25 @@ export function DetalleOrden({ id }: PropsDetalleOrden) {
   // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     setLoading(true);
     httpClient
       .get<IOrdenCompra>(`${process.env['NX_SERVER_URL']}/api/ordenes/${id}`)
       .then((response) => {
         dispatch(actualizarOrden(response.data));
-        setLoading(false);
+        // Agrega delay para esperar a que se refresque redux
+        setTimeout(() => setLoading(false), 2000);
       })
       .catch((error) => {
         setError(`Error: ${JSON.stringify(error)}`);
         setLoading(false);
       });
-
   }, [id]);
 
   if (loading) return <Spin />;
   if (error) return <p>Error: {error}</p>;
 
   if (!orden) return <Spin />;
-  console.log("orden", orden);
-
+  console.log('orden', orden);
 
   return (
     <OrdenContext.Provider value={orden}>
