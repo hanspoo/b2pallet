@@ -3,8 +3,10 @@ import { Button, message, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { RootState } from '@flash-ws/reductor';
 import { useSelector } from 'react-redux';
+import { useQueryClient } from '@tanstack/react-query';
 
 const SubirProductos = () => {
+  const queryClient = useQueryClient();
   const token = useSelector((state: RootState) => state.counter.token);
   const props = {
     name: 'file',
@@ -18,6 +20,7 @@ const SubirProductos = () => {
 
       if (info.file.status === 'done') {
         message.success(`${info.file.name} file uploaded successfully`);
+        queryClient.invalidateQueries(['productos']);
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
       }
@@ -25,11 +28,9 @@ const SubirProductos = () => {
   };
 
   return (
-
     <Upload {...props}>
       <Button icon={<UploadOutlined />}>Actualizar desde excel</Button>
     </Upload>
-
   );
 };
 
