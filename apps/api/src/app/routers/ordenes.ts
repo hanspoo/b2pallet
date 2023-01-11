@@ -13,6 +13,7 @@ import {
   ProtoPallet,
   ServicioOrdenes,
   ServicioPallets,
+  ultimaHUCliente,
   UnidadNegocio,
 } from '@flash-ws/dao';
 import { EtiquetasService } from '@flash-ws/etiquetas';
@@ -77,6 +78,20 @@ ordenes.get('/:id/consolidada', async function (req: Request, res: Response) {
   const c = new Consolidado(orden.lineas);
   await c.calcular();
   return res.send(c.lineas);
+});
+ordenes.get('/:id/ultima-hu', async function (req: Request, res: Response) {
+  const id = req.params.id;
+  if (!id) throw Error('No viene el id, cancelando petición REST');
+  const orden = await dataSource.getRepository(OrdenCompra).findOne({
+    where: { id },
+    relations: { cliente: true },
+  });
+
+  if (!orden) throw Error(`orden id ${id} no encontrada`);
+
+  const hu = await ultimaHUCliente(orden.cliente.id);
+
+  return res.send({ hu });
 });
 
 type RequestWithId = {

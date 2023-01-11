@@ -3,35 +3,41 @@ import { Form, Input, Button, Radio, Spin, Select } from 'antd';
 import styles from './gen-pallets-options.module.css';
 
 import { OpcionesGenPallets } from '../pallets-generator/pallets-generator';
-import { TipoHU, Distribuir, Ordenar, IProtoPallet, IOrdenCompra } from '@flash-ws/api-interfaces';
+import {
+  TipoHU,
+  Distribuir,
+  Ordenar,
+  IProtoPallet,
+  IOrdenCompra,
+} from '@flash-ws/api-interfaces';
 import { capitalize } from '@flash-ws/shared';
 import { useHttpClient } from '../useHttpClient';
 import { AsyncStatus, AsyncState } from '../async-help';
 import axios from 'axios';
-const { Option } = Select
+const { Option } = Select;
 
 const GenPalletsOptions = ({
   orden,
   genPallets,
 }: {
-  orden: IOrdenCompra,
+  orden: IOrdenCompra;
   genPallets: (options: OpcionesGenPallets) => void;
-
 }) => {
-  const httpClient = useHttpClient()
-  const [protoStatus, setProtoStatus] = useState<AsyncStatus<IProtoPallet[]>>({ state: AsyncState.RUNNING });
-  const [nextHURequest, setNextHURequest] = useState<AsyncStatus<number>>({ state: AsyncState.RUNNING });
+  const httpClient = useHttpClient();
+  const [protoStatus, setProtoStatus] = useState<AsyncStatus<IProtoPallet[]>>({
+    state: AsyncState.RUNNING,
+  });
+  const [nextHURequest, setNextHURequest] = useState<AsyncStatus<number>>({
+    state: AsyncState.RUNNING,
+  });
   const [usarHUManual, setHUManual] = useState(false);
 
-  console.log("GenPalletsOptions", orden);
-
-
-
+  console.log('GenPalletsOptions', orden);
 
   useEffect(() => {
     httpClient
       .get<{ hu: number }>(
-        `${process.env['NX_SERVER_URL']}/api/clientes/${orden.cliente.id}/ultima-hu`
+        `${process.env['NX_SERVER_URL']}/api/ordenes/${orden.id}/ultima-hu`
       )
       .then((response) => {
         setNextHURequest({ state: AsyncState.OK, data: response.data.hu + 1 });
@@ -48,10 +54,10 @@ const GenPalletsOptions = ({
         const error = axios.isCancel(ex)
           ? 'Request Cancelled'
           : ex.code === 'ECONNABORTED'
-            ? 'A timeout has occurred'
-            : ex.response.status === 404
-              ? 'Resource Not Found'
-              : 'An unexpected error has occurred';
+          ? 'A timeout has occurred'
+          : ex.response.status === 404
+          ? 'Resource Not Found'
+          : 'An unexpected error has occurred';
 
         setProtoStatus({ state: AsyncState.ERROR, msg: error });
       });
@@ -69,11 +75,13 @@ const GenPalletsOptions = ({
     console.log('Failed:', errorInfo);
   };
   if (nextHURequest.state === AsyncState.RUNNING) return <Spin />;
-  if (nextHURequest.state === AsyncState.ERROR) return <p>Error: {nextHURequest?.msg}</p>;
+  if (nextHURequest.state === AsyncState.ERROR)
+    return <p>Error: {nextHURequest?.msg}</p>;
   if (!nextHURequest.data) return <p>Estado inválido no hay HU</p>;
 
   if (protoStatus.state === AsyncState.RUNNING) return <Spin />;
-  if (protoStatus.state === AsyncState.ERROR) return <p>Error: {protoStatus?.msg}</p>;
+  if (protoStatus.state === AsyncState.ERROR)
+    return <p>Error: {protoStatus?.msg}</p>;
   if (!protoStatus.data) return <p>Estado inválido no hay protoPallets</p>;
 
   return (
@@ -164,11 +172,14 @@ const GenPalletsOptions = ({
             style={{ width: 320 }}
             placeholder="Seleccione el tipo de pallet"
           >
-            {protoStatus.data.map(({ id, nombre, box: { largo, ancho, alto } }) => (
-              <Option value={id} key={id}>{nombre} ({largo}x{ancho}x{alto})</Option>
-            ))}
+            {protoStatus.data.map(
+              ({ id, nombre, box: { largo, ancho, alto } }) => (
+                <Option value={id} key={id}>
+                  {nombre} ({largo}x{ancho}x{alto})
+                </Option>
+              )
+            )}
           </Select>
-
         </Form.Item>
         <div style={{ marginBottom: '1em' }}>
           <div>
