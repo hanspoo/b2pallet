@@ -119,7 +119,7 @@ export function PalletsGenerator({ orden }: PalletsGeneratorProps) {
 
       {vistaPallets === VistaPallets.TABLA && <Pallets pallets={pallets} />}
       {vistaPallets === VistaPallets.ICONO && (
-        <PalletsIcono pallets={pallets} />
+        <PalletsIcono pallets={pallets} oc={orden} />
       )}
     </div>
   );

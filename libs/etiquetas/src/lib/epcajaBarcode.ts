@@ -6,10 +6,10 @@ export function epcajaBarcode({ ep }: { ep: EtiquetaCaja }): Promise<Buffer> {
     bcid: 'code128',
     text: `${ep.codCenco}`,
     scale: 1,
-    // height: 1,
+    height: 1,
     // width: 60,
     includetext: false,
-    textsize: 12,
+    textsize: 10,
 
     textxalign: 'center', // Always good to set this
   });

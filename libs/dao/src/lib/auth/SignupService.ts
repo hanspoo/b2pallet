@@ -7,6 +7,7 @@ import { clonarMappers, clonarProtos } from '../utils/clonar-utils';
 import { PassService } from './PassService';
 
 export type SignupArgs = {
+  identLegal: string;
   empresa: string;
   nombre: string;
   email: string;
@@ -18,6 +19,7 @@ export class SignupService {
   nombre: string;
   email: string;
   password: string;
+  identLegal: string;
 
   async execute(): Promise<Empresa> {
     const repoEmpresa = dataSource.getRepository(Empresa);
@@ -44,6 +46,7 @@ export class SignupService {
 
     const e = await repoEmpresa.save(
       repoEmpresa.create({
+        identLegal: this.identLegal,
         nombre: this.empresa,
         protoPallets: clonarProtos(protoPallets),
         fieldMappers: clonarMappers(fieldsMappers),
@@ -65,6 +68,7 @@ export class SignupService {
   async validate(): Promise<[boolean, Array<string>]> {
     const errors: Array<string> = [];
     if (!/\w+/.test(this.empresa)) errors.push('Empresa inválida');
+    if (!/\w+/.test(this.identLegal)) errors.push('Ident legal inválido');
     if (!/\w+/.test(this.nombre)) errors.push('Nombre inválido');
     if (!/\w+/.test(this.email)) errors.push('Email inválido');
     if (!/\w+/.test(this.password)) errors.push('Contraseña inválida');
@@ -77,5 +81,6 @@ export class SignupService {
     this.nombre = params.nombre;
     this.email = params.email;
     this.password = params.password;
+    this.identLegal = params.identLegal;
   }
 }

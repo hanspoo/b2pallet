@@ -1,33 +1,38 @@
-import { IPalletConsolidado } from '@flash-ws/api-interfaces';
-import { Col, Descriptions, Row } from 'antd';
+import { PrinterFilled } from '@ant-design/icons';
+import { IOrdenCompra, IPalletConsolidado } from '@flash-ws/api-interfaces';
+import { Button, Col, Descriptions, Row } from 'antd';
 
 import { ContainerCajasPallets } from '../lista-cajas-pallet/ContainerCajasPallets';
 import styles from './detalle-pallet.module.css';
 import { EtiquetaPallet } from './EtiquetaPallet';
 
-
-
 /* eslint-disable-next-line */
 export interface DetallePalletProps {
   pallet: IPalletConsolidado;
+  oc: IOrdenCompra;
 }
 
-export function DetallePallet({ pallet }: DetallePalletProps) {
+export function DetallePallet({ pallet, oc }: DetallePalletProps) {
   const { numcajas, vol, peso, palletid, nombrelocal, porcUso, hu } = pallet;
+  const urlEtiquetas = `${process.env['NX_SERVER_URL']}/api/files/${oc.id}/etiquetas/${palletid}`;
   return (
     <div>
-      <div style={{ position: "absolute", right: '1em' }}>
+      <div style={{ position: 'absolute', right: '1em' }}>
         <EtiquetaPallet pallet={pallet} />
+        <div style={{ textAlign: 'center' }}>
+          <Button href={urlEtiquetas} target="_blank" icon={<PrinterFilled />}>
+            Etiquetas productos
+          </Button>
+        </div>
       </div>
       <Row>
         <Col span="4" style={{ display: 'flex', alignItems: 'center' }}>
           <Icono pallet={pallet} />
         </Col>
         <Col span="12">
-
           <Descriptions column={1} bordered size="small">
             <Descriptions.Item label="HU">
-              <b>{hu}</b>
+              <b>{hu}</b>{' '}
             </Descriptions.Item>
             <Descriptions.Item label="Local">
               <b>{nombrelocal}</b>
@@ -56,7 +61,9 @@ export function DetallePallet({ pallet }: DetallePalletProps) {
 }
 export function Icono({
   pallet: { peso, porcUso, numcajas },
-}: DetallePalletProps) {
+}: {
+  pallet: IPalletConsolidado;
+}) {
   const opacity = peso / 50000;
   const backgroundColor = `rgba(9,56,100,${opacity})`;
 
@@ -79,5 +86,3 @@ export function Icono({
 }
 
 const scale = (n: number) => n * 2.3;
-
-

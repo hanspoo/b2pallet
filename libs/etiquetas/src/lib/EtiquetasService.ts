@@ -14,7 +14,7 @@ export class EtiquetasService {
     SELECT
      caja."palletId" AS caja_palletId,
      producto."nombre" AS producto,
-     producto."codCenco" AS codCenco
+     producto."codCenco" AS "codCenco"
 FROM
      "local" local INNER JOIN "pallet" pallet ON local."id" = pallet."localId"
      INNER JOIN "orden_compra" orden_compra ON pallet."ordenCompraId" = orden_compra."id"
@@ -45,7 +45,7 @@ WHERE
         // format: [40, 50],
         format: 'a9',
       });
-      doc.setFontSize(10);
+      doc.setFontSize(8);
 
       const barcodes = await Promise.all(
         cajas.map((ep) => {
@@ -64,12 +64,17 @@ WHERE
           1,
           1,
           width,
-          20
+          15
         );
 
-        centeredNormal(doc, ep.codCenco, 25);
-        centeredNormal(doc, ep.producto, 30);
-        centeredNormal(doc, ep.posicion, 35);
+        if (!ep.codCenco) {
+          console.log('ep', ep);
+          throw Error('No viene codcenco');
+        }
+
+        centeredNormal(doc, ep.codCenco, 20, 10);
+        centeredNormal(doc, ep.producto, 28, 8);
+        centeredNormal(doc, ep.posicion, 32, 8);
       });
 
       const fileName = `/tmp/` + randomBytes(6).toString('hex') + '.pdf';
@@ -80,9 +85,9 @@ WHERE
   }
   async genPdf(etiPallets: EtiquetaPallet[]): Promise<string> {
     const doc = new jsPDF({
-      orientation: 'portrait',
+      orientation: 'landscape',
       unit: 'cm',
-      format: [10, 10],
+      format: 'a7',
     });
     doc.setFontSize(14);
 
@@ -104,19 +109,20 @@ WHERE
 
       // fs.writeFileSync('/tmp/xxx.png', barcodes[i]);
 
+      const width = doc.internal.pageSize.getWidth();
       doc.addImage(
         `data:image/png;base64,${barcodes[i].toString('base64')}`,
         'png',
-        1,
-        1,
-        8,
+        0.5,
+        0.5,
+        width - 1,
         2
       );
 
-      doc.text(
+      centeredNormal(
+        doc,
         numericPart(ep.identLegal) + ep.hu.toString().padStart(8, '0'),
-        3,
-        3.5
+        3
       );
       centeredBold(doc, ep.vendedor, 4.4);
       centeredNormal(doc, ep.local, 5.5);
@@ -173,15 +179,17 @@ async function mergePDFDocuments(pdfsToMerges: ArrayBuffer[]) {
 }
 
 const centeredBold = function (doc: any, text: string, y: number) {
+  doc.setFontSize(18);
   const textWidth =
     (doc.getStringUnitWidth(text) * doc.internal.getFontSize()) /
     doc.internal.scaleFactor;
   const textOffset = (doc.internal.pageSize.width - textWidth) / 2;
-  doc.setFontSize(18).setFont(undefined, 'bold');
+  doc.setFont(undefined, 'bold');
   doc.text(textOffset, y, text);
   doc.setFontSize(14).setFont(undefined, 'normal');
 };
-const centeredNormal = function (doc: any, text: string, y: number) {
+const centeredNormal = function (doc: any, text: string, y: number, size = 14) {
+  doc.setFontSize(size);
   const textWidth =
     (doc.getStringUnitWidth(text) * doc.internal.getFontSize()) /
     doc.internal.scaleFactor;

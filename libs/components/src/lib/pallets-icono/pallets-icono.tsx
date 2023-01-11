@@ -1,7 +1,7 @@
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
-import { IPalletConsolidado } from '@flash-ws/api-interfaces';
+import { IOrdenCompra, IPalletConsolidado } from '@flash-ws/api-interfaces';
 import { capitalize } from '@flash-ws/shared';
-import Barcode from "react-barcode"
+import Barcode from 'react-barcode';
 
 import { Row, Col, Radio, Modal } from 'antd';
 import { useState } from 'react';
@@ -10,6 +10,7 @@ import { Cubeta } from './Cubeta';
 
 export interface PalletsIconoProps {
   pallets: IPalletConsolidado[];
+  oc: IOrdenCompra;
 }
 
 enum CriteriosOrden {
@@ -22,7 +23,7 @@ enum Orden {
   DESC,
 }
 
-export function PalletsIcono({ pallets }: PalletsIconoProps) {
+export function PalletsIcono({ pallets, oc }: PalletsIconoProps) {
   const [pallet, setPallet] = useState<IPalletConsolidado>();
   const [ordenarPor, setOrdenarPor] = useState<CriteriosOrden>();
   const [orden, setOrden] = useState<Orden>(Orden.ASC);
@@ -47,7 +48,7 @@ export function PalletsIcono({ pallets }: PalletsIconoProps) {
           onOk={() => setPallet(undefined)}
           onCancel={() => setPallet(undefined)}
         >
-          <DetallePallet pallet={pallet} />
+          <DetallePallet pallet={pallet} oc={oc} />
         </Modal>
       )}
 
