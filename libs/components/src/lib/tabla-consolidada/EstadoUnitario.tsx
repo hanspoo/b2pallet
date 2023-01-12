@@ -7,6 +7,7 @@ import { Button, Spin } from 'antd';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { colores, estados } from '../front-utils';
+import { useHttpClient } from '../useHttpClient';
 
 type PropsEstadoIProducto = {
   actual: EstadoLinea;
@@ -24,6 +25,7 @@ export function EstadoUnitario({
   ordenID,
   actual,
 }: PropsEstadoIProducto) {
+  const httpClient = useHttpClient()
   const [actualizando, setActualizando] = useState(false);
   const [error, setError] = useState('');
 
@@ -38,7 +40,7 @@ export function EstadoUnitario({
       ids: [lineaID],
       estado: estado,
     };
-    axios
+    httpClient
       .post<ISuperOrden>(
         `${process.env['NX_SERVER_URL']}/api/ordenes/cambiar-estado/${ordenID}`,
         postBody
