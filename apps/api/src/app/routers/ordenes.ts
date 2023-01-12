@@ -192,7 +192,7 @@ ordenes.post(
 
       return res.send(nueva);
     } catch (error) {
-      res.status(404).send();
+      res.status(500).send(error.message);
     }
   }
 );

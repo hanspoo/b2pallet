@@ -130,8 +130,15 @@ describe('carga productos', () => {
 async function crearEmpresaRandom(): Promise<Empresa> {
   const nombre = 'abc',
     email = 'x@c.com',
-    password = '123';
-  const service = new SignupService({ empresa, nombre, email, password });
+    password = '123',
+    identLegal = '19';
+  const service = new SignupService({
+    empresa,
+    nombre,
+    email,
+    password,
+    identLegal,
+  });
   const e = await service.execute();
 
   return e;

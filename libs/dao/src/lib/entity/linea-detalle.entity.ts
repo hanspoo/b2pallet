@@ -33,6 +33,9 @@ export class LineaDetalle {
   @Column()
   productoId?: number;
 
+  @Column()
+  ordenCompraId?: string;
+
   @ManyToOne(() => Local, (local) => local.lineas, { nullable: false })
   local: Local;
 

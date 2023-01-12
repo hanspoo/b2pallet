@@ -13,10 +13,10 @@ beforeAll(async () => {
   token = await obtainToken();
   orden = await crearOrdenHelper(3);
 });
-it.skip('prueba api res de cambio de estado de lineas', async () => {
+it('prueba api res de cambio de estado de lineas', async () => {
   const response = await request(app)
     .post(`/api/ordenes/cambiar-estado/${orden.id}`)
-    .set('Authorization', `Basic ${token}`)
+    .set('Authorization', `Bearer ${token}`)
     .send({
       ids: [1, 2, 3],
       estado: 'Aprobado',

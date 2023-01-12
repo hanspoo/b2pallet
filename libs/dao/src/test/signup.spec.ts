@@ -7,6 +7,7 @@ let empresa = 'Alfa Centauro';
 let nombre = 'Arnold';
 let email = 'arnold@centauro.cl';
 let password = '123456';
+let identLegal = '123456';
 
 beforeEach(() => {
   const rnd = randomBytes(6).toString('hex');
@@ -14,6 +15,7 @@ beforeEach(() => {
   nombre = 'Arnold' + rnd;
   email = 'arnold@centauro.cl' + rnd;
   password = '123456';
+  identLegal = identLegal + rnd;
 });
 
 beforeAll(async () => {
@@ -22,7 +24,13 @@ beforeAll(async () => {
 describe('registra cliente', () => {
   describe('validaciones', () => {
     it('todos los datos validación ok', async () => {
-      const service = new SignupService({ empresa, nombre, email, password });
+      const service = new SignupService({
+        empresa,
+        nombre,
+        email,
+        password,
+        identLegal,
+      });
       const [isOk, msg] = await service.validate();
       expect(isOk).toBe(true);
     });
@@ -32,6 +40,7 @@ describe('registra cliente', () => {
         empresa,
         email,
         password,
+        identLegal,
       });
       const [isOk, msg] = await service.validate();
       expect(isOk).toBe(false);
@@ -42,6 +51,7 @@ describe('registra cliente', () => {
         empresa: '',
         email,
         password,
+        identLegal,
       });
       const [isOk, msg] = await service.validate();
       expect(isOk).toBe(false);
@@ -52,6 +62,7 @@ describe('registra cliente', () => {
         empresa,
         email: '',
         password,
+        identLegal,
       });
       const [isOk, msg] = await service.validate();
       expect(isOk).toBe(false);
@@ -62,6 +73,7 @@ describe('registra cliente', () => {
         empresa,
         email,
         password: '',
+        identLegal,
       });
       const [isOk, msg] = await service.validate();
       expect(isOk).toBe(false);
@@ -69,7 +81,13 @@ describe('registra cliente', () => {
   });
   describe('ejecutar', () => {
     it('todos los datos, grabar ok', async () => {
-      const service = new SignupService({ nombre, empresa, email, password });
+      const service = new SignupService({
+        nombre,
+        empresa,
+        email,
+        password,
+        identLegal,
+      });
       const e = await service.execute();
       expect(e.nombre).toBe(empresa);
       expect(e.usuarios[0].email).toBe(email);
@@ -77,7 +95,13 @@ describe('registra cliente', () => {
       expect(e.usuarios[0].password).toBeTruthy();
     });
     it('clona el mapeador de campos', async () => {
-      const service = new SignupService({ nombre, empresa, email, password });
+      const service = new SignupService({
+        nombre,
+        empresa,
+        email,
+        password,
+        identLegal,
+      });
       const e = await service.execute();
       expect(e.fieldMappers.length).toBeGreaterThan(0);
     });
