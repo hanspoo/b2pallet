@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json",
+  "version": 2,
+  "projects": {
+    "api": "apps/api",
+    "api-interfaces": "libs/api-interfaces",
+    "batman": "apps/batman",
+    "components": "libs/components",
+    "components-e2e": "apps/components-e2e",
+    "dao": "libs/dao",
+    "etiquetas": "libs/etiquetas",
+    "flash": "apps/flash",
+    "flash-e2e": "apps/flash-e2e",
+    "generador": "apps/generador",
+    "my-plugin": "libs/my-plugin",
+    "my-plugin-e2e": "apps/my-plugin-e2e",
+    "prueba1": "libs/prueba1",
+    "reductor": "libs/reductor",
+    "robot": "libs/robot",
+    "shared": "libs/shared",
+    "worker": "libs/worker"
+  }
+}

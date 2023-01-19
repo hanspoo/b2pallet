@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "name": "my-plugin",
+  "version": "0.0.1",
+  "generators": {
+    "my-plugin": {
+      "factory": "./src/generators/my-plugin/generator",
+      "schema": "./src/generators/my-plugin/schema.json",
+      "description": "my-plugin generator"
+    },
+    "my-generator": {
+      "factory": "./src/generators/my-generator/generator",
+      "schema": "./src/generators/my-generator/schema.json",
+      "description": "my-generator generator"
+    },
+    "antd-table": {
+      "factory": "./src/generators/antd-table/generator",
+      "schema": "./src/generators/antd-table/schema.json",
+      "description": "antd-table generator"
+    },
+    "interfaces": {
+      "factory": "./src/generators/interfaces/generator",
+      "schema": "./src/generators/interfaces/schema.json",
+      "description": "Generate interfaces from entities"
+    }
+  }
+}

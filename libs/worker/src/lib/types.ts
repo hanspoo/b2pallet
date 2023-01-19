@@ -1,0 +1,41 @@
+const COL_NUM_ORDEN = 'Número de Orden';
+export { COL_NUM_ORDEN };
+
+export interface Linea {
+  'Número de Orden': number;
+  'Estado de Orden': string;
+  'RUT Comprador': string;
+  'RS Comprador': string;
+  'RUT Vendedor': string;
+  'RS Vendedor': string;
+  'Fecha Emisión': string;
+  'Fecha Entrega': string;
+  'Tipo Orden': string;
+  'Cód. Local Entrega': string;
+  'Nombre Local Entrega': string;
+  'Dirección Local Entrega': string;
+  'Cód. Local Destino': string;
+  'Local Destino': string;
+  'Cód. Cencosud': string;
+  'Cód. Proveedor': string;
+  EAN13: string;
+  'Cód. Empaque': string;
+  Descripción: string;
+  'Tipo Empaque': string;
+  'Unidades por Empaque': number;
+  'Empaques Pedidos': number;
+  'Precio Lista Empaque': number;
+  'Desc. Base1': number;
+  'Desc. Base2': number;
+  'Desc. Base3': number;
+  'Desc. Base4': number;
+  'Desc. Promo': number;
+  'Desc. Apertura': number;
+  Cargo1: number;
+  Cargo2: number;
+  Cargo3: number;
+  'Precio Costo Empaque': number;
+  'Términos de Pago': string;
+  Responsable: string;
+  'Unidad de Negocio': string;
+}
