@@ -40,11 +40,11 @@ export class SignupService {
   }
   enviarEmail() {
     const transporter = nodemailer.createTransport({
-      host: process.env.NEXT_SMTP_SERVER || "smtp.gmail.com",
-      port: process.env.NEXT_SMTP_PORT || 587,
+      host: process.env.NX_SMTP_SERVER || "smtp.gmail.com",
+      port: process.env.NX_SMTP_PORT || 587,
       auth: {
-        user: process.env.NEXT_SMTP_USER,
-        pass: process.env.NEXT_SMTP_PASS,
+        user: process.env.NX_SMTP_USER,
+        pass: process.env.NX_SMTP_PASS,
       },
     });
     transporter.verify().then(console.log).catch(console.error);
