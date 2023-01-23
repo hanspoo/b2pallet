@@ -1,3 +1,6 @@
+import { cleanupEmail, isValidEmail } from "@flash-ws/shared";
+
 export function prueba1(): string {
-  return 'prueba1';
+  isValidEmail(cleanupEmail(""));
+  return "prueba1";
 }

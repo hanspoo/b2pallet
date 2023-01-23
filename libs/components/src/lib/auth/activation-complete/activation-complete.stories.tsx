@@ -12,3 +12,4 @@ const Template: ComponentStory<typeof ActivationComplete> = (args) => (
 
 export const Primary = Template.bind({});
 Primary.args = {};
+

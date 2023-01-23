@@ -1,12 +1,12 @@
-import { LoginRequest } from '@flash-ws/api-interfaces';
+import { LoginRequest, RecoverPasswordRequest } from "@flash-ws/api-interfaces";
 import {
   dataSource,
   Empresa,
   inicializarCencosud,
   Usuario,
-} from '@flash-ws/dao';
-import request = require('supertest');
-import { app } from '../../app';
+} from "@flash-ws/dao";
+import request = require("supertest");
+import { app } from "../../app";
 
 beforeAll(async () => {
   await inicializarCencosud();
@@ -22,28 +22,36 @@ beforeAll(async () => {
   await dataSource.getRepository(Empresa).save(empresa);
 });
 const credentials: LoginRequest = {
-  email: 'admin@b2pallet.com',
-  password: '123456',
+  email: "admin@b2pallet.com",
+  password: "123456",
 };
 
-describe('login', () => {
-  it('responde token en login correcto', async () => {
-    const res = await request(app).post('/api/auth/login').send(credentials);
+describe("login", () => {
+  it("responde token en login correcto", async () => {
+    const res = await request(app).post("/api/auth/login").send(credentials);
     expect(res.statusCode).toEqual(200);
-    console.log(res.headers['x-token']);
+    console.log(res.headers["x-token"]);
 
-    expect(res.headers['x-token']).toBeTruthy();
+    expect(res.headers["x-token"]).toBeTruthy();
   });
-  it('puede acceder a home page: ordenes con el token', async () => {
+  it("puede acceder a home page: ordenes con el token", async () => {
     const loginResult = await request(app)
-      .post('/api/auth/login')
+      .post("/api/auth/login")
       .send(credentials);
 
-    const token = loginResult.headers['x-token'];
+    const token = loginResult.headers["x-token"];
 
     const landingResult = await request(app)
-      .get('/api/ordenes/consolidadas')
-      .set('Authorization', `Bearer ${token}`);
+      .get("/api/ordenes/consolidadas")
+      .set("Authorization", `Bearer ${token}`);
     expect(landingResult.statusCode).toEqual(200);
+  });
+  it("recuperar contraseña", async () => {
+    const data: RecoverPasswordRequest = { email: "admin@b2pallet.com" };
+    const response = await request(app)
+      .post("/api/auth/recover-pass")
+      .send(data);
+
+    expect(response.statusCode).toEqual(200);
   });
 });

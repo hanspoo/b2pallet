@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import styles from "../auth-form.module.css"
 import { Button, Checkbox, Form, Input, notification, Typography } from 'antd';
-import { LoginRequest } from '@flash-ws/api-interfaces';
+import { LoginRequest, RecoverPasswordRequest } from '@flash-ws/api-interfaces';
 import { useDispatch } from 'react-redux';
 import { setLoggedIn } from '@flash-ws/reductor';
 import axios from 'axios';
@@ -19,9 +19,7 @@ export const RecoverPassword: React.FC<{ cancel: () => void }> = ({ cancel }) =>
   const dispatch = useDispatch();
 
 
-  type RecoverPasswordRequest = {
-    email: string
-  }
+
   const onFinish = (values: any) => {
 
     const { email } = values;

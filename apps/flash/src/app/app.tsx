@@ -15,10 +15,11 @@ import {
   SeccionOrdenes,
   Preferencias,
   LoginSection,
+  useHttpClient,
 } from '@flash-ws/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { actualizarProductos, logout, RootState } from '@flash-ws/reductor';
-import { useHttpClient } from 'libs/components/src/lib/useHttpClient';
+
 
 const { Header, Sider, Content } = Layout;
 

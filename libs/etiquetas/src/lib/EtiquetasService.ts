@@ -1,12 +1,13 @@
-import { jsPDF } from 'jspdf';
-import { EtiquetaPallet } from '../../../api-interfaces/src/lib/EtiquetaPallet';
-import { EtiquetaCaja } from './EtiquetaProducto';
-import { dataSource, OrdenCompra } from '@flash-ws/dao';
-import { randomBytes } from 'crypto';
-import { PDFDocument } from 'pdf-lib';
-import { epBarcode } from './epBarcode';
-import { epcajaBarcode } from './epcajaBarcode';
-import { numericPart } from '@flash-ws/shared';
+import { jsPDF } from "jspdf";
+
+import { EtiquetaCaja } from "./EtiquetaProducto";
+import { dataSource, OrdenCompra } from "@flash-ws/dao";
+import { randomBytes } from "crypto";
+import { PDFDocument } from "pdf-lib";
+import { epBarcode } from "./epBarcode";
+import { epcajaBarcode } from "./epcajaBarcode";
+import { numericPart } from "@flash-ws/shared";
+import { EtiquetaPallet } from "@flash-ws/api-interfaces";
 
 export class EtiquetasService {
   async etiquetasProductos(idPallet: number): Promise<EtiquetaCaja[]> {
@@ -40,10 +41,10 @@ WHERE
   async genPdfProductos(cajas: EtiquetaCaja[]): Promise<string> {
     {
       const doc = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
+        orientation: "landscape",
+        unit: "mm",
         // format: [40, 50],
-        format: 'a9',
+        format: "a9",
       });
       doc.setFontSize(8);
 
@@ -59,8 +60,8 @@ WHERE
         // const height = doc.internal.pageSize.getHeight();
 
         doc.addImage(
-          `data:image/png;base64,${barcodes[i].toString('base64')}`,
-          'png',
+          `data:image/png;base64,${barcodes[i].toString("base64")}`,
+          "png",
           1,
           1,
           width,
@@ -68,8 +69,8 @@ WHERE
         );
 
         if (!ep.codCenco) {
-          console.log('ep', ep);
-          throw Error('No viene codcenco');
+          console.log("ep", ep);
+          throw Error("No viene codcenco");
         }
 
         centeredNormal(doc, ep.codCenco, 20, 10);
@@ -77,7 +78,7 @@ WHERE
         centeredNormal(doc, ep.posicion, 32, 8);
       });
 
-      const fileName = `/tmp/` + randomBytes(6).toString('hex') + '.pdf';
+      const fileName = `/tmp/` + randomBytes(6).toString("hex") + ".pdf";
       doc.save(fileName);
 
       return fileName;
@@ -85,9 +86,9 @@ WHERE
   }
   async genPdf(etiPallets: EtiquetaPallet[]): Promise<string> {
     const doc = new jsPDF({
-      orientation: 'landscape',
-      unit: 'cm',
-      format: 'a7',
+      orientation: "landscape",
+      unit: "cm",
+      format: "a7",
       compress: true,
     });
     doc.setFontSize(14);
@@ -100,7 +101,7 @@ WHERE
     etiPallets.forEach((ep, i) => {
       if (i > 0) doc.addPage();
 
-      if (!ep['identLegal'])
+      if (!ep["identLegal"])
         throw Error(`No viene identlegal en etipallet` + JSON.stringify(ep));
 
       // doc.text(ep.identLegal, 1, 1);
@@ -112,18 +113,18 @@ WHERE
 
       const width = doc.internal.pageSize.getWidth();
       doc.addImage(
-        `data:image/png;base64,${barcodes[i].toString('base64')}`,
-        'png',
+        `data:image/png;base64,${barcodes[i].toString("base64")}`,
+        "png",
         0.5,
         0.5,
         width - 1,
         2,
-        'FAST'
+        "FAST"
       );
 
       centeredNormal(
         doc,
-        numericPart(ep.identLegal) + ep.hu.toString().padStart(8, '0'),
+        numericPart(ep.identLegal) + ep.hu.toString().padStart(8, "0"),
         3
       );
       centeredBold(doc, ep.vendedor, 4.4);
@@ -131,7 +132,7 @@ WHERE
       centeredBold(doc, ep.codLocal, 6.3);
     });
 
-    const fileName = `/tmp/` + randomBytes(6).toString('hex') + '.pdf';
+    const fileName = `/tmp/` + randomBytes(6).toString("hex") + ".pdf";
     doc.save(fileName);
 
     return fileName;
@@ -186,9 +187,9 @@ const centeredBold = function (doc: any, text: string, y: number) {
     (doc.getStringUnitWidth(text) * doc.internal.getFontSize()) /
     doc.internal.scaleFactor;
   const textOffset = (doc.internal.pageSize.width - textWidth) / 2;
-  doc.setFont(undefined, 'bold');
+  doc.setFont(undefined, "bold");
   doc.text(textOffset, y, text);
-  doc.setFontSize(14).setFont(undefined, 'normal');
+  doc.setFontSize(14).setFont(undefined, "normal");
 };
 const centeredNormal = function (doc: any, text: string, y: number, size = 14) {
   doc.setFontSize(size);

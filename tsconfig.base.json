@@ -20,8 +20,10 @@
     "paths": {
       "@flash-ws/api-interfaces": ["libs/api-interfaces/src/index.ts"],
       "@flash-ws/components": ["libs/components/src/index.ts"],
+      "@flash-ws/core": ["libs/core/src/index.ts"],
       "@flash-ws/dao": ["libs/dao/src/index.ts"],
       "@flash-ws/etiquetas": ["libs/etiquetas/src/index.ts"],
+      "@flash-ws/mail-utils": ["libs/mail-utils/src/index.ts"],
       "@flash-ws/my-plugin": ["libs/my-plugin/src/index.ts"],
       "@flash-ws/prueba1": ["libs/prueba1/src/index.ts"],
       "@flash-ws/reductor": ["libs/reductor/src/index.ts"],
