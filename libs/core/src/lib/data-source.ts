@@ -20,8 +20,8 @@ import { Usuario } from "./entity/auth/usuario.entity";
 import { FieldsMapper } from "./entity/campos/FieldsMapper";
 import { FieldMap } from "./entity/campos/FieldMap";
 import { SolicitudRegistro } from "./entity/auth/solicitud-registro.entity";
-import { SolicitudRecupPassword } from "./entity/auth/solicitud-recup-password.entity";
-import { PermisoModifCuenta } from "./entity/auth/permiso-modif-cuenta.entity";
+import { SolicitudAutenticarEmail } from "./entity/auth/solicitud-autenticar-email.entity";
+import { PermisoUsarEmail } from "./entity/auth/permiso-usar-email.entity";
 const LOGGING = !!process.env["DEBUG_DB"] || false;
 const testEnv = "test";
 
@@ -60,8 +60,8 @@ const dataSource = new DataSource({
     FieldsMapper,
     FieldMap,
     SolicitudRegistro,
-    SolicitudRecupPassword,
-    PermisoModifCuenta,
+    SolicitudAutenticarEmail,
+    PermisoUsarEmail,
   ],
   logging: LOGGING,
   synchronize: true,

@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import {
   dataSource,
   inicializarSistema,
-  SolicitudRecupPassword,
+  SolicitudAutenticarEmail,
 } from "@flash-ws/core";
 import request from "supertest";
 import { app } from "../../app";
@@ -38,7 +38,7 @@ describe("solicitud recup pass", () => {
 describe("validar codigo seguridad", () => {
   it("con código válido da 200", async () => {
     const cseg = randomCseg();
-    const repo = dataSource.getRepository(SolicitudRecupPassword);
+    const repo = dataSource.getRepository(SolicitudAutenticarEmail);
     await repo.save(repo.create({ email, cseg }));
 
     const response = await request(app)

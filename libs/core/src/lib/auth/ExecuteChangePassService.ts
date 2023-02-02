@@ -1,12 +1,12 @@
 import { cleanupEmail } from "@flash-ws/mail-utils";
 import { PassService } from "./PassService";
 import { dataSource } from "../data-source";
-import { PermisoModifCuenta } from "../entity/auth/permiso-modif-cuenta.entity";
+import { PermisoUsarEmail } from "../entity/auth/permiso-usar-email.entity";
 import { Usuario } from "../entity/auth/usuario.entity";
 import { logger } from "../utils/logger";
 
 export const repoUsr = dataSource.getRepository(Usuario);
-export const repoPermisos = dataSource.getRepository(PermisoModifCuenta);
+export const repoPermisos = dataSource.getRepository(PermisoUsarEmail);
 
 export type ExecuteChangePassResponse = {
   success: boolean;

@@ -7,6 +7,7 @@ declare global {
       NX_SMTP_PORT: string;
       NX_SMTP_USER: string;
       USAR_COD_CENCO: string;
+      VIGENCIA_PERMISOS: number;
     }
   }
 }

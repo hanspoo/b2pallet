@@ -13,7 +13,7 @@ import {
   LoginService,
   RecoverPasswordService,
   SignupService,
-  ValidaSolicitudAutenticarEmail,
+  ValidarSolicitudAutenticarEmail,
 } from "@flash-ws/core";
 import * as express from "express";
 import { Request, Response } from "express";
@@ -117,7 +117,7 @@ auth.post(
       return res.status(400).send("Debe entregar el email y contraseña");
     }
 
-    const service = new ValidaSolicitudAutenticarEmail();
+    const service = new ValidarSolicitudAutenticarEmail();
     const response = await service.execute(email, cseg);
     if (response.success) {
       return res.send({ token: response.permiso.token });

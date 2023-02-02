@@ -7,7 +7,7 @@ import {
 } from "@flash-ws/mail-utils";
 
 import { Usuario } from "../entity/auth/usuario.entity";
-import { SolicitudRecupPassword } from "../entity/auth/solicitud-recup-password.entity";
+import { SolicitudAutenticarEmail } from "../entity/auth/solicitud-autenticar-email.entity";
 
 import { RecoverPasswordServiceResult } from "./RecoverPasswordServiceResult";
 import { errMessage, genCodSeguridad } from "@flash-ws/shared";
@@ -21,7 +21,7 @@ export class RecoverPasswordService {
 
   async execute(): Promise<RecoverPasswordServiceResult> {
     const repoUsr = dataSource.getRepository(Usuario);
-    const repoSol = dataSource.getRepository(SolicitudRecupPassword);
+    const repoSol = dataSource.getRepository(SolicitudAutenticarEmail);
 
     const email = cleanupEmail(this.email);
     if (!isValidEmail(this.email)) {

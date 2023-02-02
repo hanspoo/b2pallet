@@ -3,7 +3,8 @@ import { ExecuteChangePassRequest } from "@flash-ws/api-interfaces";
 import {
   dataSource,
   inicializarSistema,
-  PermisoModifCuenta,
+  MotivoPermiso,
+  PermisoUsarEmail,
 } from "@flash-ws/core";
 import { randomEmail } from "@flash-ws/shared";
 import { randomBytes } from "crypto";
@@ -53,7 +54,9 @@ export async function crearPermisoFake(
 ): Promise<[string, string]> {
   const token = randomBytes(6).toString("hex");
   email = email || randomEmail();
-  const repo = dataSource.getRepository(PermisoModifCuenta);
-  await repo.save(repo.create({ token, email }));
+  const repo = dataSource.getRepository(PermisoUsarEmail);
+  await repo.save(
+    repo.create({ token, email, motivo: MotivoPermiso.RECUPERAR_PASSWORD })
+  );
   return [email, token];
 }

@@ -1,8 +1,11 @@
 import { randomEmail, randomCseg } from "@flash-ws/shared";
 import { randomBytes } from "crypto";
 import { dataSource } from "../../lib/data-source";
-import { PermisoModifCuenta } from "../../lib/entity/auth/permiso-modif-cuenta.entity";
-import { SolicitudRecupPassword } from "../../lib/entity/auth/solicitud-recup-password.entity";
+import {
+  MotivoPermiso,
+  PermisoUsarEmail,
+} from "../../lib/entity/auth/permiso-usar-email.entity";
+import { SolicitudAutenticarEmail } from "../../lib/entity/auth/solicitud-autenticar-email.entity";
 import { SolicitudRegistro } from "../../lib/entity/auth/solicitud-registro.entity";
 
 export const fakeToken = () => randomBytes(6).toString("hex");
@@ -12,8 +15,10 @@ export async function crearPermisoFake(
 ): Promise<[string, string]> {
   const token = randomBytes(6).toString("hex");
   email = email || randomEmail();
-  const repo = dataSource.getRepository(PermisoModifCuenta);
-  await repo.save(repo.create({ token, email }));
+  const repo = dataSource.getRepository(PermisoUsarEmail);
+  await repo.save(
+    repo.create({ token, email, motivo: MotivoPermiso.RECUPERAR_PASSWORD })
+  );
   return [email, token];
 }
 
@@ -55,7 +60,7 @@ export class SolicitudBuilder {
   }
 }
 
-export async function creaSolicitudAutenticar(): Promise<SolicitudRecupPassword> {
-  const repo = dataSource.getRepository(SolicitudRecupPassword);
+export async function creaSolicitudAutenticar(): Promise<SolicitudAutenticarEmail> {
+  const repo = dataSource.getRepository(SolicitudAutenticarEmail);
   return repo.save(repo.create({ email: randomEmail(), cseg: randomCseg() }));
 }

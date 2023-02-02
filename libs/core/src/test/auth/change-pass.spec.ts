@@ -3,13 +3,13 @@ import { randomEmail } from "@flash-ws/shared";
 import { randomUUID } from "crypto";
 import { crearPermisoFake, fakeToken } from "./auth-test-utils";
 import { dataSource } from "../../lib/data-source";
-import { PermisoModifCuenta } from "../../lib/entity/auth/permiso-modif-cuenta.entity";
+import { PermisoUsarEmail } from "../../lib/entity/auth/permiso-usar-email.entity";
 import { Usuario } from "../../lib/entity/auth/usuario.entity";
 import { inicializarSistema } from "../../lib/inicializarSistema";
 import { ExecuteChangePassService } from "../../lib/auth/ExecuteChangePassService";
 
 export const repoUsr = dataSource.getRepository(Usuario);
-export const repo = dataSource.getRepository(PermisoModifCuenta);
+export const repo = dataSource.getRepository(PermisoUsarEmail);
 
 beforeAll(async () => {
   await inicializarSistema();

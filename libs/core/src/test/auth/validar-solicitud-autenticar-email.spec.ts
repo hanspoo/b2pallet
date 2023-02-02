@@ -3,9 +3,9 @@
 
 import { inicializarSistema } from "../../lib/inicializarSistema";
 import {
-  ValidaSolicitudAutenticarEmail,
+  ValidarSolicitudAutenticarEmail,
   ValidaSolicitudAutenticarEmailResponse,
-} from "../../lib/auth/ValidarRecuperacionService";
+} from "../../lib/auth/ValidarSolicitudAutenticarEmail";
 import { randomCseg, randomEmail } from "@flash-ws/shared";
 import { creaSolicitudAutenticar } from "./auth-test-utils";
 
@@ -15,7 +15,7 @@ beforeAll(async () => {
 
 describe("valida código de seguridad", () => {
   it("email y código inválido envia error", async () => {
-    const s = new ValidaSolicitudAutenticarEmail();
+    const s = new ValidarSolicitudAutenticarEmail();
     const resultado: ValidaSolicitudAutenticarEmailResponse = await s.execute(
       randomEmail(),
       randomCseg()
@@ -26,7 +26,7 @@ describe("valida código de seguridad", () => {
   });
   it("email y código válido, envia token", async () => {
     const sol = await creaSolicitudAutenticar();
-    const servicio = new ValidaSolicitudAutenticarEmail();
+    const servicio = new ValidarSolicitudAutenticarEmail();
     const resultado: ValidaSolicitudAutenticarEmailResponse =
       await servicio.execute(sol.email, sol.cseg);
 
@@ -36,7 +36,7 @@ describe("valida código de seguridad", () => {
   });
   it("email ok y código error, da error", async () => {
     const sol = await creaSolicitudAutenticar();
-    const servicio = new ValidaSolicitudAutenticarEmail();
+    const servicio = new ValidarSolicitudAutenticarEmail();
     const resultado: ValidaSolicitudAutenticarEmailResponse =
       await servicio.execute(sol.email, 999999);
 

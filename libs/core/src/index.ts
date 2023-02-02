@@ -8,11 +8,11 @@ export * from "./lib/inicializarSistema";
 export * from "./lib/entity/campos/FieldsMapper";
 export * from "./lib/entity/campos/FieldMap";
 
-export * from "./lib/entity/auth/solicitud-recup-password.entity";
+export * from "./lib/entity/auth/solicitud-autenticar-email.entity";
 export * from "./lib/entity/auth/token.entity";
 export * from "./lib/entity/auth/empresa.entity";
 export * from "./lib/entity/auth/usuario.entity";
-export * from "./lib/entity/auth/permiso-modif-cuenta.entity";
+export * from "./lib/entity/auth/permiso-usar-email.entity";
 
 export * from "./lib/entity/local.entity";
 export * from "./lib/entity/linea-detalle.entity";
@@ -49,7 +49,7 @@ export * from "./lib/parser-2.0/config-campos-cenco";
 export * from "./lib/auth/CrearUsuarioService";
 export * from "./lib/auth/ActivationServiceResponse";
 export * from "./lib/auth/RecoverPasswordService";
-export * from "./lib/auth/ValidarRecuperacionService";
+export * from "./lib/auth/ValidarSolicitudAutenticarEmail";
 export * from "./lib/auth/ExecuteChangePassService";
 
 // Genera imports

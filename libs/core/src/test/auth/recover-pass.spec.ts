@@ -3,7 +3,7 @@
 import { Mailer, SendMailArgs } from "@flash-ws/mail-utils";
 import { RecoverPasswordService } from "../../lib/auth/RecoverPasswordService";
 import { inicializarSistema } from "../../lib/inicializarSistema";
-import { ValidaSolicitudAutenticarEmail } from "../../lib/auth/ValidarRecuperacionService";
+import { ValidarSolicitudAutenticarEmail } from "../../lib/auth/ValidarSolicitudAutenticarEmail";
 import { randomCseg, randomEmail } from "@flash-ws/shared";
 
 beforeAll(async () => {
@@ -70,7 +70,7 @@ describe("recuperación de contraseña", () => {
   describe("paso2 handler validar email y codigo", () => {
     describe("valida que el código ingresado corresponda a solicitud para el email", () => {
       it("con código inválido manda error 1", async () => {
-        const service = new ValidaSolicitudAutenticarEmail();
+        const service = new ValidarSolicitudAutenticarEmail();
         const response = await service.execute(randomEmail(), randomCseg());
         expect(response.success).toBe(false);
       });
@@ -81,7 +81,7 @@ describe("recuperación de contraseña", () => {
         const res1 = await recoverPassService.execute();
         const cseg = res1.solicitud!.cseg;
 
-        const validarRecupService = new ValidaSolicitudAutenticarEmail();
+        const validarRecupService = new ValidarSolicitudAutenticarEmail();
         const response = await validarRecupService.execute(email, cseg);
         expect(response.success).toBe(true);
       });

@@ -1,7 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from "typeorm";
 
 @Entity()
-export class SolicitudRecupPassword {
+export class SolicitudAutenticarEmail {
+  static vigenciaMinutos(): number {
+    if (process.env.VIGENCIA_PERMISOS)
+      return parseInt(process.env.VIGENCIA_PERMISOS + "");
+    return 5;
+  }
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -19,7 +24,7 @@ export class SolicitudRecupPassword {
 
   @BeforeInsert()
   updateDates() {
-    this.created_at = new Date().getTime();
+    if (!this.created_at) this.created_at = new Date().getTime();
     this.vigente = true;
   }
 }

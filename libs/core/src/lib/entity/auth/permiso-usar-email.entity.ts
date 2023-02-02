@@ -1,9 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from "typeorm";
 
+export enum MotivoPermiso {
+  RECUPERAR_PASSWORD = "RECUPERAR_PASSWORD",
+  REGISTRAR_EMPRESA = "REGISTRAR_EMPRESA",
+}
 @Entity()
-export class PermisoModifCuenta {
+export class PermisoUsarEmail {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  motivo: string;
 
   @Column()
   email: string;
