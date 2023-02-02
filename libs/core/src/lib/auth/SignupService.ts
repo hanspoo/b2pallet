@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import { randomInt } from "node:crypto";
 import { dataSource } from "../data-source";
 import { SolicitudRegistro } from "../entity/auth/solicitud-registro.entity";
+import { genCodSeguridad } from "@flash-ws/shared";
 
 export type SignupArgs = {
   identLegal: string;
@@ -22,7 +23,7 @@ export class SignupService {
   async execute(): Promise<SolicitudRegistro> {
     const repo = dataSource.getRepository(SolicitudRegistro);
 
-    this.codigoSeguridad = randomInt(100000, 999999);
+    this.codigoSeguridad = genCodSeguridad();
     const sol = await repo.save(
       repo.create({
         identLegal: this.identLegal,

@@ -16,7 +16,7 @@ import { unidades } from "./routers/unidades";
 import { pallets } from "./routers/pallets";
 import { clientes } from "./routers/clientes";
 import { archivos } from "./routers/archivos";
-import { TokenService } from "@flash-ws/dao";
+import { TokenService } from "@flash-ws/core";
 import { fieldsMappers } from "./routers/fields-mappers";
 
 type ReqWithSession = Request<

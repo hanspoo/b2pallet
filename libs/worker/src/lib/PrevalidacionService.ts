@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import { dataSource, Producto, UnidadNegocio } from '@flash-ws/dao';
+import { dataSource, Producto, UnidadNegocio } from '@flash-ws/core';
 import { fieldMap, firstSheetAsJSON } from './b2butils';
 import { COL_NUM_ORDEN, Linea } from './types';
 

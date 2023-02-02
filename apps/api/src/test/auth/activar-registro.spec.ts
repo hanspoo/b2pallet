@@ -2,7 +2,7 @@ import {
   ActivationRequest,
   ActivationResponse,
 } from '@flash-ws/api-interfaces';
-import { inicializarSistema } from '@flash-ws/dao';
+import { inicializarSistema } from '@flash-ws/core';
 import request from 'supertest';
 import { app } from '../../app';
 

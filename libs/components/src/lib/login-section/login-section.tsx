@@ -13,7 +13,7 @@ enum View {
   SIGNUP,
   ACTIVATION,
   ACTIVATION_COMPLETE,
-  RECOVER_PASSWORD
+  RECOVER_PASSWORD,
 }
 export function LoginSection(props: LoginSectionProps) {
   const [email, setEmail] = useState("")

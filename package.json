@@ -6,7 +6,8 @@
     "start": "nx serve",
     "start:api": "nx serve api",
     "build": "nx build",
-    "test": "nx run-many --target=test --all --runInBand",
+    "test:para": "nx run-many --target=test --all --runInBand --silent",
+    "test": "nx run-many --target=test --all --silent",
     "test:integ": "jest --group=integ --runInBand"
   },
   "private": true,
@@ -59,6 +60,7 @@
     "supertest": "^6.2.4",
     "tslib": "^2.3.0",
     "typeorm": "^0.3.10",
+    "winston": "^3.8.2",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

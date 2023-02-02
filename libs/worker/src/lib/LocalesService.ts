@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Local, UnidadNegocio, dataSource } from '@flash-ws/dao';
+import { Local, UnidadNegocio, dataSource } from '@flash-ws/core';
 import { ClienteService } from './ClienteService';
 import { firstSheetAsJSON } from './b2butils';
 import { fixNombreLocal, ifDebug } from '@flash-ws/shared';

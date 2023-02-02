@@ -1,4 +1,4 @@
-import { dataSource, FieldsMapper } from '@flash-ws/dao';
+import { dataSource, FieldsMapper } from '@flash-ws/core';
 import * as express from 'express';
 import { Request, Response } from 'express';
 

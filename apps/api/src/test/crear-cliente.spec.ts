@@ -3,7 +3,7 @@ import {
   obtainToken,
   dataSource,
   Cliente,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 
 beforeAll(async () => {
   await inicializarCencosud();

@@ -21,10 +21,11 @@ import { FieldsMapper } from "./entity/campos/FieldsMapper";
 import { FieldMap } from "./entity/campos/FieldMap";
 import { SolicitudRegistro } from "./entity/auth/solicitud-registro.entity";
 import { SolicitudRecupPassword } from "./entity/auth/solicitud-recup-password.entity";
+import { PermisoModifCuenta } from "./entity/auth/permiso-modif-cuenta.entity";
 const LOGGING = !!process.env["DEBUG_DB"] || false;
 const testEnv = "test";
 
-const dataSource = new DataSource({
+const dbArgs: any = {
   type: process.env["NODE_ENV"] === testEnv ? "sqlite" : "postgres",
   host: process.env["DB_HOST"] || "localhost",
   username: process.env["DB_USER"] || "flash",
@@ -34,6 +35,11 @@ const dataSource = new DataSource({
     process.env["NODE_ENV"] === testEnv
       ? "/tmp/db/" + crypto.randomBytes(12).toString("hex")
       : "flash",
+};
+console.log("dbArgs", dbArgs);
+
+const dataSource = new DataSource({
+  ...dbArgs,
   entities: [
     Archivo,
     User,
@@ -55,6 +61,7 @@ const dataSource = new DataSource({
     FieldMap,
     SolicitudRegistro,
     SolicitudRecupPassword,
+    PermisoModifCuenta,
   ],
   logging: LOGGING,
   synchronize: true,

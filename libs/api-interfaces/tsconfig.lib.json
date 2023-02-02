@@ -5,6 +5,11 @@
     "declaration": true,
     "types": []
   },
-  "include": ["**/*.ts", "../dao/src/lib/auth/ActivactionServiceResponse.ts"],
+  "include": [
+    "**/*.ts",
+    "../dao/src/lib/auth/ActivactionServiceResponse.ts",
+    "../../*.d.ts",
+    "../core/src/lib/auth/RecoverPasswordServiceResult.ts"
+  ],
   "exclude": ["jest.config.ts", "**/*.spec.ts"]
 }

@@ -1,24 +1,24 @@
-import { dataSource } from '../../lib/data-source';
-import { Local } from '../../lib/entity/local.entity';
-import { In } from 'typeorm';
-import { OrdenCompra } from '../../lib/entity/orden-compra.entity';
-import { UnidadNegocio } from '../../lib/entity/unidad-negocio.entity';
-import { inicializarCencosud } from '../../lib/inicializarCencosud';
+import { dataSource } from "../../lib/data-source";
+import { Local } from "../../lib/entity/local.entity";
+import { In } from "typeorm";
+import { OrdenCompra } from "../../lib/entity/orden-compra.entity";
+import { UnidadNegocio } from "../../lib/entity/unidad-negocio.entity";
+import { inicializarCencosud } from "../../lib/inicializarCencosud";
 
 const xxx = {
-  numero: '5575426472',
-  emision: '15-09-2022',
-  entrega: '22-09-2022',
+  numero: "5575426472",
+  emision: "15-09-2022",
+  entrega: "22-09-2022",
   cliente: {
-    nombre: 'CENCOSUD RETAIL S.A.',
-    identLegal: 'C001',
+    nombre: "CENCOSUD RETAIL S.A.",
+    identLegal: "C001",
     unidades: [
       {
-        nombre: 'Sisa',
+        nombre: "Sisa",
         locales: [
           {
-            codigo: 'N524',
-            nombre: '185 -SISA-LINARES-JANUARIO-ESP',
+            codigo: "N524",
+            nombre: "185 -SISA-LINARES-JANUARIO-ESP",
             id: 1,
           },
         ],
@@ -28,42 +28,42 @@ const xxx = {
     ordenes: [],
     empresa: {
       id: 1,
-      nombre: 'b2pallet',
+      nombre: "b2pallet",
       identLegal: null,
     },
     id: 2,
   },
   lineas: [
     {
-      estado: 'Nada',
+      estado: "Nada",
       cantidad: 1,
       productoId: 1,
       localId: 1,
       producto: {
         id: 1,
-        nombre: 'Producto de prueba',
-        codigo: 'DRBIO-00634',
+        nombre: "Producto de prueba",
+        codigo: "DRBIO-00634",
         peso: 1,
-        codCenco: '1647753',
+        codCenco: "1647753",
         vigente: true,
       },
       local: {
         id: 1,
-        codigo: 'N524',
-        nombre: '185 -SISA-LINARES-JANUARIO-ESP',
+        codigo: "N524",
+        nombre: "185 -SISA-LINARES-JANUARIO-ESP",
       },
     },
   ],
 };
 
-const orden = xxx as OrdenCompra;
+const orden = xxx as any as OrdenCompra;
 
 beforeAll(async () => {
   await inicializarCencosud();
 });
 
-describe.skip('agregar unidad', () => {
-  it('le agrega unidad a orden de compra', () => {
+describe.skip("agregar unidad", () => {
+  it("le agrega unidad a orden de compra", () => {
     expect(orden.unidad).toBeFalsy();
     agregarUnidad(orden);
     expect(orden.unidad).toBeTruthy();
@@ -86,7 +86,7 @@ async function agregarUnidad(orden: OrdenCompra) {
 
   const locals: Array<Local> = await dataSource
     .getRepository(Local)
-    .find({ where: { id: In(ids) }, relations: ['unidad'] });
+    .find({ where: { id: In(ids) }, relations: ["unidad"] });
 
   // Sacar las unidades diferentes, debe ser una sóla
 

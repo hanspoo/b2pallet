@@ -7,7 +7,7 @@ import {
   inicializarCencosud,
   OrdenCompra,
   UnidadNegocio,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 import { LocalesService } from '../lib/LocalesService';
 import { OrdenService } from '../lib/OrdenService';
 import { FixtureBuilder } from './XLSFixtureBuilder';

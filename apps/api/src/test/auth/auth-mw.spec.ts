@@ -1,4 +1,4 @@
-import { inicializarCencosud } from '@flash-ws/dao';
+import { inicializarCencosud } from '@flash-ws/core';
 
 import request = require('supertest');
 import { app } from '../../app';

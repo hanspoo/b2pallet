@@ -1,4 +1,4 @@
-import { dataSource, Archivo, ProtoPallet } from '@flash-ws/dao';
+import { dataSource, Archivo, ProtoPallet } from '@flash-ws/core';
 
 const archivo = {
   originalname: 'orden-un-local.xls',

@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { dataSource as myDataSource, User } from '@flash-ws/dao';
+import { dataSource as myDataSource, User } from '@flash-ws/core';
 
 const users = express.Router();
 users.get('/', async function (req: Request, res: Response) {

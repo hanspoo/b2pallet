@@ -1,4 +1,4 @@
-import { LineaDetalle } from '@flash-ws/dao';
+import { LineaDetalle } from '@flash-ws/core';
 import { LineaConsolidada } from './LineaConsolidada';
 import { calcularEstado } from './worker';
 

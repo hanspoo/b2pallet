@@ -2,7 +2,7 @@ import * as express from 'express';
 import { Request, Response } from 'express';
 
 
-import { dataSource, Local } from '@flash-ws/dao';
+import { dataSource, Local } from '@flash-ws/core';
 
 const locales = express.Router();
 locales.get('/', async function (req: Request, res: Response) {

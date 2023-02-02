@@ -15,7 +15,7 @@ import {
   ServicioPallets,
   ultimaHUCliente,
   UnidadNegocio,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 import { EtiquetasService } from '@flash-ws/etiquetas';
 import {
   ClienteService,
@@ -38,7 +38,7 @@ import {
   SubirOrdenBody,
 } from '@flash-ws/api-interfaces';
 
-import { SuperOrden } from '@flash-ws/dao';
+import { SuperOrden } from '@flash-ws/core';
 import { PalletRobot, PalletRobotConfig } from '@flash-ws/robot';
 import { ifDebug } from '@flash-ws/shared';
 import { In } from 'typeorm';

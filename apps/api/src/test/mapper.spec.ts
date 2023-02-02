@@ -1,5 +1,5 @@
 import { LoaderPostBody } from '@flash-ws/api-interfaces';
-import { Archivo, inicializarSistema, obtainToken } from '@flash-ws/dao';
+import { Archivo, inicializarSistema, obtainToken } from '@flash-ws/core';
 import request, { Response } from 'supertest';
 import { app } from '../app';
 import { crearArchivoValido } from './utils';

@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
 
 import { EtiquetaCaja } from "./EtiquetaProducto";
-import { dataSource, OrdenCompra } from "@flash-ws/dao";
+import { dataSource, OrdenCompra } from "@flash-ws/core";
 import { randomBytes } from "crypto";
 import { PDFDocument } from "pdf-lib";
 import { epBarcode } from "./epBarcode";

@@ -7,7 +7,7 @@ import {
   OrdenService,
   PrevalidacionService,
 } from '@flash-ws/worker';
-import { dataSource, UnidadNegocio } from '@flash-ws/dao';
+import { dataSource, UnidadNegocio } from '@flash-ws/core';
 
 const unidades = express.Router();
 unidades.get('/', async function (req: Request, res: Response) {

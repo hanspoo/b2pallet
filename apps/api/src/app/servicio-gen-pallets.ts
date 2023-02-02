@@ -5,7 +5,7 @@ import {
   Pallet,
   ProtoPallet,
   consolidaPallets,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 import { PalletRobot } from '@flash-ws/robot';
 
 async function genPallets(

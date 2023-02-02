@@ -5,9 +5,9 @@ import {
   OrdenCompra,
   Producto,
   ProtoPallet,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 
-import { crearOrdenHelper } from '@flash-ws/dao';
+import { crearOrdenHelper } from '@flash-ws/core';
 import { PalletRobot } from '../lib/PalletRobot';
 
 let orden: OrdenCompra;

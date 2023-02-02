@@ -2,7 +2,7 @@ import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
 
-import { dataSource, Cliente, ultimaHUCliente } from '@flash-ws/dao';
+import { dataSource, Cliente, ultimaHUCliente } from '@flash-ws/core';
 
 const clientes = express.Router();
 clientes.get('/', async function (req: Request, res: Response) {

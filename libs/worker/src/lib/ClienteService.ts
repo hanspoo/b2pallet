@@ -1,4 +1,4 @@
-import { Cliente, Local, Pedido, dataSource } from '@flash-ws/dao';
+import { Cliente, Local, Pedido, dataSource } from '@flash-ws/core';
 
 const repo = dataSource.getRepository(Cliente);
 

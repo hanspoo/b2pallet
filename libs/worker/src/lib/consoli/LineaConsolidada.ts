@@ -1,5 +1,5 @@
 import { EstadoLinea } from '@flash-ws/api-interfaces';
-import { LineaDetalle } from '@flash-ws/dao';
+import { LineaDetalle } from '@flash-ws/core';
 
 export class LineaConsolidada {
   cantidad: number;

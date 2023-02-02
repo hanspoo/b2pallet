@@ -1,7 +1,7 @@
 // process.env.NODE_ENV = 'dev';
 import { CambiarEstadoBody, EstadoLinea } from '@flash-ws/api-interfaces';
-import { inicializarCencosud, obtainToken, OrdenCompra } from '@flash-ws/dao';
-import { crearOrdenHelper } from '@flash-ws/dao';
+import { inicializarCencosud, obtainToken, OrdenCompra } from '@flash-ws/core';
+import { crearOrdenHelper } from '@flash-ws/core';
 
 // import { crearProducto, crerOrdenLocal } from '@flash-ws/worker';
 import request = require('supertest');

@@ -6,7 +6,7 @@ import {
   OrdenCompra,
   Pallet,
   ProtoPallet,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 import { ifDebug } from '@flash-ws/shared';
 
 export type PalletRobotConfig = {

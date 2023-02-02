@@ -11,11 +11,15 @@ export class SolicitudRecupPassword {
   @Column()
   cseg: number;
 
+  @Column()
+  vigente: boolean;
+
   @Column({ type: "bigint" })
-  public created_at: number;
+  created_at: number;
 
   @BeforeInsert()
   updateDates() {
     this.created_at = new Date().getTime();
+    this.vigente = true;
   }
 }

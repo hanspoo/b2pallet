@@ -4,7 +4,7 @@ import {
   crearOrdenHelper,
   inicializarCencosud,
   OrdenCompra,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 import request from 'supertest';
 import { app } from '../app';
 

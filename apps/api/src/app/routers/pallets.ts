@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 
-import { cajasPallet, dataSource, Pallet } from '@flash-ws/dao';
+import { cajasPallet, dataSource, Pallet } from '@flash-ws/core';
 
 const pallets = express.Router();
 pallets.get('/', async function (req: Request, res: Response) {

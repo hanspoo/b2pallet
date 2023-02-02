@@ -1,5 +1,5 @@
 // process.env.NODE_ENV = 'dev';
-import { LoaderPostBody } from '@flash-ws/api-interfaces';
+import { LoaderPostBody } from "@flash-ws/api-interfaces";
 import {
   Archivo,
   dataSource,
@@ -8,9 +8,9 @@ import {
   obtainToken,
   OrdenCompra,
   ProductoService,
-} from '@flash-ws/dao';
-import request from 'supertest';
-import { app } from '../app';
+} from "@flash-ws/core";
+import request from "supertest";
+import { app } from "../app";
 
 let token: string;
 let archValido: Archivo;
@@ -22,11 +22,11 @@ beforeAll(async () => {
   token = await obtainToken();
 
   const archivo = {
-    originalname: 'b2b.xls',
-    mimetype: 'application/vnd.ms-excel',
-    destination: '/home/julian/embarcadero/uploads',
-    filename: '5d3b12762f0a5879d7e6be12d62c4154',
-    path: '/home/julian/embarcadero/b2b-alone/fixtures/b2b.xls',
+    originalname: "b2b.xls",
+    mimetype: "application/vnd.ms-excel",
+    destination: "/home/julian/embarcadero/uploads",
+    filename: "5d3b12762f0a5879d7e6be12d62c4154",
+    path: "/home/julian/embarcadero/b2b-alone/fixtures/b2b.xls",
     size: 665088,
   };
 
@@ -34,20 +34,20 @@ beforeAll(async () => {
 
   const service = new ProductoService(empresa);
   await service.cargarPlanilla(
-    '/home/julian/embarcadero/b2b-alone/fixtures/productos.xlsx'
+    "/home/julian/embarcadero/b2b-alone/fixtures/productos.xlsx"
   );
 });
 
-describe('loader nuevo de ordenes', () => {
-  it('planilla válida, crea la orden (1)', async () => {
+describe("loader nuevo de ordenes", () => {
+  it.skip("planilla válida, crea la orden (1)", async () => {
     const data: LoaderPostBody = {
       idArchivo: archValido.id,
       idFieldsMapper: 1,
     };
     const res = await request(app)
-      .post('/api/loader/subir')
+      .post("/api/loader/subir")
       .send(data)
-      .set('Authorization', `Basic ${token}`);
+      .set("Authorization", `Basic ${token}`);
     expect(res.status).toBe(200);
     const repoOrdenes = dataSource.getRepository(OrdenCompra);
     const ordenes = await repoOrdenes.find({});

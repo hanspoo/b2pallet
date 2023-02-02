@@ -6,7 +6,7 @@ import {
   inicializarCencosud,
   UnidadNegocio,
   dataSource,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 import { LocalesService } from '../lib/LocalesService';
 import { ClienteService } from '../lib/ClienteService';
 

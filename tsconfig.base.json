@@ -1,5 +1,6 @@
 {
   "compileOnSave": false,
+  "include": ["./types.d.ts"],
   "compilerOptions": {
     "rootDir": ".",
     "sourceMap": true,
@@ -17,6 +18,7 @@
     "noPropertyAccessFromIndexSignature": false,
     "esModuleInterop": true,
     "baseUrl": ".",
+    "typeRoots": ["types", "node_modules/@types"],
     "paths": {
       "@flash-ws/api-interfaces": ["libs/api-interfaces/src/index.ts"],
       "@flash-ws/components": ["libs/components/src/index.ts"],
@@ -25,7 +27,6 @@
       "@flash-ws/etiquetas": ["libs/etiquetas/src/index.ts"],
       "@flash-ws/mail-utils": ["libs/mail-utils/src/index.ts"],
       "@flash-ws/my-plugin": ["libs/my-plugin/src/index.ts"],
-      "@flash-ws/prueba1": ["libs/prueba1/src/index.ts"],
       "@flash-ws/reductor": ["libs/reductor/src/index.ts"],
       "@flash-ws/robot": ["libs/robot/src/index.ts"],
       "@flash-ws/shared": ["libs/shared/src/index.ts"],

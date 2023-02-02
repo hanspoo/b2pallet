@@ -11,8 +11,8 @@ import {
   Pallet,
   Box,
   ProtoPallet,
-} from '@flash-ws/dao';
-import { crearOrdenHelper } from '@flash-ws/dao';
+} from '@flash-ws/core';
+import { crearOrdenHelper } from '@flash-ws/core';
 
 // en lo más básico tengo cajas infinitas cajas que tienen un peso y volumen
 // si el pallet tiene espacio para la caja

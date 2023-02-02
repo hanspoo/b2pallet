@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { dataSource, ProtoPallet } from '@flash-ws/dao';
+import { dataSource, ProtoPallet } from '@flash-ws/core';
 import { AddProtoPalletArgs } from '@flash-ws/api-interfaces';
 
 const protoPallets = express.Router();

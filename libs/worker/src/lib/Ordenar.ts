@@ -1,4 +1,4 @@
-import { Producto, dataSource } from '@flash-ws/dao';
+import { Producto, dataSource } from '@flash-ws/core';
 
 interface ConIdProducto {
   productoId: number;

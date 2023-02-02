@@ -1,4 +1,4 @@
-import { Cliente, UnidadNegocio, inicializarCencosud } from '@flash-ws/dao';
+import { Cliente, UnidadNegocio, inicializarCencosud } from '@flash-ws/core';
 import { OrdenService } from '../lib/OrdenService';
 import { ClienteService } from '../lib/ClienteService';
 

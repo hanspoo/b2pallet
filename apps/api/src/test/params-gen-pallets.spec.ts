@@ -14,8 +14,8 @@ import {
   Pallet,
   Producto,
   ProtoPallet,
-} from '@flash-ws/dao';
-import { crearOrdenHelper } from '@flash-ws/dao';
+} from '@flash-ws/core';
+import { crearOrdenHelper } from '@flash-ws/core';
 
 import supertest from 'supertest';
 import { app } from '../app';

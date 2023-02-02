@@ -8,7 +8,7 @@
  */
 
 import { EstadoLinea } from '@flash-ws/api-interfaces';
-import { LineaDetalle, Producto } from '@flash-ws/dao';
+import { LineaDetalle, Producto } from '@flash-ws/core';
 import { Consolidado } from '../lib/consoli/Consolidado';
 
 describe('el estado de la consolidada', () => {

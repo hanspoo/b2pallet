@@ -2,7 +2,7 @@ import * as express from 'express';
 import multer = require('multer');
 import { Request, Response } from 'express';
 
-import { cajasPallet, dataSource, Archivo } from '@flash-ws/dao';
+import { cajasPallet, dataSource, Archivo } from '@flash-ws/core';
 
 const UPLOAD_FOLDER = process.env.NX_UPLOAD_FOLDER || `uploads`;
 

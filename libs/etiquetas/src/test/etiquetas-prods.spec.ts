@@ -6,7 +6,7 @@ import {
   OrdenCompra,
   dataSource,
   ProtoPallet,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 
 import { Distribuir, Ordenar } from '@flash-ws/api-interfaces';
 import { EtiquetasService } from '../lib/EtiquetasService';

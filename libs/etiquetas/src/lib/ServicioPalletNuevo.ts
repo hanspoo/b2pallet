@@ -5,7 +5,7 @@ import {
   dataSource,
   ProtoPallet,
   ultimaHUCliente,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 import { PalletRobot, PalletRobotConfig } from '@flash-ws/robot';
 
 type OpcionesGenerar = {

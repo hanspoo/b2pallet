@@ -2,15 +2,19 @@ import {
   ActivationRequest,
   ActivationResponse,
   LoginRequest,
-  RecoverPasswordRequest,
   SignupRequest,
+  RequestValidaCodSeguridad,
+  ExecuteChangePassRequest,
 } from "@flash-ws/api-interfaces";
 import {
   CrearUsuarioService,
+  ExecuteChangePassService,
   FinderSolicitudesRegistro,
   LoginService,
+  RecoverPasswordService,
   SignupService,
-} from "@flash-ws/dao";
+  ValidaSolicitudAutenticarEmail,
+} from "@flash-ws/core";
 import * as express from "express";
 import { Request, Response } from "express";
 
@@ -89,15 +93,59 @@ auth.post(
 );
 auth.post(
   "/recover-pass",
-  async function (
-    req: Request<null, null, RecoverPasswordRequest>,
-    res: Response
-  ) {
+  async function (req: Request<null, null, { email: string }>, res: Response) {
     const { email } = req.body;
 
-    // const service = new RecoverPasswordService();
-    // const response = await service.execute(email);
-    // res.send(response);
+    const service = new RecoverPasswordService(email);
+    const response = await service.execute();
+
+    const httpCode = response.success ? 200 : 400;
+    res.statusMessage = response.msg;
+    return res.status(httpCode).end();
+  }
+);
+
+auth.post(
+  "/valida-cod-seguridad",
+  async (
+    req: Request<null, null, RequestValidaCodSeguridad>,
+    res: Response
+  ) => {
+    const { email, cseg } = req.body;
+    if (!(email && cseg)) {
+      console.log("Requerimiento sin email ni código de securidad");
+      return res.status(400).send("Debe entregar el email y contraseña");
+    }
+
+    const service = new ValidaSolicitudAutenticarEmail();
+    const response = await service.execute(email, cseg);
+    if (response.success) {
+      return res.send({ token: response.permiso.token });
+    }
+
+    res.statusMessage = response.msg;
+    return res.status(400).end();
+  }
+);
+
+auth.post(
+  "/change-pass",
+  async (req: Request<null, null, ExecuteChangePassRequest>, res: Response) => {
+    const { email, token, password } = req.body;
+    if (!(email && token && password)) {
+      console.log("Requerimiento sin email ni código de securidad");
+      return res.status(400).send("Faltan parámetros");
+    }
+
+    const service = new ExecuteChangePassService();
+    const response = await service.execute(email, token, password);
+
+    if (response.success) {
+      return res.send(response);
+    }
+
+    res.statusMessage = response.msg;
+    return res.status(400).end();
   }
 );
 

@@ -9,7 +9,7 @@ import {
   OrdenCompra,
   Producto,
   UnidadNegocio,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 import { ClienteService } from './ClienteService';
 import { fieldMap, firstSheetAsJSON } from './b2butils';
 import { LocalesService } from './LocalesService';

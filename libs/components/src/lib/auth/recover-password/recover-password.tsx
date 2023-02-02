@@ -1,88 +1,43 @@
-import React, { useMemo, useState } from 'react';
-import styles from "../auth-form.module.css"
-import { Button, Checkbox, Form, Input, notification, Typography } from 'antd';
-import { LoginRequest, RecoverPasswordRequest } from '@flash-ws/api-interfaces';
-import { useDispatch } from 'react-redux';
-import { setLoggedIn } from '@flash-ws/reductor';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { RecoverPasswordReadMail } from './RecoverPasswordReadMail';
+import { RecoverPasswordReadCode } from './RecoverPasswordReadCode';
+import { RecoverPasswordReadNewPassword } from './RecoverPasswordReadNewPassword';
+import { RecoverPasswordSuccessLanding } from './RecoverPasswordSuccessLanding';
 
-
-const { Title } = Typography
+enum View {
+  READ_EMAIL,
+  READ_SECURITY_CODE,
+  READ_NEW_PASSWORD,
+  LANDING_RECOVER_PASS
+}
 
 export const RecoverPassword: React.FC<{ cancel: () => void }> = ({ cancel }) => {
+  const [view, setView] = useState(View.READ_EMAIL)
+  const [email, setEmail] = useState<string>()
+  const [token, setToken] = useState<string>()
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [api, contextHolder] = notification.useNotification();
-  const contextValue = useMemo(() => ({ name: 'Ant Design' }), []);
+  if (view === View.READ_NEW_PASSWORD) {
+    if (!email) return <p>Error interno, no está definido el email (2)</p>
+    if (!token) return <p>Error interno, no está definido el token (2)</p>
 
-  const dispatch = useDispatch();
-
-
-
-  const onFinish = (values: any) => {
-
-    const { email } = values;
-
-    setLoading(true);
-    const data: RecoverPasswordRequest = { email };
-
-    axios.post(`${process.env['NX_SERVER_URL']}/api/auth/recover-pass`, data
-
-    ).then(response => {
-      console.log(response.data);
-      setLoading(false)
-    }).catch(error => { setError(error); setLoading(false) });
+    return <RecoverPasswordReadNewPassword token={token} email={email} cancel={cancel} next={() => setView(View.LANDING_RECOVER_PASS)} />
   }
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+  if (view === View.LANDING_RECOVER_PASS)
+    return <RecoverPasswordSuccessLanding cancel={cancel} next={cancel} />
+
+  if (view === View.READ_SECURITY_CODE) {
+    if (!email) return <p>Error interno, no está definido el email</p>
+    return <RecoverPasswordReadCode email={email} cancel={cancel} next={(token) => {
+      setToken(token);
+      setView(View.READ_NEW_PASSWORD)
+    }} />
+  }
+
+  return <RecoverPasswordReadMail cancel={cancel} next={(mail: string) => { setEmail(mail); setView(View.READ_SECURITY_CODE) }} />
+
+}
 
 
 
-
-  return (
-
-
-    <div className={styles["login-form"]}>
-
-
-      <Form
-        layout="vertical"
-        className={styles["ant-form"]}
-        name="basic"
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-
-        <Title level={3} style={{ marginBottom: '1em' }}>Recuperar contraseña</Title>
-        <p>Ingrese tu correo electrónico y te enviaremos un email
-          para que pueda establecer una nueva contraseña:</p>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-
-
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ type: "email", required: true }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <div style={{ textAlign: "center" }}>
-          <Form.Item>
-            <Button block type="primary" htmlType="submit" style={{ marginRight: '0.1em' }}>
-              Enviar
-            </Button>
-          </Form.Item>
-          <Button style={{ marginTop: '1em' }} type="link" onClick={cancel} >Volver al inicio</Button>
-        </div>
-      </Form>
-    </div >
-
-  );
-};
 

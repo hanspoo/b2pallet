@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as express from 'express';
 import { Request, Response } from 'express';
 import multer = require('multer');
-import { dataSource, OrdenCompra } from '@flash-ws/dao';
+import { dataSource, OrdenCompra } from '@flash-ws/core';
 import { OrdenService } from '@flash-ws/worker';
 import { EtiquetasService } from '@flash-ws/etiquetas';
 import { ParamsEtiquetasProd } from '@flash-ws/api-interfaces';

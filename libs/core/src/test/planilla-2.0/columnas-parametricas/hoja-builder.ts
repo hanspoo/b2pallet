@@ -3,69 +3,69 @@ type HojaCenco = {
   data: unknown[][];
 };
 export const hojaCenco: HojaCenco = {
-  name: 'Sheet1',
+  name: "Sheet1",
   data: [
     [
-      'Número de Orden',
-      'Estado de Orden',
-      'RUT Comprador',
-      'RS Comprador',
-      'RUT Vendedor',
-      'RS Vendedor',
-      'Fecha Emisión',
-      'Fecha Entrega',
-      'Tipo Orden',
-      'Cód. Local Entrega',
-      'Nombre Local Entrega',
-      'Dirección Local Entrega',
-      'Cód. Local Destino',
-      'Local Destino',
-      'Dirección Local Destino',
-      'Cód. Cencosud',
-      'Cód. Proveedor',
-      'EAN13',
-      'Cód. Empaque',
-      'Descripción',
-      'Tipo Empaque',
-      'Unidades por Empaque',
-      'Empaques Pedidos',
-      'Precio Lista Empaque',
-      'Desc. Base1',
-      'Desc. Base2',
-      'Desc. Base3',
-      'Desc. Base4',
-      'Desc. Promo',
-      'Desc. Apertura',
-      'Cargo1',
-      'Cargo2',
-      'Cargo3',
-      'Precio Costo Empaque',
-      'Términos de Pago',
-      'Responsable',
-      'Unidad de Negocio',
+      "Número de Orden",
+      "Estado de Orden",
+      "RUT Comprador",
+      "RS Comprador",
+      "RUT Vendedor",
+      "RS Vendedor",
+      "Fecha Emisión",
+      "Fecha Entrega",
+      "Tipo Orden",
+      "Cód. Local Entrega",
+      "Nombre Local Entrega",
+      "Dirección Local Entrega",
+      "Cód. Local Destino",
+      "Local Destino",
+      "Dirección Local Destino",
+      "Cód. Cencosud",
+      "Cód. Proveedor",
+      "EAN13",
+      "Cód. Empaque",
+      "Descripción",
+      "Tipo Empaque",
+      "Unidades por Empaque",
+      "Empaques Pedidos",
+      "Precio Lista Empaque",
+      "Desc. Base1",
+      "Desc. Base2",
+      "Desc. Base3",
+      "Desc. Base4",
+      "Desc. Promo",
+      "Desc. Apertura",
+      "Cargo1",
+      "Cargo2",
+      "Cargo3",
+      "Precio Costo Empaque",
+      "Términos de Pago",
+      "Responsable",
+      "Unidad de Negocio",
     ],
     [
       5575426472,
-      'Liberada',
-      'C001',
-      'CENCOSUD RETAIL S.A.',
-      '96785290',
-      'CHILEAN TRADING COMPANY S.A.',
-      '15-09-2022',
-      '22-09-2022',
-      'OC Predistribuida',
-      'N641',
-      'CD LO AGUIRRE',
-      'Lo Aguirre N°1.200, Parcela 2',
-      'N524',
-      '185 -SISA-LINARES-JANUARIO-ESP',
+      "Liberada",
+      "C001",
+      "CENCOSUD RETAIL S.A.",
+      "96785290",
+      "CHILEAN TRADING COMPANY S.A.",
+      "15-09-2022",
+      "22-09-2022",
+      "OC Predistribuida",
+      "N641",
+      "CD LO AGUIRRE",
+      "Lo Aguirre N°1.200, Parcela 2",
+      "N524",
+      "185 -SISA-LINARES-JANUARIO-ESP",
       null,
-      '1647753',
-      'DRBIO-00634',
-      '17896380105332',
-      '17896380105332',
-      'BOLSA MONDADIENTES 100UN',
-      'CS',
+      "1647753",
+      "DRBIO-00634",
+      "17896380105332",
+      "17896380105332",
+      "BOLSA MONDADIENTES 100UN",
+      "CS",
       50,
       1,
       13500,
@@ -79,9 +79,9 @@ export const hojaCenco: HojaCenco = {
       -945,
       0,
       8505,
-      '90 dias',
-      'CVALENCC',
-      'Sisa',
+      "90 dias",
+      "CVALENCC",
+      "Sisa",
     ],
   ],
 };
@@ -94,7 +94,7 @@ export class SheetBuilder {
   }
   lines: Array<any> = [];
 
-  addLines(...lines) {
+  addLines(...lines: unknown[]) {
     this.lines = this.lines.concat(lines);
     return this;
   }
@@ -106,7 +106,7 @@ export class SheetBuilder {
 
   build() {
     const hoja: HojaCenco = {
-      name: '',
+      name: "",
       data: [],
     };
 
@@ -135,7 +135,7 @@ export class LineBuilder {
     return this;
   }
   withLocal(local: string) {
-    [this.codLocal, this.nombreLocal] = local.split(',');
+    [this.codLocal, this.nombreLocal] = local.split(",");
     return this;
   }
   withIdentLegal(identLegal: string) {

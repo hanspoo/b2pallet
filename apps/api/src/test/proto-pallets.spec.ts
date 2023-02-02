@@ -1,5 +1,5 @@
 import { AddProtoPalletArgs } from '@flash-ws/api-interfaces';
-import { inicializarCencosud, obtainToken } from '@flash-ws/dao';
+import { inicializarCencosud, obtainToken } from '@flash-ws/core';
 import request from 'supertest';
 import { app } from '../app';
 

@@ -11,7 +11,7 @@ import {
   OrdenCompra,
   Producto,
   UnidadNegocio,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 import { ClienteService } from '../lib/ClienteService';
 import { CambioEstadoProdConsolidada } from '../lib/CambioEstadoProdConsolidada';
 

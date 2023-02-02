@@ -1,6 +1,6 @@
 import { EstadoLinea } from '@flash-ws/api-interfaces';
 import { In } from 'typeorm';
-import { dataSource, LineaDetalle, OrdenCompra } from '@flash-ws/dao';
+import { dataSource, LineaDetalle, OrdenCompra } from '@flash-ws/core';
 
 export class ServicioCambioEstado {
   orden: OrdenCompra;

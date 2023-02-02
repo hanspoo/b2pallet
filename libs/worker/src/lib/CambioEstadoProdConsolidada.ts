@@ -1,5 +1,5 @@
 import { Consolidado } from './consoli/Consolidado';
-import { dataSource, LineaDetalle, OrdenCompra, Producto } from '@flash-ws/dao';
+import { dataSource, LineaDetalle, OrdenCompra, Producto } from '@flash-ws/core';
 import { EstadoLinea } from '@flash-ws/api-interfaces';
 
 export class CambioEstadoProdConsolidada {

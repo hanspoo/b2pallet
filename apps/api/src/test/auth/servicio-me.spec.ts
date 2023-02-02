@@ -1,5 +1,5 @@
 import { LoginRequest } from '@flash-ws/api-interfaces';
-import { inicializarCencosud } from '@flash-ws/dao';
+import { inicializarCencosud } from '@flash-ws/core';
 import request from 'supertest';
 import { app } from '../../app';
 

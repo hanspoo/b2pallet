@@ -7,7 +7,7 @@ import {
   ProcesadorPlanilla,
   OrdenCreator,
   FieldsMapper,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 import express, { Request, Response } from 'express';
 
 export const loader = express.Router();

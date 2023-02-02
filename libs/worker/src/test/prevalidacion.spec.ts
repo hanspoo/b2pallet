@@ -9,7 +9,7 @@ import {
   dataSource,
   inicializarCencosud,
   UnidadNegocio,
-} from '@flash-ws/dao';
+} from '@flash-ws/core';
 import { OrdenService } from '../lib/OrdenService';
 import { PrevalidacionService } from '../lib/PrevalidacionService';
 import { FixtureBuilder } from './XLSFixtureBuilder';

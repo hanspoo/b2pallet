@@ -7,7 +7,7 @@
  * Por el momento no hemos considerado modificar la cantidad de la línea original, pero el consolidador no la ve.
  */
 
-import { LineaDetalle, Producto } from '@flash-ws/dao';
+import { LineaDetalle, Producto } from '@flash-ws/core';
 import { Consolidado } from '../lib/consoli/Consolidado';
 
 describe('consolidador de lineas', () => {

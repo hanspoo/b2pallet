@@ -1,10 +1,5 @@
-import { LoginRequest, RecoverPasswordRequest } from "@flash-ws/api-interfaces";
-import {
-  dataSource,
-  Empresa,
-  inicializarCencosud,
-  Usuario,
-} from "@flash-ws/dao";
+import { LoginRequest } from "@flash-ws/api-interfaces";
+import { dataSource, Empresa, inicializarCencosud } from "@flash-ws/core";
 import request = require("supertest");
 import { app } from "../../app";
 
@@ -47,7 +42,7 @@ describe("login", () => {
     expect(landingResult.statusCode).toEqual(200);
   });
   it("recuperar contraseña", async () => {
-    const data: RecoverPasswordRequest = { email: "admin@b2pallet.com" };
+    const data = { email: "admin@b2pallet.com" };
     const response = await request(app)
       .post("/api/auth/recover-pass")
       .send(data);

@@ -1,4 +1,4 @@
-import { Cliente, dataSource, Producto, UnidadNegocio } from '@flash-ws/dao';
+import { Cliente, dataSource, Producto, UnidadNegocio } from '@flash-ws/core';
 
 async function f() {
   await dataSource
