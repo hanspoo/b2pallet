@@ -1,4 +1,4 @@
-import styles from "../auth-form.module.css";
+import styles from "../../auth-form.module.css";
 import { Button, Form, Typography } from 'antd';
 
 const { Title } = Typography;

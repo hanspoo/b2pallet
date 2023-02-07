@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Typography } from 'antd';
-import styles from "../auth-form.module.css";
+import styles from "../../auth-form.module.css";
 import { RegistrationReadMail } from './RegistrationReadMail';
 import { RegistrationReadCode } from './RegistrationReadCode';
 import { RegistrationReadDatosEmpresa } from './RegistrationReadDatosEmpresa';

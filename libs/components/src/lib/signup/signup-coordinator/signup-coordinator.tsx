@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Typography } from 'antd';
-import styles from "../auth-form.module.css";
+import styles from "../../auth-form.module.css"
 
 import { SignupReadEmail } from '../signup-read-email/signup-read-email';
 import { SignupReadSecCode } from '../signup-read-sec-code/signup-read-sec-code';

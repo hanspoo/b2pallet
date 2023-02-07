@@ -11,24 +11,30 @@
   justify-content: center;
   align-items: center;
   min-height: 90vh;
-  background-color: orange;
+  background-color: #666;
 }
 
+@media screen and (min-width: 800px) {
+  .login-form {
+    width: 400px;
+  }
+}
 .login-form {
   border: solid 1px rgb(46, 28, 28);
-  max-width: 400px;
+  /* width: 400px; */
+  /* min-width: 400px; */
   background-color: teal;
   /* color: white; */
   padding: 2em 3em;
 }
 
 .login-form {
-  background-color: sandybrown;
+  background-color: #ccc;
   /* min-height: 100vh; */
-  display: flex;
+  /* display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
 }
 .login-form-forgot {
   float: right;

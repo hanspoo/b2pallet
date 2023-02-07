@@ -2,7 +2,7 @@ import { ActivationRequest, ActivationResponse } from '@flash-ws/api-interfaces'
 import { Typography, Form, Input, Button, Spin } from 'antd';
 import axios from 'axios';
 import { useState } from 'react';
-import styles from '../auth-form.module.css';
+import styles from '../../auth-form.module.css';
 
 
 const { Title } = Typography

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import styles from "../auth-form.module.css"
+import styles from "../../auth-form.module.css"
 import { Button, Checkbox, Form, Input, notification, Typography } from 'antd';
 import { LoginRequest } from '@flash-ws/api-interfaces';
 import { useDispatch } from 'react-redux';

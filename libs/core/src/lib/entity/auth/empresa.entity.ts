@@ -4,21 +4,19 @@ import {
   Column,
   OneToMany,
   Unique,
-} from 'typeorm';
-import { FieldsMapper } from '../campos/FieldsMapper';
+} from "typeorm";
+import { FieldsMapper } from "../campos/FieldsMapper";
 
-import { Cliente } from '../cliente.entity';
-import { Producto } from '../producto.entity';
-import { ProtoPallet } from '../proto-pallet.entity';
-import { Usuario } from './usuario.entity';
+import { Cliente } from "../cliente.entity";
+import { Producto } from "../producto.entity";
+import { ProtoPallet } from "../proto-pallet.entity";
+import { Usuario } from "./usuario.entity";
 
 @Entity()
-@Unique('nombre-empresa', ['nombre']) //
-@Unique('identLegal-empresa', ['identLegal']) //
 export class Empresa {
   @OneToMany(() => FieldsMapper, (prod) => prod.empresa, {
     cascade: true,
-    onDelete: 'CASCADE',
+    onDelete: "CASCADE",
   })
   fieldMappers: FieldsMapper[];
   agregarCliente(cliente: Cliente) {
@@ -69,7 +67,7 @@ export class Empresa {
 
   @OneToMany(() => Producto, (prod) => prod.empresa, {
     cascade: true,
-    onDelete: 'CASCADE',
+    onDelete: "CASCADE",
   })
   productos: Producto[];
 

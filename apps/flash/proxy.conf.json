@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "${process.env.NX_SERVER_URL}",
+    "target": "http://localhost:3333",
     "secure": false
   }
 }

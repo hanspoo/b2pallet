@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from "../auth-form.module.css";
+import styles from "../../auth-form.module.css";
 import { Button, Form, Input, Spin } from 'antd';
 import { UserData } from '../UserData';
 

@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import styles from "../auth-form.module.css"
 import ActivationComplete from '../auth/activation-complete/activation-complete';
 import ActivationForm from '../auth/activation-form/activation-form';
 import { LoginForm } from '../auth/login-form/login-form';
 import { RecoverPassword } from '../auth/recover-password/recover-password';
-import { SignupForm } from '../auth/signup-form/signup-form';
+import { SignupCoordinator } from '../signup/signup-coordinator/signup-coordinator';
 
 /* eslint-disable-next-line */
 export interface LoginSectionProps { }
@@ -16,12 +17,16 @@ enum View {
   RECOVER_PASSWORD,
 }
 export function LoginSection(props: LoginSectionProps) {
+
+  return <div className={styles["container"]}><DoLoginSection {...props} /></div>
+}
+export function DoLoginSection(props: LoginSectionProps) {
   const [email, setEmail] = useState("")
   const [vista, setView] = useState(View.LOGIN)
 
   if (vista === View.SIGNUP)
-    return <SignupForm cancel={() => setView(View.LOGIN)}
-      goActivation={(email: string) => { setView(View.ACTIVATION); setEmail(email) }} />
+    return <SignupCoordinator cancel={() => setView(View.LOGIN)} />
+
   if (vista === View.RECOVER_PASSWORD)
     return <RecoverPassword cancel={() => setView(View.LOGIN)} />
 
