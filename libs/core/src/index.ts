@@ -8,6 +8,8 @@ export * from "./lib/inicializarSistema";
 export * from "./lib/entity/campos/FieldsMapper";
 export * from "./lib/entity/campos/FieldMap";
 
+export * from "./lib/entity/auth/solicitud-registro.entity";
+
 export * from "./lib/entity/auth/solicitud-autenticar-email.entity";
 export * from "./lib/entity/auth/token.entity";
 export * from "./lib/entity/auth/empresa.entity";
@@ -58,3 +60,5 @@ export * from "./lib/auth/ExecuteChangePassService";
 export type SuperOrden = OrdenCompra & {
   lineasConsolidadas: Array<LineaConsolidada>;
 };
+
+export * from "./lib/registration/RegistrationServiceEmailStage";

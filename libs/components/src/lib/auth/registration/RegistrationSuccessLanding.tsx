@@ -9,7 +9,7 @@ type RecoverComponentsArgs = {
 }
 
 
-export function RecoverPasswordSuccessLanding({ cancel, next }: RecoverComponentsArgs) {
+export function RegistrationSuccessLanding({ cancel, next }: RecoverComponentsArgs) {
 
 
     return (
@@ -27,7 +27,6 @@ export function RecoverPasswordSuccessLanding({ cancel, next }: RecoverComponent
             >
 
                 <Title level={3} style={{ marginBottom: '1em' }}>Recuperar contraseña</Title>
-
 
                 <>
                     <p>Su contraseña ha sido cambiada, haga click para ir a la página de login</p>

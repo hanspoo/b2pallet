@@ -41,3 +41,5 @@ export * from "./lib/OrdenesResponseInvalid";
 export * from "./lib/ParamsEtiquetasProd";
 export * from "./lib/SignupRequest";
 export * from "./lib/SubirOrdenBody";
+
+export * from "./lib/registration/RegistrationRequest";

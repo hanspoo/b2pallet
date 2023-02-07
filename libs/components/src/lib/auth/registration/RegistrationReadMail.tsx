@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import styles from "../auth-form.module.css";
 import { Button, Form, Input, Spin, Typography } from 'antd';
 
-import axios from 'axios';
-import { RecoverPasswordRequest } from '@flash-ws/api-interfaces';
 
-const { Title } = Typography;
+import { RegistrationRequest } from '@flash-ws/api-interfaces';
+import customAxios from '../../customAxios';
+
 
 type RecoverComponentsArgs = {
     cancel: () => void;
@@ -13,7 +13,7 @@ type RecoverComponentsArgs = {
 }
 
 
-export function RecoverPasswordReadMail({ cancel, next }: RecoverComponentsArgs) {
+export function RegistrationReadMail({ cancel, next }: RecoverComponentsArgs) {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -23,9 +23,9 @@ export function RecoverPasswordReadMail({ cancel, next }: RecoverComponentsArgs)
         const { email } = values;
 
         setLoading(true);
-        const data: RecoverPasswordRequest = { email };
+        const data: RegistrationRequest = { email };
 
-        axios.post(`${process.env['NX_SERVER_URL']}/api/auth/recover-pass`, data
+        customAxios.post(`/api/registration/validate-email`, data
 
         ).then(() => {
             next(email);
@@ -47,7 +47,7 @@ export function RecoverPasswordReadMail({ cancel, next }: RecoverComponentsArgs)
     return (
 
 
-        <div className={styles["login-form"]}>
+        <div>
 
 
             <Form
@@ -60,10 +60,14 @@ export function RecoverPasswordReadMail({ cancel, next }: RecoverComponentsArgs)
                 autoComplete="off"
             >
 
-                <Title level={3} style={{ marginBottom: '1em' }}>Recuperar contraseña</Title>
+
                 {error ? <p>{error}</p> :
                     <>
-                        <p>Ingrese su correo electrónico y le enviaremos instrucciones para establecer una nueva contraseña</p>
+                        <p><em>Bienvenido,</em></p> <p>Lo primero que haremos será verificar que
+                            eres dueño de tu correo electrónico, desde ya te pedimos disculpas por
+                            tener que hacer este paso adicional.</p>
+                        <p>Ingrese su correo electrónico y le enviaremos instrucciones
+                            para continuar.</p>
 
                         <Form.Item
                             label="Email"
@@ -76,7 +80,7 @@ export function RecoverPasswordReadMail({ cancel, next }: RecoverComponentsArgs)
                         <div style={{ textAlign: "center" }}>
                             <Form.Item>
                                 <Button block type="primary" htmlType="submit" style={{ marginRight: '0.1em' }}>
-                                    {loading ? <Spin /> : "Enviar"}
+                                    {loading ? <Spin size='small' /> : "Enviar"}
                                 </Button>
                             </Form.Item>
 

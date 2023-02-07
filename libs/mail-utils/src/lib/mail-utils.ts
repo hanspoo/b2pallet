@@ -1,3 +1,4 @@
+import nodemailer from "nodemailer";
 export function cleanupEmail(email: string) {
   if (!email) {
     console.log("Se ha llamado a validar email sin email");
@@ -21,4 +22,15 @@ export function isValidEmail(email: string) {
   }
   if (email.indexOf(" ") !== -1) return false;
   return /\w+@\w+\.\w+/.test(email);
+}
+
+export function mailer() {
+  return nodemailer.createTransport({
+    host: process.env.NX_SMTP_SERVER || "smtp.gmail.com",
+    port: process.env.NX_SMTP_PORT || 587,
+    auth: {
+      user: process.env.NX_SMTP_USER,
+      pass: process.env.NX_SMTP_PASS,
+    },
+  });
 }

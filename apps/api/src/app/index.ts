@@ -18,6 +18,7 @@ import { clientes } from "./routers/clientes";
 import { archivos } from "./routers/archivos";
 import { TokenService } from "@flash-ws/core";
 import { fieldsMappers } from "./routers/fields-mappers";
+import { registration } from "./routers/registration-router";
 
 type ReqWithSession = Request<
   unknown,
@@ -93,6 +94,7 @@ app.use("/api/files", files);
 app.use("/api/archivos", archivos);
 app.use("/api/users", users);
 app.use("/api/auth", auth);
+app.use("/api/registration", registration);
 
 app.use("/api/me", authMiddleware, me);
 app.use("/api/productos", authMiddleware, productos);

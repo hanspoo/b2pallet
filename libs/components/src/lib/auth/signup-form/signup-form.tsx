@@ -41,6 +41,7 @@ export const SignupForm: React.FC<{ cancel: () => void, goActivation: (email: st
     const data: SignupRequest = {
       empresa,
       nombre,
+      token: "",
       email,
       password,
       identLegal,

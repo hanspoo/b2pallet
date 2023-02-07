@@ -1,11 +1,11 @@
-import { dataSource } from '../data-source';
-import { Empresa } from '../entity/auth/empresa.entity';
-import { SolicitudRegistro } from '../entity/auth/solicitud-registro.entity';
-import { Usuario } from '../entity/auth/usuario.entity';
-import { FieldsMapper } from '../entity/campos/FieldsMapper';
-import { ProtoPallet } from '../entity/proto-pallet.entity';
-import { clonarMappers, clonarProtos } from '../utils/clonar-utils';
-import { PassService } from './PassService';
+import { dataSource } from "../data-source";
+import { Empresa } from "../entity/auth/empresa.entity";
+import { SolicitudRegistro } from "../entity/auth/solicitud-registro.entity";
+import { Usuario } from "../entity/auth/usuario.entity";
+import { FieldsMapper } from "../entity/campos/FieldsMapper";
+import { ProtoPallet } from "../entity/proto-pallet.entity";
+import { clonarMappers, clonarProtos } from "../utils/clonar-utils";
+import { PassService } from "./PassService";
 
 export class CrearUsuarioService {
   empresa: string;
@@ -30,21 +30,21 @@ export class CrearUsuarioService {
 
     const protoPallets = await repoProto.find({
       where: { empresa: { id: 1 } },
-      relations: ['box'],
+      relations: ["box"],
     });
 
-    if (!protoPallets) throw Error('Error al recupera los proto pallets');
+    if (!protoPallets) throw Error("Error al recupera los proto pallets");
     if (protoPallets.length === 0)
-      throw Error('Error, no hay proto pallets en empresa 1');
+      throw Error("Error, no hay proto pallets en empresa 1");
 
     const fieldsMappers = await repoFieldsMapper.find({
       where: { empresa: { id: 1 } },
-      relations: ['campos'],
+      relations: ["campos"],
     });
 
-    if (!fieldsMappers) throw Error('Error al recupera los field mappers');
+    if (!fieldsMappers) throw Error("Error al recupera los field mappers");
     if (fieldsMappers.length === 0)
-      throw Error('Error, no hay field mappers en empresa 1');
+      throw Error("Error, no hay field mappers en empresa 1");
 
     const e = await repoEmpresa.save(
       repoEmpresa.create({
@@ -69,11 +69,11 @@ export class CrearUsuarioService {
 
   async validate(): Promise<[boolean, Array<string>]> {
     const errors: Array<string> = [];
-    if (!/\w+/.test(this.empresa)) errors.push('Empresa inválida');
-    if (!/\w+/.test(this.identLegal)) errors.push('Ident legal inválido');
-    if (!/\w+/.test(this.nombre)) errors.push('Nombre inválido');
-    if (!/\w+/.test(this.email)) errors.push('Email inválido');
-    if (!/\w+/.test(this.password)) errors.push('Contraseña inválida');
+    if (!/\w+/.test(this.empresa)) errors.push("Empresa inválida");
+    if (!/\w+/.test(this.identLegal)) errors.push("Ident legal inválido");
+    if (!/\w+/.test(this.nombre)) errors.push("Nombre inválido");
+    if (!/\w+/.test(this.email)) errors.push("Email inválido");
+    if (!/\w+/.test(this.password)) errors.push("Contraseña inválida");
     if (errors.length > 0) return [false, errors];
 
     return [true, []];

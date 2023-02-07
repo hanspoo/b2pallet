@@ -11,6 +11,7 @@ import {
   ExecuteChangePassService,
   FinderSolicitudesRegistro,
   LoginService,
+  MotivoPermiso,
   RecoverPasswordService,
   SignupService,
   ValidarSolicitudAutenticarEmail,
@@ -118,7 +119,11 @@ auth.post(
     }
 
     const service = new ValidarSolicitudAutenticarEmail();
-    const response = await service.execute(email, cseg);
+    const response = await service.execute(
+      email,
+      cseg,
+      MotivoPermiso.RECUPERAR_PASSWORD
+    );
     if (response.success) {
       return res.send({ token: response.permiso.token });
     }

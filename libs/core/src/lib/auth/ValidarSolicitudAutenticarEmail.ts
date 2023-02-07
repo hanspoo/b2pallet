@@ -15,7 +15,8 @@ export type ValidaSolicitudAutenticarEmailResponse = {
 export class ValidarSolicitudAutenticarEmail {
   async execute(
     email: string,
-    cseg: number
+    cseg: number,
+    motivo: MotivoPermiso
   ): Promise<ValidaSolicitudAutenticarEmailResponse> {
     const repoSol = dataSource.getRepository(SolicitudAutenticarEmail);
     const repoPermiso = dataSource.getRepository(PermisoUsarEmail);
@@ -29,7 +30,7 @@ export class ValidarSolicitudAutenticarEmail {
         repoPermiso.create({
           token,
           email,
-          motivo: MotivoPermiso.RECUPERAR_PASSWORD,
+          motivo,
         })
       );
 

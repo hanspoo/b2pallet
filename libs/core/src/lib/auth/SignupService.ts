@@ -3,6 +3,7 @@ import { randomInt } from "node:crypto";
 import { dataSource } from "../data-source";
 import { SolicitudRegistro } from "../entity/auth/solicitud-registro.entity";
 import { genCodSeguridad } from "@flash-ws/shared";
+import { mailer } from "@flash-ws/mail-utils";
 
 export type SignupArgs = {
   identLegal: string;
@@ -40,14 +41,7 @@ export class SignupService {
     return sol;
   }
   enviarEmail() {
-    const transporter = nodemailer.createTransport({
-      host: process.env.NX_SMTP_SERVER || "smtp.gmail.com",
-      port: process.env.NX_SMTP_PORT || 587,
-      auth: {
-        user: process.env.NX_SMTP_USER,
-        pass: process.env.NX_SMTP_PASS,
-      },
-    });
+    const transporter = mailer();
     transporter.verify().then(console.log).catch(console.error);
 
     const response = transporter.sendMail({

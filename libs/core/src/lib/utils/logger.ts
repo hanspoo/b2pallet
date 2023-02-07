@@ -3,7 +3,7 @@ import winston from "winston";
 const logConfiguration = {
   transports: [
     new winston.transports.Console({
-      level: "warn",
+      level: process.env["DEBUG"] || "warn",
     }),
     new winston.transports.File({
       level: "error",

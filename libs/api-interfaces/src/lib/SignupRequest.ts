@@ -4,4 +4,5 @@ export type SignupRequest = {
   nombre: string;
   email: string;
   password: string;
+  token: string;
 };
