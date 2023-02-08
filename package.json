@@ -29,6 +29,7 @@
     "bcrypt": "^5.1.0",
     "bwip-js": "^3.2.2",
     "canvas": "^2.11.0",
+    "cookie-session": "^2.0.0",
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
