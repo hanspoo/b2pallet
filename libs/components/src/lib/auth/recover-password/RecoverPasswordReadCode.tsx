@@ -63,7 +63,7 @@ export function RecoverPasswordReadCode({ email, cancel, next }: RecoverPassword
             <Title level={3} style={{ marginBottom: '1em' }}>Recuperar contraseña</Title>
             {error ? <p>{error}</p> :
                 <>
-                    <p>Ingrese el código de seguridad que hemos enviado a su correo electrónico:</p>
+                    <p>Ingrese el código de seguridad que hemos enviado al correo {email}:</p>
 
                     <Form.Item
                         label="Código de seguridad"

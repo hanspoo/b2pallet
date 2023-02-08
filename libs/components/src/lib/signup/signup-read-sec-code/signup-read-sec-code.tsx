@@ -62,7 +62,7 @@ export function SignupReadSecCode({ email, cancel, next }: RegistrationReadCodeA
 
       {error ? <p>{error}</p> :
         <>
-          <p>Ingrese el código de seguridad que hemos enviado a su correo electrónico:</p>
+          <p>Ingrese el código de seguridad que hemos enviado al email {email}:</p>
 
           <Form.Item
             label="Código de seguridad"

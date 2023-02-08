@@ -46,8 +46,7 @@ function randomIntFromInterval(min: number, max: number) {
 }
 
 const messages: Record<string, string> = {
-  RPA002:
-    "Si el email está registrado en nuestro sistema, le llegará un email con instrucciones",
+  RPA002: "El email no está registrado en nuestro sistema",
   RPA001:
     "Hemos enviado a su correo electrónico las instrucciones para recuperar su contraseña",
 };
