@@ -5,6 +5,7 @@ import { RecoverPasswordService } from "../../lib/auth/RecoverPasswordService";
 import { inicializarSistema } from "../../lib/inicializarSistema";
 import { ValidarSolicitudAutenticarEmail } from "../../lib/auth/ValidarSolicitudAutenticarEmail";
 import { randomCseg, randomEmail } from "@flash-ws/shared";
+import { MotivoPermiso } from "../../lib/entity/auth/permiso-usar-email.entity";
 
 beforeAll(async () => {
   await inicializarSistema();
@@ -71,7 +72,11 @@ describe("recuperación de contraseña", () => {
     describe("valida que el código ingresado corresponda a solicitud para el email", () => {
       it("con código inválido manda error 1", async () => {
         const service = new ValidarSolicitudAutenticarEmail();
-        const response = await service.execute(randomEmail(), randomCseg());
+        const response = await service.execute(
+          randomEmail(),
+          randomCseg(),
+          MotivoPermiso.RECUPERAR_PASSWORD
+        );
         expect(response.success).toBe(false);
       });
       it("con datos correctos responde success", async () => {
@@ -82,7 +87,11 @@ describe("recuperación de contraseña", () => {
         const cseg = res1.solicitud!.cseg;
 
         const validarRecupService = new ValidarSolicitudAutenticarEmail();
-        const response = await validarRecupService.execute(email, cseg);
+        const response = await validarRecupService.execute(
+          email,
+          cseg,
+          MotivoPermiso.RECUPERAR_PASSWORD
+        );
         expect(response.success).toBe(true);
       });
     });
