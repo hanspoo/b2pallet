@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
-import session from "express-session";
+import session from "cookie-session";
 import { Message } from "@flash-ws/api-interfaces";
 import { auth } from "./routers/auth";
 import { users } from "./routers/users";
