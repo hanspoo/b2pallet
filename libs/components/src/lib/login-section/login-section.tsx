@@ -1,5 +1,6 @@
 import { FileTextFilled, FileTextOutlined } from '@ant-design/icons';
-import { Typography } from 'antd';
+import { Layout, Typography } from 'antd';
+import { Content, Footer, Header } from 'antd/lib/layout/layout';
 import { useState } from 'react';
 import styles from "../auth-form.module.css"
 import ActivationComplete from '../auth/activation-complete/activation-complete';
@@ -21,10 +22,16 @@ enum View {
 }
 export function LoginSection(props: LoginSectionProps) {
 
-  return <div className={styles["container"]}>
-    <Typography.Title className={styles["title"]}>
-      <FileTextOutlined /> b2pallet</Typography.Title>
-    <DoLoginSection {...props} /></div>
+  return <Layout className={styles["layout"]}>
+    <Header className={styles["header"]}>
+      <Typography.Title level={2} className={styles["title"]}><FileTextOutlined /> b2pallet</Typography.Title></Header>
+    <Content>
+      <div className={styles["container"]}>
+        <DoLoginSection {...props} />
+      </div>
+    </Content>
+    <Footer>b2pallet, desarrollado por Welinux SpA</Footer>
+  </Layout>
 }
 export function DoLoginSection(props: LoginSectionProps) {
   const [email, setEmail] = useState("")
